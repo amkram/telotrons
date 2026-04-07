@@ -1,0 +1,89 @@
+{
+  "genome_id": "GCF_000499745.2_Eimeria_mitis",
+  "n_telotrons": 28,
+  "n_gt_ag": 28,
+  "top_donor_4": [
+    [
+      "TTAG",
+      10
+    ],
+    [
+      "AGGG",
+      5
+    ],
+    [
+      "GAGG",
+      5
+    ],
+    [
+      "TAGG",
+      2
+    ],
+    [
+      "AAGG",
+      2
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTT",
+      10
+    ],
+    [
+      "TTTC",
+      7
+    ],
+    [
+      "GTGC",
+      2
+    ],
+    [
+      "ATGC",
+      2
+    ],
+    [
+      "ACAC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 16,
+      "top_acceptor": [
+        [
+          "GTTT",
+          7
+        ],
+        [
+          "TTTC",
+          4
+        ],
+        [
+          "GTGC",
+          1
+        ]
+      ]
+    },
+    "coding-strand": {
+      "n": 12,
+      "top_acceptor": [
+        [
+          "GTTT",
+          3
+        ],
+        [
+          "TTTC",
+          3
+        ],
+        [
+          "GTGC",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_018831695.1	Puntigrus_tetrazona	NW_025048164.1	354692	354808	116	-	rna-XR_006248756.1	CT	AC	0.8706896551724138	TTAGG	0.0	template-strand	GTTAGGTT	AGGGTTAG	CTAACCCTAATCCAACATATCCCTAACCCTAAACCCTAACCCTAACCTAACCTAACCCTAACCTAACCTAACCCAACCTTTAACCTAACCCTAACCTAACCTAACCCTAACCTAAC

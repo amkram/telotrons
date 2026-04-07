@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_000184785.3	Apis_florea	NW_003790454.1	379416	379480	64	+	rna-XM_012486387.2	GT	AG	0.90625	TTAGG	0.5	unknown	GTAGGTAG	GTAGGTAG	GTAGGTAGGTAGGTAGGTAGGTAGATAGGTAGGTAGGTAGGTAGGTAGGTAGGTAGGTAGGTAG

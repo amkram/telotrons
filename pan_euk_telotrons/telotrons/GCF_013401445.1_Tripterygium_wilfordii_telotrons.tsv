@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_013401445.1	Tripterygium_wilfordii	NC_052239.1	10726758	10726806	48	+	rna-XM_038853912.1	GT	GG	1.0	TTTGGG	0.5	unknown	GTTTGGGT	GGGTTTGG	GTTTGGGTTTGGGTTTGGGTTTGGGTTTGGGTTTGGGTTTGGGTTTGG

@@ -1,0 +1,77 @@
+{
+  "genome_id": "GCF_000499545.2_Eimeria_tenella",
+  "n_telotrons": 9,
+  "n_gt_ag": 9,
+  "top_donor_4": [
+    [
+      "AGGG",
+      3
+    ],
+    [
+      "AAAC",
+      2
+    ],
+    [
+      "TTAG",
+      1
+    ],
+    [
+      "CCGA",
+      1
+    ],
+    [
+      "GAGG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTT",
+      6
+    ],
+    [
+      "TCTC",
+      1
+    ],
+    [
+      "CCCT",
+      1
+    ],
+    [
+      "CCTA",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 4,
+      "top_acceptor": [
+        [
+          "TCTC",
+          1
+        ],
+        [
+          "GTTT",
+          1
+        ],
+        [
+          "CCCT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 5,
+      "top_acceptor": [
+        [
+          "GTTT",
+          5
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

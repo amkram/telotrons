@@ -1,0 +1,89 @@
+{
+  "genome_id": "GCF_000499385.1_Eimeria_necatrix",
+  "n_telotrons": 60,
+  "n_gt_ag": 60,
+  "top_donor_4": [
+    [
+      "TTAG",
+      22
+    ],
+    [
+      "AGGG",
+      9
+    ],
+    [
+      "GAGC",
+      5
+    ],
+    [
+      "GAGG",
+      4
+    ],
+    [
+      "TAGG",
+      4
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTT",
+      24
+    ],
+    [
+      "ATGC",
+      12
+    ],
+    [
+      "GTGC",
+      7
+    ],
+    [
+      "GCGC",
+      5
+    ],
+    [
+      "GCTC",
+      4
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 38,
+      "top_acceptor": [
+        [
+          "GTTT",
+          13
+        ],
+        [
+          "ATGC",
+          9
+        ],
+        [
+          "GTGC",
+          6
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 22,
+      "top_acceptor": [
+        [
+          "GTTT",
+          11
+        ],
+        [
+          "ATGC",
+          3
+        ],
+        [
+          "GCGC",
+          2
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

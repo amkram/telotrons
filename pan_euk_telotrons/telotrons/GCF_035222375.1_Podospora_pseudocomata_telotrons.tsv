@@ -1,0 +1,3 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_035222375.1	Podospora_pseudocomata	NW_026946366.1	2360866	2360918	52	+	rna-XM_062888048.1	GT	AG	0.9423076923076923	TTAGG	0.5	unknown	GTAGGTAG	GTAGGTAG	GTAGGTAGGTAGGTAGGTAGGTAGGTAGGTAGGTAGGTAGGTAGGTAGGTAG
+GCF_035222375.1	Podospora_pseudocomata	NC_085887.1	337588	337608	20	-	rna-XM_062888419.1	GT	AG	0.85	TTAGG	0.5	unknown	GTAGGTAG	GTAGGTAG	GTAGGTAGGTAGGTAGGTAG

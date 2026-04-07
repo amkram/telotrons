@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_963576545.1	Limanda_limanda	NC_083646.1	610760	610814	54	+	rna-XR_009681433.1	GT	AG	0.9259259259259259	TTAGG	0.5	unknown	GTTAGTTA	TTAGTTAG	GTTAGTTAGTTATGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAG

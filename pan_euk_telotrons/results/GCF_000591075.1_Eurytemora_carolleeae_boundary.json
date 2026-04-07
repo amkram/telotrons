@@ -1,0 +1,53 @@
+{
+  "genome_id": "GCF_000591075.1_Eurytemora_carolleeae",
+  "n_telotrons": 2,
+  "n_gt_ag": 2,
+  "top_donor_4": [
+    [
+      "AAGT",
+      1
+    ],
+    [
+      "ATAA",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTT",
+      1
+    ],
+    [
+      "TATC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "unknown": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GTTT",
+          1
+        ]
+      ]
+    },
+    "coding-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "TATC",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

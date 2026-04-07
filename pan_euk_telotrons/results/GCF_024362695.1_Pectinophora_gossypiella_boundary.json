@@ -1,0 +1,61 @@
+{
+  "genome_id": "GCF_024362695.1_Pectinophora_gossypiella",
+  "n_telotrons": 3,
+  "n_gt_ag": 3,
+  "top_donor_4": [
+    [
+      "CGGC",
+      1
+    ],
+    [
+      "TTGG",
+      1
+    ],
+    [
+      "TGTT",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GCAC",
+      1
+    ],
+    [
+      "GGTT",
+      1
+    ],
+    [
+      "TGTC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "GCAC",
+          1
+        ],
+        [
+          "TGTC",
+          1
+        ]
+      ]
+    },
+    "coding-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GGTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

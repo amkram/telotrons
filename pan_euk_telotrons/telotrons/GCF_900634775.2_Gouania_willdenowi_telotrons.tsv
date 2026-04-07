@@ -1,0 +1,3 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_900634775.2	Gouania_willdenowi	NW_027634523.1	183768	183820	52	-	rna-XR_003673791.1	CT	AC	1.0	TTAGGG	0.0	template-strand	GTTAGGTT	AGGGTTAG	CTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCTAAC
+GCF_900634775.2	Gouania_willdenowi	NW_027634523.1	184094	184146	52	-	rna-XR_003673791.1	CT	AC	1.0	TTAGGG	0.0	template-strand	GTTAGGTT	AGGGTTAG	CTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCTAAC

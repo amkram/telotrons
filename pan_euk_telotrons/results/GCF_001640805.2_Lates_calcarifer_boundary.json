@@ -1,0 +1,40 @@
+{
+  "genome_id": "GCF_001640805.2_Lates_calcarifer",
+  "n_telotrons": 4,
+  "n_gt_ag": 4,
+  "top_donor_4": [
+    [
+      "TAGG",
+      3
+    ],
+    [
+      "AGGG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      4
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 4,
+      "top_acceptor": [
+        [
+          "GGTT",
+          4
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

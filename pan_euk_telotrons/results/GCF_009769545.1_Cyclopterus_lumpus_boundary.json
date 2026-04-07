@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_009769545.1_Cyclopterus_lumpus",
+  "n_telotrons": 14,
+  "n_gt_ag": 14,
+  "top_donor_4": [
+    [
+      "GAGT",
+      14
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "TGTC",
+      14
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 14,
+      "top_acceptor": [
+        [
+          "TGTC",
+          14
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

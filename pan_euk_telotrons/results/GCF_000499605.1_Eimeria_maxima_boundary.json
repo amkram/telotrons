@@ -1,0 +1,85 @@
+{
+  "genome_id": "GCF_000499605.1_Eimeria_maxima",
+  "n_telotrons": 11,
+  "n_gt_ag": 11,
+  "top_donor_4": [
+    [
+      "AAGG",
+      3
+    ],
+    [
+      "AGGG",
+      3
+    ],
+    [
+      "TAGG",
+      2
+    ],
+    [
+      "AATT",
+      1
+    ],
+    [
+      "AAAC",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTT",
+      5
+    ],
+    [
+      "GATT",
+      1
+    ],
+    [
+      "AGGT",
+      1
+    ],
+    [
+      "TATT",
+      1
+    ],
+    [
+      "TTGT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 4,
+      "top_acceptor": [
+        [
+          "GTTT",
+          3
+        ],
+        [
+          "TTAC",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 7,
+      "top_acceptor": [
+        [
+          "GTTT",
+          2
+        ],
+        [
+          "GATT",
+          1
+        ],
+        [
+          "AGGT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

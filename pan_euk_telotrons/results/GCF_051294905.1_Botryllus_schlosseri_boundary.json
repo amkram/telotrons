@@ -1,0 +1,74 @@
+{
+  "genome_id": "GCF_051294905.1_Botryllus_schlosseri",
+  "n_telotrons": 17,
+  "n_gt_ag": 17,
+  "top_donor_4": [
+    [
+      "AGGT",
+      7
+    ],
+    [
+      "AAGT",
+      5
+    ],
+    [
+      "TAGG",
+      4
+    ],
+    [
+      "TATG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "AGGT",
+      12
+    ],
+    [
+      "GGTT",
+      4
+    ],
+    [
+      "GATT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "GGTT",
+          2
+        ]
+      ]
+    },
+    "unknown": {
+      "n": 12,
+      "top_acceptor": [
+        [
+          "AGGT",
+          12
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "GGTT",
+          2
+        ],
+        [
+          "GATT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

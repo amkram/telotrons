@@ -1,0 +1,40 @@
+{
+  "genome_id": "GCF_025612915.1_Magallana_angulata",
+  "n_telotrons": 1,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "ACGT",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "TTTC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "unknown": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "TTTC",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

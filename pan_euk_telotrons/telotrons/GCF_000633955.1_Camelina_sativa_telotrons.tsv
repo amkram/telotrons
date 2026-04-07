@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_000633955.1	Camelina_sativa	NC_025686.1	29131827	29131876	49	+	rna-XM_010468105.1	GT	AG	0.9795918367346939	TTTTAGGG	1.0	coding-strand	GTTTAGGG	GGTTTTAG	GTTTAGGGTTTAGGGTTTAGGGTTTAGGGTTTAGGGTTTAGGGTTTTAG

@@ -1,0 +1,53 @@
+{
+  "genome_id": "GCF_046129695.1_Lonchura_striata",
+  "n_telotrons": 2,
+  "n_gt_ag": 2,
+  "top_donor_4": [
+    [
+      "TTAG",
+      1
+    ],
+    [
+      "AAAA",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTT",
+      1
+    ],
+    [
+      "GCCG",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "unknown": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GTTT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GCCG",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

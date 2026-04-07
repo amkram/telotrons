@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_028476545.2_Physella_acuta",
+  "n_telotrons": 1,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "AAGG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "CCTC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "CCTC",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

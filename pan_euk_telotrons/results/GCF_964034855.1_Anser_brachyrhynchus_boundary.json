@@ -1,0 +1,81 @@
+{
+  "genome_id": "GCF_964034855.1_Anser_brachyrhynchus",
+  "n_telotrons": 25,
+  "n_gt_ag": 25,
+  "top_donor_4": [
+    [
+      "TAGG",
+      20
+    ],
+    [
+      "GTTA",
+      2
+    ],
+    [
+      "TTAG",
+      2
+    ],
+    [
+      "TTGG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      19
+    ],
+    [
+      "GTTT",
+      1
+    ],
+    [
+      "TGTT",
+      1
+    ],
+    [
+      "TTAG",
+      1
+    ],
+    [
+      "TTTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 18,
+      "top_acceptor": [
+        [
+          "GGTT",
+          17
+        ],
+        [
+          "TTTT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 7,
+      "top_acceptor": [
+        [
+          "GGTT",
+          2
+        ],
+        [
+          "GTTT",
+          1
+        ],
+        [
+          "TGTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

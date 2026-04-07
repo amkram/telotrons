@@ -1,0 +1,9 @@
+accession	assembly	description	status	total_introns	telo_10pct	telo_30pct	telo_50pct	telo_70pct	telo_85pct	telo_95pct
+GCF_000001405.40	GRCh38_p14	Primary reference genome	missing	0	0	0	0	0	0	0
+GCF_009914755.1	T2T_CHM13v2	Telomere-to-telomere complete genome	ok	349833	329	1	1	0	0	0
+GCF_000002125.1	HuRef	Craig Venter personal genome	missing	0	0	0	0	0	0	0
+GCF_000306695.2	CHM1_1.1	Hydatidiform mole CHM1	missing	0	0	0	0	0	0	0
+GCA_011064465.2	Ash1_v2.2	Ashkenazi individual	missing	0	0	0	0	0	0	0
+GCA_018873775.2	hg01243_v3	HPRC sample HG01243	missing	0	0	0	0	0	0	0
+GCA_022833125.2	ASM2283312v2	Korean genome KPGP	missing	0	0	0	0	0	0	0
+GCF_000002135.2	CRA_TCAGchr7v2	Chromosome 7 only (partial)	missing	0	0	0	0	0	0	0

@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_000315625.1_Guillardia_theta_CCMP2712",
+  "n_telotrons": 5,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "TTAG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTA",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GTTA",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

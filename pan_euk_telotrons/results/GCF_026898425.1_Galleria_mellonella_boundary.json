@@ -1,0 +1,48 @@
+{
+  "genome_id": "GCF_026898425.1_Galleria_mellonella",
+  "n_telotrons": 4,
+  "n_gt_ag": 4,
+  "top_donor_4": [
+    [
+      "TAGG",
+      3
+    ],
+    [
+      "AGGT",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      3
+    ],
+    [
+      "AGTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 4,
+      "top_acceptor": [
+        [
+          "GGTT",
+          3
+        ],
+        [
+          "AGTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

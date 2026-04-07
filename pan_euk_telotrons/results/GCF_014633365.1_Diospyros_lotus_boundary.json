@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_014633365.1_Diospyros_lotus",
+  "n_telotrons": 4,
+  "n_gt_ag": 4,
+  "top_donor_4": [
+    [
+      "TTAG",
+      4
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTT",
+      4
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 4,
+      "top_acceptor": [
+        [
+          "GTTT",
+          4
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

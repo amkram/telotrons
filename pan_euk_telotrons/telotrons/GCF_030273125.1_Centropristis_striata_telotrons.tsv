@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_030273125.1	Centropristis_striata	NC_081519.1	28538705	28538747	42	+	rna-XR_009394093.1	GT	AG	1.0	TTAGGG	1.0	coding-strand	GTTAGGTT	TAGGTTAG	GTTAGGTTAGGGTTAGGGTTAGGTTAGGTTAGGTTAGGTTAG

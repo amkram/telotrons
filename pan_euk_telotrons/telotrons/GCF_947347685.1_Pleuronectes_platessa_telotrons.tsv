@@ -1,0 +1,3 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_947347685.1	Pleuronectes_platessa	NC_070626.1	33277290	33277346	56	-	rna-XM_053424478.1	CT	AC	1.0	TTAGGG	0.0	template-strand	GTTAGGGT	TAGGTTAG	CTAACCTAACCCTAACCCTAACCTAACCCTAACCCTAACCTAACCCTAACCCTAAC
+GCF_947347685.1	Pleuronectes_platessa	NC_070626.1	33277290	33277346	56	-	rna-XM_053424471.1	CT	AC	1.0	TTAGGG	0.0	template-strand	GTTAGGGT	TAGGTTAG	CTAACCTAACCCTAACCCTAACCTAACCCTAACCCTAACCTAACCCTAACCCTAAC

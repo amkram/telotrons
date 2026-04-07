@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_036669905.1	Acropora_muricata	NC_090038.1	9762425	9762511	86	-	gene-LOC136911481	CT	AC	0.9069767441860465	TTAGGG	0.0	template-strand	GTTAGGGT	AGGGTTAG	CTAACCCTAACCCTAACCGTAACCCTAACTCTAAACCCTAAACCCTAACCCTTAACCTAACCCTAACCCTAACCCTAAACCCTAAC

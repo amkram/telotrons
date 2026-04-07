@@ -1,0 +1,81 @@
+{
+  "genome_id": "GCF_023343835.1_Lagopus_muta",
+  "n_telotrons": 34,
+  "n_gt_ag": 34,
+  "top_donor_4": [
+    [
+      "TAGG",
+      27
+    ],
+    [
+      "GTTA",
+      3
+    ],
+    [
+      "TTAG",
+      2
+    ],
+    [
+      "AGGG",
+      2
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      29
+    ],
+    [
+      "GTTA",
+      2
+    ],
+    [
+      "GGTA",
+      1
+    ],
+    [
+      "AGTT",
+      1
+    ],
+    [
+      "GGGA",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 6,
+      "top_acceptor": [
+        [
+          "GGTT",
+          4
+        ],
+        [
+          "GTTA",
+          2
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 28,
+      "top_acceptor": [
+        [
+          "GGTT",
+          25
+        ],
+        [
+          "GGTA",
+          1
+        ],
+        [
+          "AGTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

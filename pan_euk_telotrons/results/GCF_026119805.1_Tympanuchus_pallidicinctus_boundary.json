@@ -1,0 +1,81 @@
+{
+  "genome_id": "GCF_026119805.1_Tympanuchus_pallidicinctus",
+  "n_telotrons": 48,
+  "n_gt_ag": 48,
+  "top_donor_4": [
+    [
+      "TAGG",
+      22
+    ],
+    [
+      "TTAG",
+      18
+    ],
+    [
+      "TTGG",
+      3
+    ],
+    [
+      "GTTA",
+      2
+    ],
+    [
+      "AAGG",
+      2
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      33
+    ],
+    [
+      "GGTA",
+      6
+    ],
+    [
+      "ATAG",
+      4
+    ],
+    [
+      "GTTT",
+      2
+    ],
+    [
+      "GTTA",
+      2
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 43,
+      "top_acceptor": [
+        [
+          "GGTT",
+          28
+        ],
+        [
+          "GGTA",
+          6
+        ],
+        [
+          "ATAG",
+          4
+        ]
+      ]
+    },
+    "coding-strand": {
+      "n": 5,
+      "top_acceptor": [
+        [
+          "GGTT",
+          5
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

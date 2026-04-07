@@ -1,0 +1,48 @@
+{
+  "genome_id": "GCF_045679555.1_Salvelinus_alpinus",
+  "n_telotrons": 2,
+  "n_gt_ag": 2,
+  "top_donor_4": [
+    [
+      "GTTA",
+      1
+    ],
+    [
+      "TAAG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "AGTT",
+      1
+    ],
+    [
+      "GTTA",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "AGTT",
+          1
+        ],
+        [
+          "GTTA",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

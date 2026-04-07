@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_030449975.1_Polyergus_mexicanus",
+  "n_telotrons": 1,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "GTGT",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "NNGC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "NNGC",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "genome_id": "GCF_051106095.1_Pogona_vitticeps",
+  "n_telotrons": 44,
+  "n_gt_ag": 44,
+  "top_donor_4": [
+    [
+      "AGGT",
+      43
+    ],
+    [
+      "AGTT",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "AGGT",
+      42
+    ],
+    [
+      "AGGC",
+      1
+    ],
+    [
+      "AGTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "unknown": {
+      "n": 43,
+      "top_acceptor": [
+        [
+          "AGGT",
+          42
+        ],
+        [
+          "AGGC",
+          1
+        ]
+      ]
+    },
+    "coding-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "AGTT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

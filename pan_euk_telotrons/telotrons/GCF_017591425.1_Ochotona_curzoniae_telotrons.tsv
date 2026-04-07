@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_017591425.1	Ochotona_curzoniae	NW_024465421.1	11917669	11917710	41	-	rna-XR_005883184.1	CT	AC	1.0	TTAGGG	0.0	template-strand	GTTAGGGT	AGGGTTAG	CTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAAC

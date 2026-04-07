@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_963422355.1	Corticium_candelabrum	NC_085098.1	386863	386898	35	+	gene-LOC134189864	GT	CG	0.8857142857142857	TTAGGG	0.0	template-strand	GTCCTAAC	CTAACCCG	GTCCTAACCCTAACCCTAACCCTAACGCTAACCCG

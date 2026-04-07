@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_907164565.1	Psammomys_obesus	NW_026585686.1	991233	991273	40	+	gene-LOC129692754	CA	AC	0.85	TTGGGG	0.5	unknown	CAACCAAC	CAACCAAC	CAACCAACCAACCAACCAACCAACCAACCAACCAACCAAC

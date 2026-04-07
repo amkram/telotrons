@@ -1,0 +1,45 @@
+{
+  "genome_id": "GCF_021464435.1_Cataglyphis_hispanica",
+  "n_telotrons": 36,
+  "n_gt_ag": 36,
+  "top_donor_4": [
+    [
+      "TGGG",
+      34
+    ],
+    [
+      "TAGG",
+      2
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      36
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 34,
+      "top_acceptor": [
+        [
+          "GGTT",
+          34
+        ]
+      ]
+    },
+    "coding-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "GGTT",
+          2
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

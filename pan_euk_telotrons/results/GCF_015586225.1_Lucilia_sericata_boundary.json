@@ -1,0 +1,111 @@
+{
+  "genome_id": "GCF_015586225.1_Lucilia_sericata",
+  "n_telotrons": 23,
+  "n_gt_ag": 22,
+  "top_donor_4": [
+    [
+      "GAGT",
+      5
+    ],
+    [
+      "AAGT",
+      5
+    ],
+    [
+      "AAAA",
+      3
+    ],
+    [
+      "AATG",
+      3
+    ],
+    [
+      "AAAT",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "TTTC",
+      8
+    ],
+    [
+      "CTAC",
+      4
+    ],
+    [
+      "TCAC",
+      3
+    ],
+    [
+      "TCTT",
+      2
+    ],
+    [
+      "TTAC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "TTAC",
+          1
+        ],
+        [
+          "GTTT",
+          1
+        ],
+        [
+          "TTTC",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 4,
+      "top_acceptor": [
+        [
+          "TTTC",
+          4
+        ]
+      ]
+    },
+    "unknown": {
+      "n": 4,
+      "top_acceptor": [
+        [
+          "TCTT",
+          2
+        ],
+        [
+          "TTTC",
+          1
+        ],
+        [
+          "TTGG",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 11,
+      "top_acceptor": [
+        [
+          "CTAC",
+          4
+        ],
+        [
+          "TCAC",
+          3
+        ],
+        [
+          "TTTC",
+          2
+        ]
+      ]
+    }
+  }
+}

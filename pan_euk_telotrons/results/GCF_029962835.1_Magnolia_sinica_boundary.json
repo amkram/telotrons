@@ -1,0 +1,53 @@
+{
+  "genome_id": "GCF_029962835.1_Magnolia_sinica",
+  "n_telotrons": 3,
+  "n_gt_ag": 3,
+  "top_donor_4": [
+    [
+      "TTAG",
+      2
+    ],
+    [
+      "ATAG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTA",
+      2
+    ],
+    [
+      "GTTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "GTTA",
+          2
+        ]
+      ]
+    },
+    "unknown": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GTTT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

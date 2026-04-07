@@ -1,0 +1,3 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_964058835.1	Carex_rostrata	NC_135919.1	972361	972391	30	-	rna-XM_078317853.1	GG	AG	0.8666666666666667	TTAGG	1.0	coding-strand	GGTTATGG	ATGGTTAG	GGTTATGGTTATGGTTATGGTTATGGTTAG
+GCF_964058835.1	Carex_rostrata	NC_135932.1	10350996	10351026	30	+	rna-XM_078316848.1	GT	AG	0.9	TTAGG	1.0	coding-strand	GTGAGGTT	TAGGTTAG	GTGAGGTTAGGTTAGGTTAGGTTAGGTTAG

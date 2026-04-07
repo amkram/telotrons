@@ -1,0 +1,66 @@
+{
+  "genome_id": "GCF_901001165.2_Salmo_trutta",
+  "n_telotrons": 6,
+  "n_gt_ag": 5,
+  "top_donor_4": [
+    [
+      "AAAA",
+      3
+    ],
+    [
+      "AGGT",
+      1
+    ],
+    [
+      "AAGA",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "TGTC",
+      3
+    ],
+    [
+      "AGGT",
+      1
+    ],
+    [
+      "CTTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "TGTC",
+          3
+        ]
+      ]
+    },
+    "unknown": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "AGGT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "CTTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

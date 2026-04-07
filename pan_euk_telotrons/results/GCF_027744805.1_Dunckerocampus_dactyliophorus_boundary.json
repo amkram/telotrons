@@ -1,0 +1,41 @@
+{
+  "genome_id": "GCF_027744805.1_Dunckerocampus_dactyliophorus",
+  "n_telotrons": 3,
+  "n_gt_ag": 3,
+  "top_donor_4": [
+    [
+      "TAGG",
+      3
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      3
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "GGTT",
+          2
+        ]
+      ]
+    },
+    "coding-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GGTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

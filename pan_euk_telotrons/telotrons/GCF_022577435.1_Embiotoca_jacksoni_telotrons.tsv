@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_022577435.1	Embiotoca_jacksoni	NW_027185381.1	21026086	21026116	30	-	rna-XM_069162580.1	CT	AC	0.9666666666666667	TTAGG	0.0	template-strand	GTTAGGTT	TAGGTTAG	CTAACCTAACCTAACCTAACTTAACCTAAC

@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_951640355.1	Cnephaeus_nilssonii	NC_137074.1	53774026	53774061	35	+	rna-XR_013815242.1	GT	AG	0.8857142857142857	TTGGGG	0.5	unknown	GTGGGGTG	GGGGTGAG	GTGGGGTGGGGTGGGGTGGGGTGGGGTGGGGTGAG

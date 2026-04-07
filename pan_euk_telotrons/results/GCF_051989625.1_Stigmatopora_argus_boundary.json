@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_051989625.1_Stigmatopora_argus",
+  "n_telotrons": 1,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "AGAG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "TTTC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "TTTC",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

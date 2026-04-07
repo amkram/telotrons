@@ -1,0 +1,3 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_000972845.2	Larimichthys_crocea	NC_040013.1	27233706	27233739	33	-	rna-XM_019266130.2	TT	GT	1.0	TTTGGG	0.5	unknown	TTGGGTTT	GTTTGGGT	TTGGGTTTGGGTGGGTTTGGGTTTGGTTTGGGT
+GCF_000972845.2	Larimichthys_crocea	NC_040013.1	27233698	27233731	33	-	rna-XM_027278002.1	GT	TG	1.0	TTTGGG	0.5	unknown	GTTTGGGT	TGGGTTTG	GTTTGGGTTTGGGTTTGGGTGGGTTTGGGTTTG

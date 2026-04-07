@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_021018895.1	Seriola_aureovittata	NC_079377.1	14010600	14010700	100	+	rna-XR_008829624.1	GT	AG	0.97	TTAGG	0.5	unknown	GTAGTTAG	TTAGTTAG	GTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAG

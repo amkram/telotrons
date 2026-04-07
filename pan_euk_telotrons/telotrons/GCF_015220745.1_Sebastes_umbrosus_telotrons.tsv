@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_015220745.1	Sebastes_umbrosus	NW_023618433.1	165966	165997	31	+	gene-LOC119484120	GT	AG	0.8709677419354839	TTAGGG	0.0	template-strand	GTTAACCC	CCTAACAG	GTTAACCCTAACCTAACCCTAACCCTAACAG

@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_964188305.1	Podarcis_bocagei	NC_138129.1	41049814	41049847	33	+	rna-XR_014008035.1	GT	AG	1.0	TTAGG	0.5	unknown	GTTAGTTA	TTAGTTAG	GTTAGTTAGTTAGTTAGTTAGTTAGTTAGTTAG

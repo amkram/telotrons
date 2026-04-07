@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_949606895.1_Notothenia_rossii",
+  "n_telotrons": 1,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "AGGT",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "TTTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "TTTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

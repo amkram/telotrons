@@ -1,0 +1,61 @@
+{
+  "genome_id": "GCF_040054535.1_Antennarius_striatus",
+  "n_telotrons": 8,
+  "n_gt_ag": 8,
+  "top_donor_4": [
+    [
+      "AAGA",
+      5
+    ],
+    [
+      "GAGT",
+      2
+    ],
+    [
+      "GAAG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "CCTC",
+      5
+    ],
+    [
+      "CTTC",
+      2
+    ],
+    [
+      "CCCC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 6,
+      "top_acceptor": [
+        [
+          "CCTC",
+          5
+        ],
+        [
+          "CCCC",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "CTTC",
+          2
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

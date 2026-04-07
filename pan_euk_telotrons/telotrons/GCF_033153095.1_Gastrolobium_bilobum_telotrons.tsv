@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_033153095.1	Gastrolobium_bilobum	NW_026897257.1	1780388	1780427	39	-	rna-XM_061505702.1	CT	AC	0.8717948717948718	TTTGGG	0.5	unknown	GTGTACCC	AAACCCAG	CTGGGTTTGGGTTTGGGTTTGGGTTTGGGTTGGGTACAC

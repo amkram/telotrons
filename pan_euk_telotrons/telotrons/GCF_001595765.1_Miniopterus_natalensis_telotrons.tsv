@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_001595765.1	Miniopterus_natalensis	NW_015504471.1	1354980	1355015	35	-	gene-LOC107534815	CT	AC	1.0	TTAGGG	0.0	template-strand	GTTAGGGT	AGGGTTAG	CTAACCCTAACCCTAACCCTAACCCTAACCCTAAC

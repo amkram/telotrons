@@ -1,0 +1,55 @@
+# Raw data (too large for git)
+tara_oceans_euk_mags/
+human_telotron_survey/genomes/
+human_telotron_survey/1kg_ont_vienna/final-vcf*
+human_telotron_survey/1kg_ont_vienna/HG*
+pan_euk_telotrons/genomes/
+pan_euk_telotrons/telotrons_multirepeat/
+pan_euk_telotrons/ultra_all_tr/
+
+# Binaries
+pan_euk_telotrons/bin/
+pan_euk_telotrons_datasets
+pan_euk_telotrons_dataformat
+
+# Temp files
+*.tmp
+~$*
+__pycache__/
+*.pyc
+.DS_Store
+
+# Lock files
+.~lock.*
+
+# Claude config
+.claude/
+
+# Large image files we don't need in git (keep key figures only)
+cascade_proof*.html
+terc_report.html
+tert_*.html
+variant_phase_report.html
+fig_pif1_ku70_proof.png
+fig_reviewer_experiments.png
+
+# Large pan-euk checkpoint (can be regenerated)  
+pan_euk_telotrons/checkpoint.json
+pan_euk_telotrons/ultra_checkpoint.json
+
+# Human survey raw data
+human_telotron_survey/1kg_ont_vienna/results/telo_sv_hits_vcf.json
+
+# Large ULTRA result TSVs (mostly noise, regenerable)
+pan_euk_telotrons/ultra_results/
+
+# Large PDFs/presentations (keep manuscript drafts only)
+telotrons_report.pdf
+telotrons_advisor_deck.pptx
+strict_telotron_sequences.png
+telotron_evidence_report.pdf
+
+# Large figure files
+_overview.png
+_seq_zoom*.png
+_zoom*.png

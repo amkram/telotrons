@@ -1,0 +1,61 @@
+{
+  "genome_id": "GCF_905404315.1_Leptidea_sinapis",
+  "n_telotrons": 24,
+  "n_gt_ag": 24,
+  "top_donor_4": [
+    [
+      "TAGG",
+      21
+    ],
+    [
+      "TTAG",
+      3
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      19
+    ],
+    [
+      "AGTT",
+      3
+    ],
+    [
+      "GGGT",
+      2
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 23,
+      "top_acceptor": [
+        [
+          "GGTT",
+          18
+        ],
+        [
+          "AGTT",
+          3
+        ],
+        [
+          "GGGT",
+          2
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GGTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_932276165.1	Plutella_xylostella	NC_064011.1	2668309	2668344	35	+	rna-XR_007268118.1	GT	AG	0.8857142857142857	TTAGGG	1.0	coding-strand	GTAGGGTA	AGGGTAAG	GTAGGGTAGGGTAGGGTAGGGTAGGGTAGGGTAAG

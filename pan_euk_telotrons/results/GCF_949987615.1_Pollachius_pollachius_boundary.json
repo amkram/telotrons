@@ -1,0 +1,40 @@
+{
+  "genome_id": "GCF_949987615.1_Pollachius_pollachius",
+  "n_telotrons": 3,
+  "n_gt_ag": 3,
+  "top_donor_4": [
+    [
+      "ACCG",
+      2
+    ],
+    [
+      "AGTG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "CTCC",
+      3
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "CTCC",
+          3
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

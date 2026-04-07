@@ -1,0 +1,89 @@
+{
+  "genome_id": "GCF_003711565.1_Takifugu_flavidus",
+  "n_telotrons": 41,
+  "n_gt_ag": 41,
+  "top_donor_4": [
+    [
+      "TAGG",
+      12
+    ],
+    [
+      "GAGT",
+      9
+    ],
+    [
+      "ACTG",
+      6
+    ],
+    [
+      "CAGG",
+      5
+    ],
+    [
+      "GAGC",
+      2
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      13
+    ],
+    [
+      "ATGC",
+      7
+    ],
+    [
+      "ATTC",
+      6
+    ],
+    [
+      "GGGT",
+      3
+    ],
+    [
+      "GTTA",
+      2
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 32,
+      "top_acceptor": [
+        [
+          "GGTT",
+          12
+        ],
+        [
+          "ATGC",
+          7
+        ],
+        [
+          "ATTC",
+          6
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 9,
+      "top_acceptor": [
+        [
+          "TTAG",
+          2
+        ],
+        [
+          "GGGT",
+          1
+        ],
+        [
+          "GTTA",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_001266775.1	Austrofundulus_limnaeus	NW_013952666.1	746218	746261	43	+	rna-XR_001311226.1	GT	AG	0.9767441860465116	TTAGG	1.0	coding-strand	GTTAGGTT	TAGGTTAG	GTTAGGTTAGTTAGTTTAGGTTAGTTAGGGTTAGTTAGGTTAG

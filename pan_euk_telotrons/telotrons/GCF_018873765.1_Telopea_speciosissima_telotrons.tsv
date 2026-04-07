@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_018873765.1	Telopea_speciosissima	NC_057918.1	37560020	37560056	36	+	rna-XM_043848491.1	AC	TA	0.9444444444444444	TTAGGG	0.0	template-strand	ACCCTAAC	TAACCCTA	ACCCTAACGCTAACCTTAACCCTAACCCTAACCCTA

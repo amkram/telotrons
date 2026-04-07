@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_029227915.1	Hydractinia_symbiolongicarpus	NW_026633919.1	1186	1298	112	-	rna-XM_057442499.1	GG	GG	1.0	TTAGGG	1.0	coding-strand	GGGTTAGG	GGGTTAGG	GGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGGGGGTTAGG

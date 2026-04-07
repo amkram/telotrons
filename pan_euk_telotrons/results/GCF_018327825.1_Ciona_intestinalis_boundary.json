@@ -1,0 +1,90 @@
+{
+  "genome_id": "GCF_018327825.1_Ciona_intestinalis",
+  "n_telotrons": 7,
+  "n_gt_ag": 7,
+  "top_donor_4": [
+    [
+      "TAGG",
+      3
+    ],
+    [
+      "TTAG",
+      1
+    ],
+    [
+      "TGGG",
+      1
+    ],
+    [
+      "AATC",
+      1
+    ],
+    [
+      "TGGT",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      3
+    ],
+    [
+      "TTTA",
+      2
+    ],
+    [
+      "GTTT",
+      1
+    ],
+    [
+      "TTTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "GGTT",
+          2
+        ],
+        [
+          "TTTA",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "GTTT",
+          1
+        ],
+        [
+          "TTTA",
+          1
+        ],
+        [
+          "GGTT",
+          1
+        ]
+      ]
+    },
+    "unknown": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "TTTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

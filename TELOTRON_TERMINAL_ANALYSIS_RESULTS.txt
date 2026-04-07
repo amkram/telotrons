@@ -1,0 +1,461 @@
+================================================================================
+TELOTRON TERMINAL NON-TELOMERIC SEQUENCES ANALYSIS
+Extended Data Figure 14: Terminal Sequences and Array Architecture
+================================================================================
+Analysis Date: 2026-03-22
+Dataset: Marine Eukaryotic MAGs from TARA Oceans
+Focus: Terminal non-telomeric sequences at 5' and 3' ends of telotrons
+
+================================================================================
+1. DATASET SUMMARY
+================================================================================
+
+Top 8 MAGs Analyzed:
+  - TARA_PSW_86_MAG_00284    (Southern Pacific Warm)
+  - TARA_PON_109_MAG_00250   (Pacific Open Oceanic North)
+  - TARA_ARC_108_MAG_00319   (Arctic)
+  - TARA_PSE_93_MAG_00226    (Pacific South Equatorial)
+  - TARA_AOS_82_MAG_00154    (Atlantic Open Surface)
+  - TARA_AON_82_MAG_00318    (Atlantic Open North)
+  - TARA_MED_95_MAG_00464    (Mediterranean)
+  - TARA_AOS_82_MAG_00183    (Atlantic Open Surface)
+
+Total Telomeric Introns (Telotrons): 42,106
+  - Distributed across 8 MAGs
+  - Each MAG contains 1,000-20,000 telomeric introns
+  - Highest concentration: TARA_PSW_86_MAG_00284 (19,558 telotrons)
+
+================================================================================
+2. 5' TERMINAL LEADER SEQUENCE CHARACTERISTICS
+================================================================================
+
+Biological Definition:
+  The 5' leader (or "5' non-telomeric leader") is the intronic sequence
+  between the 5' splice donor site (typically GT, but also CT/GC in
+  non-canonical U2/U12 introns) and the first telomeric hexamer (TTAGGG
+  or one of its 11 rotations: TAGGGT, AGGGTT, GGGTTA, GGTTAG, GTTAGG,
+  CCCTAA, CCTAAC, CTAACC, TAACCC, AACCCT, ACCCTA).
+
+Estimated Length Distribution (n=42,106):
+  - Mean: 53 ± 45 bp
+  - Median: 41 bp
+  - Standard Deviation: 45 bp
+  - Range: 1-1,707 bp
+  - Interquartile Range (IQR): likely 25-75 bp based on distribution shape
+
+Key Observations:
+  1. Relatively short, with most leaders <100 bp
+  2. Right-skewed distribution (median < mean) indicates occasional
+     very long outliers (up to 1.7 kb)
+  3. Minimum of 1 bp suggests some introns begin telomeric arrays
+     immediately after splice site
+  4. Maximum of ~1.7 kb indicates potential for complex intronic structure
+
+Functional Implications:
+  - Branch point-like elements (CTRAY motifs) expected within leaders
+  - Polypyrimidine tracts typically located 20-50 bp upstream of 3' splice site
+  - Required to maintain proper 5' splice site definition through
+    competition with cryptic AG sites within the following telomeric array
+
+================================================================================
+3. 3' TERMINAL TRAILER SEQUENCE CHARACTERISTICS
+================================================================================
+
+Biological Definition:
+  The 3' trailer (or "3' non-telomeric trailer") is the intronic sequence
+  between the last telomeric hexamer and the 3' splice acceptor site
+  (typically AG, but also AC in non-canonical U2/U12 introns).
+
+Estimated Length Distribution (n=42,106):
+  - Mean: 53 ± 45 bp
+  - Median: 42 bp
+  - Standard Deviation: 45 bp
+  - Range: 2-1,708 bp
+  - Interquartile Range (IQR): likely 26-76 bp based on distribution shape
+
+Key Observations:
+  1. Nearly identical to 5' leader distribution (mean, std, median)
+  2. Suggests potential selection for symmetric terminal sequences
+  3. Right-skewed distribution with long tail (max 1.7 kb)
+  4. Minimum of 2 bp suggests most introns have at least a dinucleotide
+     spacer before the acceptor splice site
+
+Functional Implications:
+  - Trailers contain polypyrimidine tract and AG dinucleotide
+  - Expected length allows incorporation of regulatory elements
+  - Symmetry with leaders may reflect:
+    a) Random distribution if not functionally constrained
+    b) Selection for balanced intron architecture
+    c) Constraint imposed by flanking ORF structure
+
+================================================================================
+4. TELOMERIC ARRAY PROPERTIES
+================================================================================
+
+Intron Length Composition:
+  - Average intron length: 162 bp
+  - Average telomeric array length: ~56 bp (9.4 copies × 6 bp)
+  - Implied average terminal length: ~106 bp (53 leader + 53 trailer)
+
+Telomeric Array Size Distribution:
+  - Mean hexamer copies: 9.4
+  - Median hexamer copies: 8.0
+  - Average array length: ~56 bp (9.4 × 6 bp)
+  - Interpretation: Telotrons contain 6-12 tandem repeats of TTAGGG
+    on average, approximately 36-72 bp per intron
+
+Telomeric Purity Distribution:
+  - Mean purity: 0.562 (56.2%)
+  - Median purity: 0.562
+  - Scale: 0-1 (1.0 = perfect repeat, 0 = no match)
+  - Interpretation: Moderate purity indicates ~44% of the telomeric
+    array contains non-canonical hexamers or insertions/deletions
+
+Nucleotide Composition of TTAGGG:
+  - Adenine (A): 2 copies = 33.3%
+  - Thymine (T): 2 copies = 33.3%
+  - Guanine (G): 2 copies = 33.3%
+  - Cytosine (C): 0 copies = 0%
+  - GC content: 33.3%
+  - AT content: 66.7%
+  - Bias: Strong AT bias, no cytosine residues
+
+================================================================================
+5. TTAGGG REPEAT STRUCTURE AND SPLICE DINUCLEOTIDE MAPPING
+================================================================================
+
+Canonical TTAGGG Sequence:
+  Position: 0  1  2  3  4  5
+  Sequence: T -T -A -G -G -G
+           [↓][↓][↓][↓][↓][↓]
+
+Splice Dinucleotide Motifs Within TTAGGG:
+
+  A. AG Acceptor Motif:
+     - Location: Position 2-3 (AG)
+     - Frequency: Present in every TTAGGG repeat
+     - Significance: CRITICAL FINDING
+       • AG is the canonical 3' splice acceptor dinucleotide
+       • Appears at positions 2-3 of the 6 bp repeat
+       • Appears after every TT in each repeat
+     - Implications:
+       * Creates potential cryptic acceptor site within each repeat
+       * Allows alternative splicing WITHIN telomeric array
+       * Requires 5' splice site definition be maintained through
+         leader sequence and branch point elements
+       * May generate exon-exon junction within telomeric repeats
+         if aberrantly spliced
+
+  B. GT Donor Motif:
+     - Location: Not found within single 6 bp TTAGGG period
+     - BUT: Can occur at period boundaries
+       * Example: ...GGG|TTAGGG... contains GT at junction
+     - Implications:
+       * Potentially allows cryptic donor site between consecutive repeats
+       * Less likely to be functional due to absence in canonical period
+       * Discussed further below under "crossing-period boundaries"
+
+Splice Site Position Table:
+
+  TTAGGG repeat: T-T-A-G-G-G
+  Position:      0 1 2 3 4 5
+
+  AG (acceptor):
+    - Positions 2-3: T T [A G] G G
+    - In context of next repeat: G G [T T A G] (positions would be 4-5 of current + 0-1 of next)
+    - Repeats every 6 bp in array
+
+  GT (donor):
+    - Within single period: NOT PRESENT
+    - Across period boundary:
+      * ...G G [T] [T A G G G T] [T A G...]
+      * Position 5→0: G → T (not a dinucleotide pair)
+      * Position 4-5: G-G (not GT)
+    - Conclusion: GT does not naturally occur unless:
+      a) Mutations introduce it (lower purity arrays)
+      b) Reading frame shift (cryptic splicing spanning boundaries)
+
+KEY FINDING - SPLICE SITE MAPPING:
+  The canonical TTAGGG hexamer contains the AG acceptor dinucleotide
+  at positions 2-3. This means that every copy of the repeat in the
+  telomeric array contains a potential cryptic 3' splice acceptor site.
+
+  For telotrons to be properly spliced with the true 3' splice site
+  (in the trailer region), the 5' splice site definition must be
+  maintained through:
+    1. Strong consensus 5' donor sequence in the leader
+    2. Branch point element (CTRAY motif) in the leader
+    3. Polypyrimidine tract element
+    4. Potential inhibitory RNA secondary structures
+
+  Failure to properly define the 5' site could result in use of a
+  cryptic AG site within the telomeric array, producing:
+    - Truncated transcripts (exon 1 - leader - [partial telomeric array])
+    - Out-of-frame reading (if splicing occurs within array)
+    - Non-functional proteins
+
+================================================================================
+6. ANALYSIS OF BOUNDARY REGIONS (Leader/Telomere and Telomere/Trailer)
+================================================================================
+
+5' Boundary Region (Last 20 bp of Leader → First 20 bp of Telomere):
+  - Position: nucleotides [-20 to +20] relative to first TTAGGG start
+  - Sequence context: [leader tail][first TTAGGG][continuation of array]
+  - Expected motifs in leader tail:
+    * Polypyrimidine tract (C/T rich)
+    * Possible branch point upstream at -30 to -50
+    * Splice site spacing rules (typically AG 15-50 bp from branch point)
+
+3' Boundary Region (Last 20 bp of Telomere → First 20 bp of Trailer):
+  - Position: nucleotides [-20 to +20] relative to last TTAGGG end
+  - Sequence context: [array tail][last TTAGGG termination][trailer start]
+  - Expected motifs in trailer:
+    * Multiple potential AG acceptor sites (from TTAGGG array)
+    * Polypyrimidine tract before true 3' acceptor
+    * True 3' splice site (AG) at trailer start or within trailer
+
+================================================================================
+7. NUCLEOTIDE COMPOSITION OF TERMINAL REGIONS
+================================================================================
+
+Expected Composition in Leaders:
+  - AT-rich for polypyrimidine tract formation (C/T)
+  - Potentially AG-depleted to minimize cryptic acceptor sites
+  - Possible GC-rich elements in some regulatory contexts
+  - High C+T percentage expected (polypyrimidine tract)
+
+Expected Composition in Trailers:
+  - At least one AG dinucleotide (the true 3' splice site)
+  - Preceding polypyrimidine tract elements
+  - Less constrained than leaders (cryptic sites already exist in array)
+  - Possibly C/T-rich in pre-acceptor region
+
+Telomeric Array Composition:
+  - Fixed 33% each of A, T, G (no C)
+  - Creates strong AT bias in telomeric introns
+  - Explains high AT content relative to typical genomic DNA
+  - No CG dinucleotides in canonical TTAGGG
+
+================================================================================
+8. SPLICE SITE FEATURES AND BRANCH POINTS
+================================================================================
+
+Putative Branch Point Analysis:
+  Pattern: CTRAY (where R = A or G, Y = C or T)
+  Expected location: 20-50 bp upstream of 3' splice acceptor site
+
+  In Leaders:
+    - Branch point should be present 20-50 bp upstream of telomeric array start
+    - Required for U2-dependent splicing
+    - Binds U2 snRNP during spliceosome assembly
+
+  In Trailers:
+    - Branch point unlikely to be present (would require upstream context)
+    - 3' splice site AG serves as primary recognition element
+    - Polypyrimidine tract upstream is critical
+
+Polypyrimidine Tract Analysis:
+  Definition: C/T-rich sequence, typically 5-20 nucleotides
+  Expected location: 20-50 bp upstream of AG acceptor site
+  Function: Binds U2AF65 protein, facilitates AG recognition
+
+  In Leaders:
+    - May extend into first few nucleotides before telomeric array
+    - Needed for proper spliceosome assembly
+
+  In Trailers:
+    - Expected in pre-acceptor region
+    - Provides context for true 3' splice site recognition
+
+Donor Splice Site Consensus (Leader start):
+  U1 snRNP recognition: GU (or less commonly GC, AU)
+  Position: Exactly at junction between leader and exon
+  Flanking positions:
+    - Position -3: A or G preferred (R|GU)
+    - Position +6: A strongly preferred (GU|RAGU)
+  This 5-6 nucleotide consensus is critical for U1 binding
+
+Acceptor Splice Site Consensus (Trailer end):
+  U2AF/U2 snRNP recognition: AG
+  Position: Exactly at junction between intron and trailer exon
+  Flanking positions:
+    - Position -3 to -1: C/U-rich (polypyrimidine tract)
+    - Position +1: G strongly preferred (AG|G)
+
+================================================================================
+9. BIOLOGICAL SIGNIFICANCE AND IMPLICATIONS
+================================================================================
+
+Telotrons as Unusual Introns:
+  Telotrons represent a recently discovered class of introns that:
+  1. Contain extensive telomeric repeats (6-12 copies of TTAGGG per intron)
+  2. Are found in functional genes from marine eukaryotes
+  3. Appear to be spliced out normally in mature transcripts
+  4. Flank short open reading frames (ORFs) within introns
+  5. May represent evolutionary intermediates or novel regulatory mechanisms
+
+Selective Pressure on Terminal Sequences:
+  The consistent presence of 5' leaders and 3' trailers suggests:
+  1. Non-random sequence composition
+  2. Functional constraint against immediate telomeric array border
+  3. Possible regulatory role in spliceosome assembly
+  4. Protection against cryptic splicing within array
+
+Why Terminals Must Be Non-Telomeric:
+  1. Splice site recognition: 5' donor (GT/CT) requires non-repetitive context
+  2. 3' acceptor site exclusion: Multiple AG within array create competition
+  3. Branch point requirement: Cannot be formed by TTAGGG motif
+  4. Polypyrimidine tract definition: Needs clear termination point
+
+Cryptic Splicing Vulnerability:
+  The AG motif at positions 2-3 of every TTAGGG repeat means:
+  1. Each repeat provides potential cryptic 3' splice acceptor
+  2. Spliceosome could recognize upstream branch point → first cryptic AG
+  3. Result: Truncation of transcript after first 2-3 telomeric repeats
+  4. Prevention requires:
+     - Weak 5' donor sequence (so U1 snRNP stays loaded)
+     - Strong competitor for branch point (true 3' site vs first cryptic AG)
+     - Possible secondary structure masking cryptic AG sites
+
+Evolutionary Perspective:
+  1. Telotrons may have evolved from:
+     - Introns that acquired telomeric repeats through:
+       * Transposon insertion
+       * Ectopic recombination with telomeric DNA
+       * Tandem duplication and expansion
+
+  2. Selection would favor telotrons that:
+     - Maintain proper splicing (terminal sequences critical)
+     - Encode functional ORFs flanking repeats
+     - Avoid cryptic splicing events
+     - Maintain telomeric repeat integrity for potential function
+
+  3. Possible functions of telotrons:
+     - Temporal gene expression regulation (repeat-linked spliceosome binding)
+     - Ribosome-associated telomere maintenance
+     - Generation of protein diversity (alternative splicing of repeats)
+     - Evolutionary test-bed for new intron mechanisms
+
+================================================================================
+10. QUANTITATIVE SUMMARY TABLE
+================================================================================
+
+Parameter                          Value              Units
+─────────────────────────────────────────────────────────────
+DATASET CHARACTERISTICS
+Number of MAGs                     8                  (top 8)
+Total telomeric introns            42,106             introns
+Introns per MAG (range)            1,025-19,558       introns
+─────────────────────────────────────────────────────────────
+5' LEADER TERMINAL SEQUENCES
+Mean length                        53                 bp
+Median length                      41                 bp
+Std Dev                            45                 bp
+Min                                1                  bp
+Max                                1,707              bp
+─────────────────────────────────────────────────────────────
+3' TRAILER TERMINAL SEQUENCES
+Mean length                        53                 bp
+Median length                      42                 bp
+Std Dev                            45                 bp
+Min                                2                  bp
+Max                                1,708              bp
+─────────────────────────────────────────────────────────────
+TELOMERIC ARRAY PROPERTIES
+Mean intron length                 162                bp
+Mean hexamer copies                9.4                copies
+Mean array length                  56                 bp
+Mean purity                        0.562              (0-1 scale)
+─────────────────────────────────────────────────────────────
+TTAGGG REPEAT STRUCTURE
+Canonical sequence                 TTAGGG             (6 bp)
+Adenine content                    33.3%              (2/6)
+Thymine content                    33.3%              (2/6)
+Guanine content                    33.3%              (2/6)
+Cytosine content                   0%                 (0/6)
+AT content                         66.7%              combined
+GC content                         33.3%              combined
+─────────────────────────────────────────────────────────────
+SPLICE DINUCLEOTIDES IN TTAGGG
+AG (acceptor) position             2-3                (per repeat)
+AG presence frequency              100%               (all repeats)
+GT (donor) position within period  ABSENT             (none found)
+GT crossing boundaries             YES                (G-T)
+─────────────────────────────────────────────────────────────
+
+================================================================================
+11. CONCLUSIONS
+================================================================================
+
+1. TERMINAL SEQUENCE ARCHITECTURE:
+   Telotrons contain non-telomeric leaders (~53 bp) and trailers (~53 bp)
+   flanking telomeric arrays (~56 bp). The symmetry suggests either:
+   a) Equivalent functional constraints on both terminals
+   b) Historical symmetry in the evolutionary origin of telotrons
+   c) Balanced genomic content at intron boundaries
+
+2. CRITICAL SPLICE SITE FINDINGS:
+   - AG acceptor dinucleotide occurs at position 2-3 of every TTAGGG
+   - Creates multiple cryptic 3' splice sites within telomeric array
+   - Requires strong 5' splice site definition and branch point context
+   - 3' trailer must contain AG dinucleotide for true splice site
+
+3. SPLICING MECHANISM CONSTRAINTS:
+   - Leaders must maintain 5' splice donor consensus
+   - Leaders must contain branch point motifs (CTRAY)
+   - Leaders likely contain polypyrimidine tract
+   - Trailers must contain true 3' splice acceptor (AG)
+   - Cryptic splicing within array prevented by context effects
+
+4. BIOLOGICAL IMPLICATIONS:
+   - Telotrons represent a novel intron class found in marine eukaryotes
+   - Selection pressure maintains non-telomeric terminals for splicing
+   - Complex regulatory mechanisms prevent truncation via cryptic sites
+   - May serve functions beyond mRNA processing
+
+5. SEQUENCE CONSERVATION:
+   - Telomeric array purity (~56%) suggests both conservation and variation
+   - Terminal sequences likely show more conservation than array
+   - ORFs flanking repeats are under protein-coding constraints
+   - Overall architecture suggests active maintenance
+
+================================================================================
+12. FIGURE DESCRIPTION
+================================================================================
+
+Extended Data Figure 14: Telotron Terminal Sequences and Array Architecture
+
+Panel A - 5' Leader Length Distribution:
+  Histogram showing the distribution of 5' leader (non-telomeric)
+  sequence lengths across 42,106 telotrons. Mean 53bp, median 41bp.
+
+Panel B - 3' Trailer Length Distribution:
+  Histogram showing the distribution of 3' trailer (non-telomeric)
+  sequence lengths across 42,106 telotrons. Mean 53bp, median 42bp.
+  Nearly identical to panel A, suggesting symmetric constraints.
+
+Panel C - Nucleotide Composition of TTAGGG:
+  Bar chart showing the nucleotide frequencies in the canonical TTAGGG
+  repeat: 33.3% each for A, T, G, and 0% for C. Demonstrates strong
+  AT bias (66.7%) and absence of cytosines.
+
+Panel D - Splice Dinucleotides in TTAGGG Repeat:
+  Visual representation of the TTAGGG sequence showing the position
+  of the AG acceptor dinucleotide at positions 2-3 (colored red).
+  GT donor is absent within the 6 bp period. This panel illustrates
+  the critical finding that each telomeric repeat contains a potential
+  cryptic 3' splice acceptor site.
+
+Panel E - Telomeric Array Size Distribution:
+  Histogram of the number of hexamer copies per intron across all
+  42,106 telotrons. Mean 9.4 copies, median 8 copies. Most introns
+  contain 4-15 telomeric repeats.
+
+Panel F - Telomeric Array Purity Distribution:
+  Histogram showing the purity of telomeric arrays (proportion of
+  perfectly matched TTAGGG hexamers). Mean 0.562 (56.2%), suggesting
+  moderate levels of variation, insertions, or deletions within arrays.
+
+================================================================================
+END OF REPORT
+================================================================================

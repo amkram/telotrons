@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_030253575.1	Rhododendron_vialii	NC_080562.1	41961845	41961881	36	+	rna-XM_058362866.1	CC	AA	0.9444444444444444	TTTGGG	0.5	unknown	CCCAAACC	AACCCAAA	CCCAAACCCAAATCCAAACCCAAACACAAACCCAAA

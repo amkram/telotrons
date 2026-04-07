@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_013753865.1_Acropora_millepora",
+  "n_telotrons": 1,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "TAGG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GGTT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

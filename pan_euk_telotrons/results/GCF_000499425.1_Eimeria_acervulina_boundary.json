@@ -1,0 +1,85 @@
+{
+  "genome_id": "GCF_000499425.1_Eimeria_acervulina",
+  "n_telotrons": 14,
+  "n_gt_ag": 14,
+  "top_donor_4": [
+    [
+      "GAGG",
+      6
+    ],
+    [
+      "AAGG",
+      3
+    ],
+    [
+      "AAAT",
+      1
+    ],
+    [
+      "AGGG",
+      1
+    ],
+    [
+      "AAGA",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTT",
+      8
+    ],
+    [
+      "TTTT",
+      3
+    ],
+    [
+      "TTGC",
+      1
+    ],
+    [
+      "TTAC",
+      1
+    ],
+    [
+      "ATTG",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 12,
+      "top_acceptor": [
+        [
+          "GTTT",
+          7
+        ],
+        [
+          "TTTT",
+          2
+        ],
+        [
+          "TTGC",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "TTTT",
+          1
+        ],
+        [
+          "GTTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

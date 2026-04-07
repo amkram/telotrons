@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_000222465.1_Acropora_digitifera",
+  "n_telotrons": 2,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "GATA",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "TTTC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "TTTC",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

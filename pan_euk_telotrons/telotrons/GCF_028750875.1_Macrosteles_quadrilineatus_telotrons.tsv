@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_028750875.1	Macrosteles_quadrilineatus	NW_026542599.1	15891056	15891096	40	-	rna-XR_008491037.1	CT	AC	0.95	TTAGG	0.0	template-strand	GTTAGGTT	TAGGTTAG	CTAACCTAACCTAACCTAGACTAACCTAACCTAACCTAAC

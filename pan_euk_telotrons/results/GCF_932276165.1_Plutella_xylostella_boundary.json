@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_932276165.1_Plutella_xylostella",
+  "n_telotrons": 1,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "AGGG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTA",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GGTA",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "genome_id": "GCF_013339695.2_Rhipicephalus_sanguineus",
+  "n_telotrons": 660,
+  "n_gt_ag": 660,
+  "top_donor_4": [
+    [
+      "TAGG",
+      196
+    ],
+    [
+      "TGGG",
+      154
+    ],
+    [
+      "AGGT",
+      146
+    ],
+    [
+      "TGGT",
+      58
+    ],
+    [
+      "GTAG",
+      41
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      482
+    ],
+    [
+      "ATGT",
+      47
+    ],
+    [
+      "GTGT",
+      44
+    ],
+    [
+      "TGTT",
+      42
+    ],
+    [
+      "TAGG",
+      36
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 489,
+      "top_acceptor": [
+        [
+          "GGTT",
+          398
+        ],
+        [
+          "ATGT",
+          47
+        ],
+        [
+          "GTGT",
+          41
+        ]
+      ]
+    },
+    "coding-strand": {
+      "n": 171,
+      "top_acceptor": [
+        [
+          "GGTT",
+          84
+        ],
+        [
+          "TGTT",
+          41
+        ],
+        [
+          "TAGG",
+          36
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

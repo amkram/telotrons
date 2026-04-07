@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_023856365.1_Brienomyrus_brachyistius",
+  "n_telotrons": 1,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "TAGG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTA",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GTTA",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

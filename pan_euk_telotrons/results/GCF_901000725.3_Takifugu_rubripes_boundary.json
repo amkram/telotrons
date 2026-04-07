@@ -1,0 +1,89 @@
+{
+  "genome_id": "GCF_901000725.3_Takifugu_rubripes",
+  "n_telotrons": 44,
+  "n_gt_ag": 43,
+  "top_donor_4": [
+    [
+      "ACTG",
+      10
+    ],
+    [
+      "GAGT",
+      9
+    ],
+    [
+      "AGGT",
+      4
+    ],
+    [
+      "CAGT",
+      4
+    ],
+    [
+      "GAGC",
+      3
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "ATTC",
+      10
+    ],
+    [
+      "CTGC",
+      8
+    ],
+    [
+      "TTCC",
+      7
+    ],
+    [
+      "GTGC",
+      7
+    ],
+    [
+      "CTTC",
+      3
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 18,
+      "top_acceptor": [
+        [
+          "CTGC",
+          5
+        ],
+        [
+          "CTTC",
+          3
+        ],
+        [
+          "TTCC",
+          3
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 25,
+      "top_acceptor": [
+        [
+          "ATTC",
+          9
+        ],
+        [
+          "GTGC",
+          7
+        ],
+        [
+          "TTCC",
+          4
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_000186865.1	Aureococcus_anophagefferens	NW_008705587.1	481164	481187	23	+	rna-XM_009042186.1	GT	AG	1.0	TTAGGG	1.0	coding-strand	GTTAGGGT	AGGGTTAG	GTTAGGGTTAGGGTTAGGGTTAG

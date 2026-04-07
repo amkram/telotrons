@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_947172395.1	Bicyclus_anynana	NC_069097.1	6110275	6110350	75	-	rna-XR_008251495.1	CT	AC	1.0	TTAGGG	0.0	template-strand	GTTAGGTT	TAGGTTAG	CTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAAC

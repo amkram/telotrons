@@ -1,0 +1,53 @@
+{
+  "genome_id": "GCF_905237065.1_Salmo_salar",
+  "n_telotrons": 3,
+  "n_gt_ag": 3,
+  "top_donor_4": [
+    [
+      "AGGT",
+      2
+    ],
+    [
+      "AAGA",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "AGGT",
+      2
+    ],
+    [
+      "CTTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "unknown": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "AGGT",
+          2
+        ]
+      ]
+    },
+    "coding-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "CTTT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

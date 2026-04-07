@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_024679245.1	Pseudorasbora_parva	NC_090172.1	58915236	58915278	42	-	rna-XM_067452016.1	GG	AG	1.0	TTAGGG	1.0	coding-strand	GGTTAGGG	AGGGTTAG	GGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAG

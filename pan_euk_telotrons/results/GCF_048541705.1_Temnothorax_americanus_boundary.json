@@ -1,0 +1,40 @@
+{
+  "genome_id": "GCF_048541705.1_Temnothorax_americanus",
+  "n_telotrons": 3,
+  "n_gt_ag": 3,
+  "top_donor_4": [
+    [
+      "TAGG",
+      2
+    ],
+    [
+      "CAGG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      3
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "GGTT",
+          3
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_000147395.1	Oryza_glaberrima	NC_068326.1	39656735	39656768	33	+	rna-XR_008015134.1	GT	AG	0.9393939393939394	TTAGGG	1.0	coding-strand	GTTTAGGG	AGGGTTAG	GTTTAGGGTTTAGGGTTTAGGGTTTAGGGTTAG

@@ -1,0 +1,61 @@
+{
+  "genome_id": "GCF_963924715.1_Thunnus_thynnus",
+  "n_telotrons": 3,
+  "n_gt_ag": 3,
+  "top_donor_4": [
+    [
+      "TAGG",
+      1
+    ],
+    [
+      "TAGA",
+      1
+    ],
+    [
+      "TAGT",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTA",
+      1
+    ],
+    [
+      "AAAA",
+      1
+    ],
+    [
+      "GGTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "GTTA",
+          1
+        ],
+        [
+          "GGTT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "AAAA",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

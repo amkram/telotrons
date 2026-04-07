@@ -1,0 +1,53 @@
+{
+  "genome_id": "GCF_024217435.2_Syngnathus_scovelli",
+  "n_telotrons": 5,
+  "n_gt_ag": 5,
+  "top_donor_4": [
+    [
+      "TAGG",
+      3
+    ],
+    [
+      "AGGT",
+      2
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      3
+    ],
+    [
+      "AGGT",
+      2
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "GGTT",
+          3
+        ]
+      ]
+    },
+    "unknown": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "AGGT",
+          2
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

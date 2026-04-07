@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_019802595.1	Syngnathoides_biaculeatus	NC_084658.1	18013723	18013758	35	+	rna-XR_009792753.1	GT	AG	0.9142857142857143	TTAGG	1.0	coding-strand	GTTAGATT	AGGGTTAG	GTTAGATTAGGGTTTAGGGTTAGGGTTAGGGTTAG

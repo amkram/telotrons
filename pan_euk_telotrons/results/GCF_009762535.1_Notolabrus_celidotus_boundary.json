@@ -1,0 +1,40 @@
+{
+  "genome_id": "GCF_009762535.1_Notolabrus_celidotus",
+  "n_telotrons": 3,
+  "n_gt_ag": 3,
+  "top_donor_4": [
+    [
+      "AACT",
+      3
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "AGTT",
+      3
+    ]
+  ],
+  "orientation_breakdown": {
+    "unknown": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "AGTT",
+          3
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

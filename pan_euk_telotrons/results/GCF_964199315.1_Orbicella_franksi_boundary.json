@@ -1,0 +1,49 @@
+{
+  "genome_id": "GCF_964199315.1_Orbicella_franksi",
+  "n_telotrons": 5,
+  "n_gt_ag": 5,
+  "top_donor_4": [
+    [
+      "TAGG",
+      5
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      4
+    ],
+    [
+      "GTTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "GGTT",
+          2
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "GGTT",
+          2
+        ],
+        [
+          "GTTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

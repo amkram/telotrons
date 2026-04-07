@@ -1,0 +1,41 @@
+{
+  "genome_id": "GCF_027563975.2_Plodia_interpunctella",
+  "n_telotrons": 2,
+  "n_gt_ag": 2,
+  "top_donor_4": [
+    [
+      "TAGG",
+      2
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      2
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GGTT",
+          1
+        ]
+      ]
+    },
+    "coding-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "GGTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

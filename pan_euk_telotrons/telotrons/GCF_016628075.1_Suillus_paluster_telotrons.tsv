@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_016628075.1	Suillus_paluster	NW_024537722.1	57026	57055	29	+	rna-XM_041316334.1	GT	AG	1.0	TTAGG	1.0	coding-strand	GTTAGTTA	TAGGTTAG	GTTAGTTAGGTTAGGTTAGGTTAGGTTAG

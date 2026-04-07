@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_905163445.1	Pararge_aegeria	NC_053204.1	11502620	11502689	69	-	rna-XM_039905553.1	TA	AC	1.0	TTAGG	0.0	template-strand	TAACCTAA	AACCTAAC	TAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAAC

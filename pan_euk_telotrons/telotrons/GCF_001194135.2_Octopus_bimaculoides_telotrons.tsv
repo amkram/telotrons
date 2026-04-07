@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_001194135.2	Octopus_bimaculoides	NC_068985.1	16382533	16382569	36	-	rna-XR_008264198.1	CT	AC	0.9166666666666666	TTAGGG	0.0	template-strand	GTTTAGGG	AGGGTTAG	CTAACCCTGACCCTAACCCTAACCCTAACCCTAAAC

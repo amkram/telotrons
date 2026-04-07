@@ -1,0 +1,21 @@
+{
+  "genome_id": "GCF_029227915.1_Hydractinia_symbiolongicarpus",
+  "n_telotrons": 1,
+  "n_gt_ag": 0,
+  "top_donor_4": [],
+  "top_acceptor_4": [],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

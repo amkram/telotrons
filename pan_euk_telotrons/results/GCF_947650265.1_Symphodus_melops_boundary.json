@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_947650265.1_Symphodus_melops",
+  "n_telotrons": 1,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "AGGG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "CCCC",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "converging": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "CCCC",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

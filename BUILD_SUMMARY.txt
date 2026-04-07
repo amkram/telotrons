@@ -1,0 +1,90 @@
+========================================
+TRI MANUSCRIPT REBUILD SUMMARY
+========================================
+Date: 2026-03-22
+Updated: Extended Data Figure 17
+
+TASK COMPLETION: SUCCESS
+All documents rebuilt with updated ED Figure 17 (Genome Density)
+
+DELIVERABLES CREATED:
+=====================================
+
+1. TRI_Extended_Data.docx (12 MB)
+   - All 17 Extended Data figures included
+   - Generated from build_extended_data.py
+   - Contains all figures with captions
+
+2. TRI_manuscript_combined.docx (12 MB)
+   - Manuscript + Extended Data combined
+   - Generated using docxcompose
+   - Ready for PDF conversion
+
+3. TRI_manuscript_combined.pdf (5.0 MB)
+   - Final publication-ready PDF
+   - Converted from combined DOCX
+   - All 17 ED figures embedded
+
+BUILD SCRIPTS CREATED:
+=====================================
+
+1. /sessions/epic-peaceful-bohr/build_extended_data.py
+   - Builds Extended Data document with all 17 figures
+   - Handles both hash-named and numbered image files
+   - Can be re-run for updates
+
+2. /sessions/epic-peaceful-bohr/combine_documents.py
+   - Combines manuscript and extended data
+   - Uses docxcompose for proper document composition
+   - Maintains formatting and page breaks
+
+EXTENDED DATA FIGURES INCLUDED:
+=====================================
+ED Fig 1-6:  From unpacked_ed_r4/word/media/ (hash-named)
+ED Fig 7-13: From telotrons/ (numbered images)
+ED Fig 14:   TARA ocean eukaryotic MAGs - terminal sequences
+ED Fig 15:   TARA ocean phylogenetic relationships
+ED Fig 16:   DNA repair gene catalog
+ED Fig 17:   Genome density (UPDATED)
+
+FIGURE PATHS:
+=====================================
+ED Figs 1-13: /sessions/epic-peaceful-bohr/mnt/telotrons/ED_Fig*.png
+ED Fig 14-15: /sessions/epic-peaceful-bohr/mnt/telotrons/tara_oceans_euk_mags/
+ED Figs 16-17: /sessions/epic-peaceful-bohr/mnt/telotrons/
+
+OUTPUT LOCATIONS:
+=====================================
+Extended Data DOCX:    /sessions/epic-peaceful-bohr/mnt/telotrons/TRI_Extended_Data.docx
+Combined Manuscript:   /sessions/epic-peaceful-bohr/mnt/telotrons/TRI_manuscript_combined.docx
+Final PDF:             /sessions/epic-peaceful-bohr/mnt/telotrons/TRI_manuscript_combined.pdf
+
+BUILD COMMANDS:
+=====================================
+
+# Rebuild extended data with updates:
+python3 /sessions/epic-peaceful-bohr/build_extended_data.py
+
+# Combine with manuscript:
+python3 /sessions/epic-peaceful-bohr/combine_documents.py
+
+# Convert to PDF:
+cd /sessions/epic-peaceful-bohr/mnt/telotrons
+python3 /sessions/epic-peaceful-bohr/mnt/.skills/skills/docx/scripts/office/soffice.py \
+  --headless --convert-to pdf TRI_manuscript_combined.docx
+
+VERIFICATION:
+=====================================
+✓ All 17 ED figures included in Extended Data DOCX
+✓ Manuscript combined with Extended Data
+✓ Final PDF generated successfully (5.0 MB, 1.7 format)
+✓ ED Figure 17 updated with new genome density visualization
+✓ All file formats verified (OOXML, PDF)
+
+NOTES:
+=====================================
+- ED Fig 16 was copied from /sessions/epic-peaceful-bohr/ to telotrons/
+- ED Fig 17 (updated) is located at /sessions/epic-peaceful-bohr/mnt/telotrons/ED_Fig17_genome_density.png
+- PDF conversion uses LibreOffice headless mode (soffice.py)
+- Document composition maintains original formatting and structure
+

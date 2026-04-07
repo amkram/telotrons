@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_932526225.1_Nematostella_vectensis",
+  "n_telotrons": 4,
+  "n_gt_ag": 4,
+  "top_donor_4": [
+    [
+      "GAGA",
+      4
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "CCGC",
+      4
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 4,
+      "top_acceptor": [
+        [
+          "CCGC",
+          4
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

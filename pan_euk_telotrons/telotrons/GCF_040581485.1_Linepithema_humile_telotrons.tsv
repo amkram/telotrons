@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_040581485.1	Linepithema_humile	NC_090133.1	97310	97395	85	-	rna-XR_010890704.1	CT	AC	1.0	TTAGGG	0.0	template-strand	GTTAGGTT	TAGGTTAG	CTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAACCTAAC

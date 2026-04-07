@@ -1,0 +1,85 @@
+{
+  "genome_id": "GCF_024679095.1_Eriocheir_sinensis",
+  "n_telotrons": 68,
+  "n_gt_ag": 68,
+  "top_donor_4": [
+    [
+      "TAGG",
+      60
+    ],
+    [
+      "AAGG",
+      4
+    ],
+    [
+      "TTGG",
+      3
+    ],
+    [
+      "TAGA",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      40
+    ],
+    [
+      "GTAG",
+      10
+    ],
+    [
+      "GGAT",
+      4
+    ],
+    [
+      "GTTG",
+      4
+    ],
+    [
+      "TTTT",
+      3
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 44,
+      "top_acceptor": [
+        [
+          "GGTT",
+          21
+        ],
+        [
+          "GTAG",
+          10
+        ],
+        [
+          "GTTG",
+          4
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 24,
+      "top_acceptor": [
+        [
+          "GGTT",
+          19
+        ],
+        [
+          "GGAT",
+          3
+        ],
+        [
+          "GATT",
+          2
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

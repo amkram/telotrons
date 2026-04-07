@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_039877785.1	Chaetodon_trifascialis	NC_092060.1	13690083	13690119	36	+	rna-XM_070963459.1	GT	AG	0.9166666666666666	TTAGG	0.5	unknown	GTAGGTAG	GTAGGTAG	GTAGGTAGGTAGGTAGGTAGGTAGGTAGGTAGGTAG

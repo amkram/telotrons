@@ -1,0 +1,36 @@
+{
+  "genome_id": "GCF_007210705.1_Tigriopus_californicus",
+  "n_telotrons": 1,
+  "n_gt_ag": 1,
+  "top_donor_4": [
+    [
+      "TTAG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "AGTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "template-strand": {
+      "n": 1,
+      "top_acceptor": [
+        [
+          "AGTT",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "coding-strand": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "genome_id": "GCF_000499845.2_Phaseolus_vulgaris",
+  "n_telotrons": 3,
+  "n_gt_ag": 3,
+  "top_donor_4": [
+    [
+      "TTAG",
+      3
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GTTT",
+      2
+    ],
+    [
+      "TTTT",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 3,
+      "top_acceptor": [
+        [
+          "GTTT",
+          2
+        ],
+        [
+          "TTTT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

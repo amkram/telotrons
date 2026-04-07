@@ -1,0 +1,85 @@
+{
+  "genome_id": "GCF_001643675.1_Monocercomonoides_exilis",
+  "n_telotrons": 289,
+  "n_gt_ag": 289,
+  "top_donor_4": [
+    [
+      "TAGG",
+      279
+    ],
+    [
+      "TGAA",
+      1
+    ],
+    [
+      "TGCC",
+      1
+    ],
+    [
+      "TTGG",
+      1
+    ],
+    [
+      "CCCC",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      285
+    ],
+    [
+      "GACT",
+      1
+    ],
+    [
+      "GTTT",
+      1
+    ],
+    [
+      "TACT",
+      1
+    ],
+    [
+      "GTTA",
+      1
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 161,
+      "top_acceptor": [
+        [
+          "GGTT",
+          158
+        ],
+        [
+          "GACT",
+          1
+        ],
+        [
+          "GTTT",
+          1
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 128,
+      "top_acceptor": [
+        [
+          "GGTT",
+          127
+        ],
+        [
+          "GTTA",
+          1
+        ]
+      ]
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}

@@ -1,0 +1,2313 @@
+accession	organism	tax_id	assembly_level	total_seq_len
+GCF_019202705.1	[Candida] subhashii	561895	Scaffold	15377153
+GCF_010015735.1	Aaosphaeria arxii CBS 175.79	1450172	Scaffold	38901049
+GCF_003935025.1	Abrus precatorius	3816	Scaffold	347230236
+GCF_000313135.1	Acanthamoeba castellanii str. Neff	1257118	Scaffold	42019824
+GCF_001949145.1	Acanthaster planci	133434	Scaffold	383843944
+GCF_000695815.1	Acanthisitta chloris	57068	Scaffold	1035876403
+GCF_021347895.1	Acanthochromis polyacanthus	80966	Chromosome	956771783
+GCF_904848185.1	Acanthopagrus latus	8177	Chromosome	685127588
+GCF_003144295.1	Acaromyces ingoldii	215250	Scaffold	19330111
+GCF_053477335.1	Acartia tonsa	136180	Chromosome	779754176
+GCF_030625045.1	Achroia grisella	688607	Contig	442882001
+GCF_027475565.1	Acinonyx jubatus	32536	Chromosome	2377417351
+GCF_902713425.1	Acipenser ruthenus	7906	Chromosome	1899794300
+GCF_903995435.1	Acomys russatus	60746	Chromosome	2301522284
+GCF_000204515.1	Acromyrmex echinatior	103372	Scaffold	295944863
+GCF_000222465.1	Acropora digitifera	70779	Scaffold	447478678
+GCF_013753865.1	Acropora millepora	45264	Chromosome	475381253
+GCF_036669905.1	Acropora muricata	159855	Chromosome	487333246
+GCF_964030605.1	Acropora palmata	6131	Chromosome	333946596
+GCF_009602425.1	Actinia tenebrosa	6105	Scaffold	238179736
+GCF_019202715.1	Actinidia eriantha	165200	Chromosome	657097116
+GCF_005508785.2	Acyrthosiphon pisum	7029	Chromosome	533632392
+GCF_000787575.1	Acytostelium subglobosum LB1	1410327	Scaffold	31002963
+GCF_023614345.1	Adelges cooleyi	133065	Scaffold	270197466
+GCF_002204515.2	Aedes aegypti	7159	Chromosome	1278715314
+GCF_035046485.1	Aedes albopictus	7160	Chromosome	1344147842
+GCF_002575655.3	Aegilops tauschii subsp. strangulata	200361	Chromosome	4122383441
+GCF_024364675.1	Aethina tumida	116153	Chromosome	259967705
+GCF_000300575.1	Agaricus bisporus var. bisporus H97	936046	Scaffold	30233745
+GCF_000300555.1	Agaricus bisporus var. burnettii JB137-S8	597362	Scaffold	32614392
+GCF_051311805.1	Agelaius phoeniceus	39638	Chromosome	1238411316
+GCF_023055355.1	Agelaius tricolor	9191	Scaffold	1157591681
+GCF_000699045.2	Agrilus planipennis	224129	Scaffold	353056831
+GCF_028640845.1	Ahaetulla prasina	499056	Chromosome	1772420080
+GCF_002007445.2	Ailuropoda melanoleuca	9646	Chromosome	2440260518
+GCF_028009165.1	Akanthomyces muscarius	2231603	Chromosome	36207525
+GCF_014885135.2	Alexandromys fortis	100897	Scaffold	2189376753
+GCF_030867095.1	Alligator mississippiensis	8496	Chromosome	2346779227
+GCF_000455745.1	Alligator sinensis	38654	Scaffold	2270550999
+GCF_958979055.1	Alnus glutinosa	3517	Chromosome	456761304
+GCF_017589495.1	Alosa alosa	278164	Chromosome	854447983
+GCF_046254945.1	Alosa pseudoharengus	34774	Scaffold	1050053806
+GCF_018492685.1	Alosa sapidissima	34773	Chromosome	903564947
+GCF_001642055.1	Alternaria alternata	5599	Scaffold	32990834
+GCF_004154835.1	Alternaria arborescens	156630	Scaffold	33943449
+GCF_024043155.1	Alternaria arbusti	232088	Scaffold	33977964
+GCF_907166805.1	Alternaria atra	119953	Scaffold	39606256
+GCF_013036055.1	Alternaria burnsii	1187904	Scaffold	32958128
+GCF_024043145.1	Alternaria conjuncta	181017	Scaffold	36109959
+GCF_042100115.1	Alternaria dauci	48095	Complete Genome	34906709
+GCF_023757985.1	Alternaria ethzedia	181014	Scaffold	36016348
+GCF_023758085.1	Alternaria hordeiaustralica	1187925	Scaffold	36958049
+GCF_024043165.1	Alternaria incomplexa	1187928	Scaffold	33457300
+GCF_024043175.1	Alternaria infectoria	45303	Scaffold	36515125
+GCF_023757995.1	Alternaria metachromatica	283354	Scaffold	37283841
+GCF_023758075.1	Alternaria novae-zelandiae	430562	Scaffold	37570309
+GCF_024291825.1	Alternaria postmessia	1187938	Scaffold	34409470
+GCF_020736505.1	Alternaria rosae	1187941	Contig	33831682
+GCF_023758025.1	Alternaria triticimaculans	297637	Scaffold	36788567
+GCF_023758065.1	Alternaria ventricosa	1187951	Scaffold	34687354
+GCF_023758015.1	Alternaria viburni	566460	Scaffold	36351886
+GCF_026212465.1	Amaranthus tricolor	29722	Chromosome	520084113
+GCF_052857255.1	Amblyomma americanum	6943	Chromosome	2560440542
+GCF_010909765.2	Amblyraja radiata	386614	Chromosome	2558784953
+GCF_000471905.2	Amborella trichopoda	13333	Scaffold	706332640
+GCF_040938575.1	Ambystoma mexicanum	8296	Chromosome	29117848270
+GCF_036373705.1	Amia ocellicauda	2972642	Chromosome	989103751
+GCF_949987685.1	Ammodytes marinus	146480	Chromosome	777819083
+GCF_027887145.1	Ammospiza caudacuta	2857398	Chromosome	1241209685
+GCF_027579445.1	Ammospiza nelsoni	2857394	Chromosome	1185463352
+GCF_003019875.1	Amorphotheca resinae ATCC 22711	857342	Scaffold	28632918
+GCF_019059575.1	Amphibalanus amphitrite	1232801	Contig	807604242
+GCF_000090795.2	Amphimedon queenslandica	400682	Scaffold	164242647
+GCF_022539595.1	Amphiprion ocellaris	80972	Chromosome	863468154
+GCF_039555335.1	Amphiura filiformis	82378	Chromosome	1570979288
+GCF_032362555.1	Amyelois transitella	680683	Complete Genome	327376598
+GCF_900324465.3	Anabas testudineus	64144	Chromosome	555641398
+GCF_040414725.1	Anabrus simplex	316456	Chromosome	6424016119
+GCF_001540865.1	Ananas comosus	4615	Chromosome	381896302
+GCF_050575085.1	Anarhichas minor	65739	Contig	643864434
+GCF_004355925.1	Anarrhichthys ocellatus	433405	Scaffold	612774492
+GCF_963932015.1	Anas acuta	28680	Chromosome	1189296988
+GCF_047663525.1	Anas platyrhynchos	8839	Complete Genome	1261969826
+GCF_028408465.1	Anastrepha ludens	28586	Chromosome	820766187
+GCF_027943255.1	Anastrepha obliqua	95512	Chromosome	836742189
+GCF_050908995.1	Andrena cerasifolii	2819439	Chromosome	369980408
+GCF_009805555.1	Andrographis paniculata	175694	Contig	284308021
+GCF_013347855.1	Anguilla anguilla	7936	Chromosome	979029243
+GCF_018555375.3	Anguilla rostrata	7938	Chromosome	976090453
+GCF_011630105.1	Anneissia japonica	1529436	Scaffold	589628371
+GCF_022496945.1	Annulohypoxylon maeteangense	1927788	Scaffold	38245008
+GCF_022578515.1	Annulohypoxylon truncatum	327061	Scaffold	38067699
+GCF_035594765.1	Anolis carolinensis	28377	Chromosome	1850740401
+GCF_037176765.1	Anolis sagrei	38937	Chromosome	1950830970
+GCF_048569485.1	Anomaloglossus baeobatrachus	238106	Chromosome	6265077250
+GCF_031753505.1	Anomalospiza imberbis	187417	Chromosome	1198243876
+GCF_013758885.1	Anopheles albimanus	7167	Chromosome	172602732
+GCF_943734665.1	Anopheles aquasalis	42839	Chromosome	176573000
+GCF_016920715.1	Anopheles arabiensis	7173	Chromosome	256807969
+GCF_943735745.2	Anopheles bellator	139047	Chromosome	169575294
+GCF_943734685.1	Anopheles coluzzii	1518534	Chromosome	262602229
+GCF_943734705.1	Anopheles coustani	139045	Chromosome	269983652
+GCF_943734635.1	Anopheles cruzii	68878	Chromosome	184069349
+GCF_943734745.1	Anopheles darlingi	43151	Chromosome	181637336
+GCF_943734845.2	Anopheles funestus	62324	Chromosome	250698078
+GCF_943734735.2	Anopheles gambiae	7165	Chromosome	264451381
+GCF_943734695.1	Anopheles maculipalpis	1496333	Chromosome	224059441
+GCF_943734725.1	Anopheles marshallii	1521116	Chromosome	225712104
+GCF_017562075.2	Anopheles merus	30066	Chromosome	294364394
+GCF_943734755.1	Anopheles moucheti	186751	Chromosome	271316723
+GCF_943737925.1	Anopheles nili	185578	Chromosome	195220701
+GCF_013141755.1	Anopheles stephensi	30069	Chromosome	243460342
+GCF_943734765.1	Anopheles ziemanni	345580	Chromosome	269983652
+GCF_047496725.1	Anoplolepis gracilipes	354296	Chromosome	249841199
+GCF_000390285.2	Anoplophora glabripennis	217634	Scaffold	706952781
+GCF_027596085.1	Anoplopoma fimbria	229290	Chromosome	653543715
+GCF_964034855.1	Anser brachyrhynchus	132585	Chromosome	1287320976
+GCF_040182565.1	Anser cygnoides	8845	Chromosome	1215337776
+GCF_016432865.1	Antechinus flavipes	38775	Chromosome	3192643918
+GCF_963402885.1	Antedon bifida	72669	Chromosome	319614875
+GCF_964355755.1	Antedon mediterranea	105859	Chromosome	354494601
+GCF_040054535.1	Antennarius striatus	241820	Chromosome	548561997
+GCF_022605725.1	Anthonomus grandis grandis	2921223	Chromosome	697452952
+GCF_050436995.1	Anticarsia gemmatalis	129554	Chromosome	391691109
+GCF_000700745.2	Antrostomus carolinensis	279965	Scaffold	1118829799
+GCF_030222135.1	Aotus nancymaae	37293	Contig	3097886253
+GCF_000703405.1	Apaloderma vittatum	57397	Scaffold	1070836417
+GCF_000520075.1	Aphanomyces astaci	112090	Scaffold	75844385
+GCF_000520115.1	Aphanomyces invadans	157072	Scaffold	71402472
+GCF_041296385.1	Aphelocoma coerulescens	39617	Chromosome	1330898477
+GCF_014905175.1	Aphidius gifuensis	684658	Chromosome	156944493
+GCF_020184175.1	Aphis gossypii	80765	Chromosome	334855424
+GCF_038362705.1	Apiospora aurea	335848	Contig	49776134
+GCF_038363865.1	Apiospora hydei	1337664	Contig	47384980
+GCF_038363985.1	Apiospora kogelbergensis	1337665	Contig	46602209
+GCF_038362585.1	Apiospora marii	335849	Contig	51094086
+GCF_038363925.1	Apiospora phragmitis	2905665	Contig	52445507
+GCF_003942205.1	Apiotrichum porosum	105984	Contig	25479456
+GCF_029169275.1	Apis cerana	7461	Chromosome	223040589
+GCF_000469605.1	Apis dorsata	7462	Scaffold	230340171
+GCF_000184785.3	Apis florea	7463	Scaffold	228997396
+GCF_014066325.1	Apis laboriosa	183418	Scaffold	226063288
+GCF_003254395.2	Apis mellifera	7460	Chromosome	225234541
+GCF_009905375.1	Apium graveolens	4045	Chromosome	3332577507
+GCF_010093885.1	Aplosporella prunicola CBS 121167	1176127	Scaffold	32818685
+GCF_000002075.1	Aplysia californica	6500	Scaffold	927296314
+GCF_947179515.1	Apodemus sylvaticus	10129	Chromosome	2889785202
+GCF_037975245.1	Apostichopus japonicus	307972	Chromosome	671643915
+GCF_000699145.1	Aptenodytes forsteri	9233	Scaffold	1254347440
+GCF_965638725.1	Aptenodytes patagonicus	9234	Chromosome	1352580174
+GCF_036417845.1	Apteryx mantelli	2696672	Chromosome	1504396159
+GCF_003343035.1	Apteryx rowi	308060	Scaffold	1228902913
+GCF_020740795.1	Apus apus	8895	Chromosome	1100361224
+GCF_042186555.1	Aquarana catesbeiana	8400	Chromosome	6377618952
+GCF_900496995.4	Aquila chrysaetos chrysaetos	223781	Chromosome	1233704830
+GCF_000004255.2	Arabidopsis lyrata subsp. lyrata	81972	Scaffold	206667935
+GCF_000001735.4	Arabidopsis thaliana	3702	Chromosome	119146348
+GCF_000817695.3	Arachis duranensis	130453	Chromosome	1081735204
+GCF_003086295.3	Arachis hypogaea	3818	Chromosome	2557413415
+GCF_000816755.2	Arachis ipaensis	130454	Chromosome	1353504219
+GCF_014773155.1	Arachis stenosperma	217475	Chromosome	1328990366
+GCF_007364275.1	Archocentrus centrarchus	63155	Chromosome	932930362
+GCF_051622035.1	Arctopsyche grandis	121162	Chromosome	475702301
+GCF_933775445.1	Argentina anserina	57926	Chromosome	236973942
+GCF_947563725.1	Argiope bruennichi	94029	Chromosome	1778384155
+GCF_041381155.1	Argopecten irradians	31199	Chromosome	845889701
+GCF_905147365.1	Aricia agestis	91739	Chromosome	435265205
+GCF_029961685.1	Aristolochia californica	171875	Scaffold	661636370
+GCF_024139115.2	Armigeres subalbatus	124917	Chromosome	1335741332
+GCF_032884065.1	Artemia franciscana	6661	Chromosome	1270721945
+GCF_004000055.1	Arthrobotrys flagrans	97331	Contig	36645795
+GCF_011692745.1	Arthroderma uncinatum	74035	Contig	23563256
+GCF_021234435.1	Artibeus jamaicensis	9417	Scaffold	2108389339
+GCF_011762505.2	Arvicanthis niloticus	61156	Chromosome	2496761438
+GCF_903992535.2	Arvicola amphibius	1047088	Chromosome	2297766297
+GCF_036370985.1	Arxiozyma heterogenica	278026	Contig	14370535
+GCF_040206685.1	Ascaphus truei	8439	Chromosome	3722616900
+GCF_004011695.2	Ascochyta rabiei	5454	Complete Genome	40846718
+GCF_001661345.1	Ascoidea rubescens DSM 1968	1344418	Scaffold	17503998
+GCF_001876935.1	Asparagus officinalis	4686	Chromosome	1187538024
+GCF_003184765.1	Aspergillus aculeatinus CBS 121060	1448322	Scaffold	36471649
+GCF_001890905.1	Aspergillus aculeatus ATCC 16872	690307	Scaffold	35424414
+GCF_023601865.1	Aspergillus affinis	1070780	Scaffold	37565501
+GCF_009176365.1	Aspergillus alliaceus	209559	Scaffold	40168528
+GCF_047715705.1	Aspergillus ambiguus	176160	Scaffold	29374911
+GCF_001792695.1	Aspergillus bombycis	109264	Contig	37474605
+GCF_001889945.1	Aspergillus brasiliensis CBS 101740	767769	Scaffold	35804080
+GCF_003184695.1	Aspergillus brunneoviolaceus CBS 621.78	1450534	Scaffold	37477200
+GCF_009193585.1	Aspergillus caelatus	61420	Scaffold	40016351
+GCF_002847485.1	Aspergillus campestris IBT 28561	1392248	Contig	28257496
+GCF_002847045.1	Aspergillus candidus	41067	Scaffold	27317772
+GCF_016861735.1	Aspergillus chevalieri	182096	Complete Genome	29697343
+GCF_000002715.2	Aspergillus clavatus NRRL 1	344612	Scaffold	27859441
+GCF_003184835.1	Aspergillus costaricaensis CBS 115574	1448317	Scaffold	36947918
+GCF_003184535.1	Aspergillus eucalypticola CBS 122712	1448314	Contig	34792412
+GCF_003184825.1	Aspergillus fijiensis CBS 313.89	1448319	Scaffold	36513906
+GCF_000149645.3	Aspergillus fischeri NRRL 181	331117	Scaffold	31377515
+GCF_009017415.1	Aspergillus flavus	5059	Complete Genome	37749288
+GCF_047715535.1	Aspergillus foveolatus	210207	Scaffold	31779079
+GCF_000002655.1	Aspergillus fumigatus Af293	330879	Chromosome	29384958
+GCF_001890805.1	Aspergillus glaucus CBS 516.65	1160497	Scaffold	27993362
+GCF_003184545.1	Aspergillus heteromorphus CBS 117.55	1448321	Contig	35607567
+GCF_003184865.1	Aspergillus homomorphus CBS 101889	1450537	Scaffold	34054866
+GCF_003184845.1	Aspergillus ibericus CBS 121593	1448316	Scaffold	33437983
+GCF_003184785.1	Aspergillus japonicus CBS 114.51	1448312	Scaffold	36099954
+GCF_047715665.1	Aspergillus karnatakaensis	1810916	Scaffold	36255367
+GCF_010724455.1	Aspergillus lentulus	293939	Scaffold	30229310
+GCF_016861625.1	Aspergillus luchuensis	1069201	Complete Genome	37256495
+GCF_044049455.1	Aspergillus lucknowensis	176173	Scaffold	30792796
+GCF_016097325.1	Aspergillus melleus	138277	Contig	38850827
+GCF_047715735.1	Aspergillus multicolor	41759	Scaffold	35254497
+GCF_003369625.1	Aspergillus mulundensis	1810919	Scaffold	45341896
+GCF_003184625.1	Aspergillus neoniger CBS 115656	1448310	Scaffold	35416444
+GCF_000011425.1	Aspergillus nidulans FGSC A4	227321	Chromosome	29828291
+GCF_000002855.4	Aspergillus niger	5061	Scaffold	33975768
+GCF_003184595.1	Aspergillus niger CBS 101883	1450533	Scaffold	35853610
+GCF_001204775.2	Aspergillus nomiae NRRL 13137	1509407	Contig	36137300
+GCF_002847465.1	Aspergillus novofumigatus IBT 16806	1392255	Contig	32440129
+GCF_002846915.1	Aspergillus ochraceoroseus IBT 24754	1392256	Contig	27718211
+GCF_000184455.2	Aspergillus oryzae RIB40	510516	Chromosome	37882812
+GCF_003184755.1	Aspergillus piperis CBS 112811	1448313	Scaffold	35280331
+GCF_044049435.1	Aspergillus pseudodeflectus	176178	Scaffold	39072803
+GCF_009193645.1	Aspergillus pseudonomiae	1506151	Scaffold	37780514
+GCF_009193445.1	Aspergillus pseudotamarii	132259	Scaffold	38243929
+GCF_018340605.1	Aspergillus pseudoviridinutans	1517512	Scaffold	33330675
+GCF_016861865.1	Aspergillus puulaauensis	1220207	Complete Genome	34318862
+GCF_000600275.1	Aspergillus ruber CBS 135680	1388766	Scaffold	26209327
+GCF_003184585.1	Aspergillus saccharolyticus JOP 1030-1	1450539	Scaffold	31096189
+GCF_003184525.1	Aspergillus sclerotioniger CBS 115572	1450535	Contig	36720365
+GCF_047715825.1	Aspergillus stella-maris	1810926	Scaffold	33998249
+GCF_002849105.1	Aspergillus steynii IBT 23096	1392250	Contig	37847960
+GCF_001890705.1	Aspergillus sydowii CBS 593.65	1036612	Scaffold	34381026
+GCF_003426965.1	Aspergillus tanneri	1220188	Contig	38719388
+GCF_000149615.1	Aspergillus terreus NIH2624	341663	Scaffold	29331195
+GCF_002237265.1	Aspergillus thermomutatus	41047	Contig	30945974
+GCF_013340325.1	Aspergillus tubingensis	5068	Scaffold	35047229
+GCF_001078395.1	Aspergillus udagawae	91492	Scaffold	32252303
+GCF_047715775.1	Aspergillus undulatus	1810928	Scaffold	32112944
+GCF_003184745.1	Aspergillus uvarum CBS 121591	1448315	Scaffold	35850703
+GCF_003184925.1	Aspergillus vadensis CBS 113365	1448311	Scaffold	35663374
+GCF_001890125.1	Aspergillus versicolor CBS 583.65	1036611	Scaffold	33126810
+GCF_018404265.1	Aspergillus viridinutans	75553	Scaffold	34888349
+GCF_003344945.1	Aspergillus welwitschiae	1341132	Scaffold	37511876
+GCF_001890725.1	Aspergillus wentii DTO 134E9	1073089	Scaffold	31350635
+GCF_964374335.1	Astatotilapia calliptera	8154	Chromosome	933413188
+GCF_032118995.1	Asterias amurensis	7602	Chromosome	491537102
+GCF_902459465.1	Asterias rubens	7604	Chromosome	417601740
+GCF_929443795.1	Astur gentilis	8957	Chromosome	1398011397
+GCF_023375975.1	Astyanax mexicanus	7994	Chromosome	1373169186
+GCF_917208135.1	Athalia rosae	37344	Chromosome	171955050
+GCF_003259725.1	Athene cunicularia	194338	Scaffold	1157069330
+GCF_965140245.1	Athene noctua	126797	Chromosome	1355857592
+GCF_000143395.1	Atta cephalotes	12957	Scaffold	317671980
+GCF_001594045.1	Atta colombica	520822	Scaffold	291257934
+GCF_028453695.1	Augochlora pura	115077	Chromosome	304327187
+GCF_000721775.1	Aureobasidium melanogenum CBS 110374	1043003	Scaffold	26203324
+GCF_000721765.1	Aureobasidium namibiae CBS 147.97	1043004	Scaffold	25428601
+GCF_000721785.1	Aureobasidium pullulans EXF-150	1043002	Scaffold	29621078
+GCF_000721755.1	Aureobasidium subglaciale EXF-2481	1043005	Scaffold	25796716
+GCF_000186865.1	Aureococcus anophagefferens	44056	Scaffold	56660572
+GCF_035610405.1	Australozyma saopauloensis	291208	Complete Genome	12068158
+GCF_001266775.1	Austrofundulus limnaeus	52670	Scaffold	866963281
+GCF_000733215.1	Auxenochlorella protothecoides	3075	Scaffold	22924637
+GCF_009819795.1	Aythya fuligula	219594	Chromosome	1126988109
+GCF_000981445.1	Babesia bigemina	5866	Chromosome	13840936
+GCF_000165395.2	Babesia bovis T2Bo	484906	Chromosome	8195476
+GCF_024862765.1	Babesia caballi	5871	Contig	12779071
+GCF_028658345.1	Babesia duncani	323732	Chromosome	10408054
+GCF_000691945.2	Babesia microti strain RI	1133968	Chromosome	6395281
+GCF_002897235.1	Babesia ovata	189622	Contig	14453397
+GCF_002095265.1	Babesia sp. Xinjiang	462227	Scaffold	8447544
+GCF_001661335.1	Babjeviella inositovora NRRL Y-12698	984486	Scaffold	15221050
+GCF_041734735.1	Babylonia areolata	304850	Chromosome	1651990951
+GCF_019456465.1	Bacidia gigantensis	2732470	Contig	33117897
+GCF_032445375.1	Bacillus rossius redtenbacheri	93214	Chromosome	1605073380
+GCF_023373825.1	Bactrocera dorsalis	27457	Chromosome	530310706
+GCF_001853355.1	Bactrocera latifrons	174628	Scaffold	462489382
+GCF_024586455.1	Bactrocera neohumeralis	98809	Chromosome	577326612
+GCF_042242935.1	Bactrocera oleae	104688	Chromosome	468767170
+GCF_016617805.1	Bactrocera tryoni	59916	Chromosome	570642875
+GCF_949987535.1	Balaenoptera acutorostrata	9767	Chromosome	2772885358
+GCF_009873245.2	Balaenoptera musculus	9771	Chromosome	2374852541
+GCF_028023285.1	Balaenoptera ricei	2746895	Chromosome	2678442663
+GCF_011004875.1	Balearica regulorum gibbericeps	100784	Chromosome	1221032548
+GCF_947034865.1	Barbatula barbatula	135647	Chromosome	617646710
+GCF_936440315.1	Barbus barbus	40830	Chromosome	1584913304
+GCF_002220235.1	Bathycoccus prasinos	41875	Chromosome	14958006
+GCF_000203795.2	Batrachochytrium dendrobatidis JAM81	684364	Scaffold	23810896
+GCF_028537555.1	Battus philenor	42288	Scaffold	443215375
+GCF_000338955.1	Baudoinia panamericana UAMH 10762	717646	Scaffold	21875620
+GCF_000280675.1	Beauveria bassiana ARSEF 2860	655819	Scaffold	33693936
+GCF_010883055.1	Belonocnema kinseyi	2817044	Chromosome	1538686255
+GCF_918797505.1	Bemisia tabaci	7038	Chromosome	609949642
+GCF_009727055.1	Benincasa hispida	102211	Chromosome	912951219
+GCF_034508935.2	Berghia stephanieae	1287507	Chromosome	1120414447
+GCF_048999995.1	Berkeleyomyces rouxiae	2035830	Contig	33322508
+GCF_002563875.1	Besnoitia besnoiti	94643	Chromosome	58810784
+GCF_026745355.1	Beta vulgaris subsp. vulgaris	3555	Chromosome	568751015
+GCF_900634795.4	Betta splendens	158456	Chromosome	426984265
+GCF_947172395.1	Bicyclus anynana	110368	Chromosome	457159770
+GCF_021521415.1	Bidens hawaiensis	980011	Contig	3469122537
+GCF_947242115.1	Biomphalaria glabrata	6526	Chromosome	850620091
+GCF_028858645.1	Bipolaris maydis	5016	Scaffold	37785996
+GCF_000523455.1	Bipolaris oryzae ATCC 44560	930090	Scaffold	31362097
+GCF_000338995.1	Bipolaris sorokiniana ND90Pr	665912	Scaffold	34409167
+GCF_000527765.1	Bipolaris victoriae FI3	930091	Scaffold	32829575
+GCF_000523435.1	Bipolaris zeicola 26-R-13	930089	Scaffold	31267936
+GCF_000754665.1	Bison bison bison	43346	Scaffold	2828015366
+GCF_000151665.1	Blastocystis hominis	12968	Scaffold	18817245
+GCF_000743755.1	Blastocystis sp. subtype 4	944170	Scaffold	12919355
+GCF_000003525.1	Blastomyces dermatitidis ER-3	559297	Scaffold	66568269
+GCF_000003855.2	Blastomyces gilchristii SLH14081	559298	Scaffold	75353942
+GCF_963422515.1	Blennius ocellaris	195075	Chromosome	728728756
+GCF_020726555.1	Boeremia exigua	749465	Contig	35322113
+GCF_026225935.1	Boleophthalmus pectinirostris	150288	Scaffold	941488127
+GCF_026151205.1	Bolinopsis microptera	2820187	Chromosome	265435384
+GCF_027579735.1	Bombina bombina	8345	Chromosome	10019663791
+GCF_024516045.1	Bombus affinis	309941	Chromosome	365123313
+GCF_011952205.1	Bombus bifarius	103933	Scaffold	266784621
+GCF_041682495.2	Bombus fervidus	203811	Chromosome	314276726
+GCF_040668555.1	Bombus flavifrons	103934	Scaffold	310456995
+GCF_024542735.1	Bombus huntii	85661	Chromosome	317402180
+GCF_000188095.3	Bombus impatiens	132113	Scaffold	246856484
+GCF_905332965.1	Bombus pascuorum	65598	Chromosome	307548333
+GCF_014825855.1	Bombus pyrosoma	396416	Chromosome	254804690
+GCF_910591885.1	Bombus terrestris	30195	Chromosome	392962041
+GCF_051014615.1	Bombus vancouverensis nearcticus	2705178	Chromosome	345734396
+GCF_011952255.1	Bombus vosnesenskii	207650	Scaffold	275577952
+GCF_003987935.1	Bombyx mandarina	7092	Scaffold	398573003
+GCF_030269925.1	Bombyx mori	7091	Chromosome	461688958
+GCF_029378745.1	Bos indicus	9915	Chromosome	2663005763
+GCF_003369695.1	Bos indicus x Bos taurus	30522	Chromosome	2680953056
+GCF_032452875.1	Bos javanicus	9906	Chromosome	2972795249
+GCF_027580195.1	Bos mutus	72004	Chromosome	2626900860
+GCF_002263795.3	Bos taurus	9913	Chromosome	2770669782
+GCF_051294905.1	Botryllus schlosseri	30301	Chromosome	495547953
+GCF_014898295.1	Botrytis byssoidea	139641	Contig	42981876
+GCF_000143535.2	Botrytis cinerea B05.10	332648	Complete Genome	42630066
+GCF_014898535.1	Botrytis deweyae	2478750	Contig	44366920
+GCF_013461495.1	Botrytis fragariae	1964551	Contig	41923773
+GCF_014898465.1	Botrytis porri	87229	Contig	46789968
+GCF_014898435.1	Botrytis sinoallii	1463999	Contig	61289320
+GCF_040956055.1	Brachionichthys hirsutus	412623	Chromosome	406634837
+GCF_052324685.1	Brachyhypopomus gauderio	698409	Chromosome	796923666
+GCF_029030835.1	Brachyistius frenatus	100188	Contig	595935260
+GCF_000005505.3	Brachypodium distachyon	15368	Chromosome	271163419
+GCF_014529535.2	Bradysia coprophila	38358	Chromosome	309616504
+GCF_001625305.1	Branchiostoma belcheri	7741	Scaffold	426108443
+GCF_000003815.2	Branchiostoma floridae	7739	Chromosome	513445848
+GCF_019207075.1	Branchiostoma floridae x Branchiostoma belcheri	2700040	Chromosome	405532174
+GCF_015852565.1	Branchiostoma floridae x Branchiostoma japonicum	2700039	Chromosome	490782628
+GCF_035083965.1	Branchiostoma lanceolatum	7740	Chromosome	458287516
+GCF_020379485.1	Brassica napus	3708	Chromosome	1001499700
+GCF_000695525.1	Brassica oleracea var. oleracea	109376	Chromosome	488593889
+GCF_000309985.2	Brassica rapa	3711	Chromosome	352829610
+GCF_004359215.1	Bremia lactucae	4779	Chromosome	115935664
+GCF_011074885.1	Brettanomyces bruxellensis	5007	Complete Genome	13150648
+GCF_011074865.1	Brettanomyces nanus	13502	Complete Genome	10117252
+GCF_050580445.1	Brevipalpus obovatus	246614	Chromosome	67286437
+GCF_023856365.1	Brienomyrus brachyistius	42636	Chromosome	988088817
+GCF_000002995.4	Brugia malayi	6279	Scaffold	87155713
+GCF_019923935.1	Bubalus bubalis	89462	Chromosome	2622444281
+GCF_029407905.1	Bubalus kerabau	3119969	Chromosome	2898492518
+GCF_964059595.1	Bucephala clangula	107022	Chromosome	1190922165
+GCF_000710305.1	Buceros rhinoceros silvestris	175836	Scaffold	1065782791
+GCF_023091745.1	Budorcas taxicolor	37181	Chromosome	2851638285
+GCF_905171765.1	Bufo bufo	8384	Chromosome	5044744194
+GCF_014858855.1	Bufo gargarizans	30331	Chromosome	4545465442
+GCF_964188355.1	Buteo buteo	30397	Chromosome	1303682556
+GCF_030347475.1	Cadophora gregata	51156	Contig	47765811
+GCF_000004555.2	Caenorhabditis briggsae	6238	Chromosome	108384165
+GCF_000002985.6	Caenorhabditis elegans	6239	Complete Genome	100272607
+GCF_010183535.1	Caenorhabditis remanei	31234	Chromosome	130466896
+GCF_000340665.2	Cajanus cajan	3821	Chromosome	590369945
+GCF_041956535.1	Calcarisporiella thermophila	911321	Scaffold	28155144
+GCF_001431845.1	Calidris pugnax	198806	Scaffold	1229094286
+GCF_051401765.1	Calliopsis andreniformis	337506	Chromosome	1019251136
+GCF_958450345.1	Calliphora vicina	7373	Chromosome	706524439
+GCF_049354715.1	Callithrix jacchus	9483	Chromosome	2933409465
+GCF_018977255.1	Callorhinchus milii	7868	Scaffold	991519186
+GCF_003265705.2	Callorhinus ursinus	34884	Scaffold	2443852073
+GCF_048772815.1	Callospermophilus lateralis	76772	Chromosome	4646974320
+GCF_036013445.1	Caloenas nicobarica	187106	Chromosome	1285834579
+GCF_964195595.1	Calonectris borealis	1323832	Chromosome	1366185058
+GCF_003957555.1	Calypte anna	9244	Chromosome	1059687259
+GCF_901933205.1	Camarhynchus parvulus	87175	Chromosome	1051609828
+GCF_000633955.1	Camelina sativa	90675	Chromosome	641356059
+GCF_004153795.1	Camellia sinensis	4442	Scaffold	3105212962
+GCF_048773025.1	Camelus bactrianus	9837	Chromosome	2473901565
+GCF_036321535.1	Camelus dromedarius	9838	Chromosome	2306603094
+GCF_009834535.1	Camelus ferus	419612	Chromosome	2087077296
+GCF_003227725.1	Camponotus floridanus	104421	Scaffold	284009182
+GCF_033297395.1	Canariomyces notabilis	2074819	Scaffold	30991681
+GCF_000182965.3	Candida albicans SC5314	237561	Chromosome	14282666
+GCF_000026945.1	Candida dubliniensis CD36	573826	Complete Genome	14618422
+GCF_024610255.1	Candida jiufengensis	497108	Scaffold	13666317
+GCF_024628925.1	Candida margitis	1775924	Scaffold	12909612
+GCF_017655625.1	Candida metapsilosis	273372	Scaffold	13093275
+GCF_000315875.1	Candida orthopsilosis Co 90-125	1136231	Chromosome	12659401
+GCF_023343755.2	Candida oxycetoniae	497107	Scaffold	12748657
+GCF_000182765.1	Candida parapsilosis	5480	Contig	12998393
+GCF_024610245.1	Candida pseudojiufengensis	497109	Scaffold	13993769
+GCF_024610275.1	Candida theae	1198502	Scaffold	12421729
+GCF_000006335.3	Candida tropicalis MYA-3404	294747	Scaffold	14579835
+GCF_003013715.1	Candidozyma auris	498019	Complete Genome	12249773
+GCF_002926085.2	Candidozyma duobushaemuli	1231522	Contig	12557957
+GCF_002926055.2	Candidozyma haemuli	45357	Contig	13274804
+GCF_003013735.1	Candidozyma pseudohaemuli	418784	Scaffold	12591275
+GCF_035149785.1	Candoia aspera	51853	Chromosome	1530810380
+GCF_053574225.1	Canis aureus	68724	Chromosome	2529837068
+GCF_048164855.1	Canis lupus baileyi	143281	Chromosome	2495589887
+GCF_003254725.2	Canis lupus dingo	286419	Chromosome	2349862946
+GCF_011100685.1	Canis lupus familiaris	9615	Chromosome	2481983352
+GCF_000002285.5	Canis lupus familiaris	9615	Chromosome	2312785471
+GCF_014441545.1	Canis lupus familiaris	9615	Chromosome	2396858295
+GCF_029168945.1	Cannabis sativa	3483	Chromosome	770269637
+GCF_015039405.1	Cantharellus anzutake	1750568	Contig	120173979
+GCF_001704415.2	Capra hircus	9925	Chromosome	2922600443
+GCF_032405125.1	Capricornis sumatraensis	34865	Chromosome	2828266837
+GCF_907165065.1	Caprimulgus europaeus	111811	Chromosome	1177791212
+GCF_000585585.1	Capronia coronata CBS 617.96	1182541	Scaffold	25807613
+GCF_000585565.1	Capronia epimyces CBS 606.96	1182542	Scaffold	28889638
+GCF_000151315.2	Capsaspora owczarzaki ATCC 30864	595528	Scaffold	27967784
+GCF_000375325.1	Capsella rubella	81985	Scaffold	133063876
+GCF_002878395.1	Capsicum annuum	4072	Chromosome	3211819707
+GCF_003368295.1	Carassius auratus	7957	Chromosome	1820618472
+GCF_963082965.1	Carassius carassius	217509	Chromosome	1684296438
+GCF_023724105.1	Carassius gibelio	101364	Chromosome	1583334954
+GCF_965287045.1	Carcharhinus amblyrhynchos	263684	Chromosome	2923561432
+GCF_017639515.1	Carcharodon carcharias	13397	Chromosome	4286294447
+GCF_019399895.1	Cardiocondyla obscurior	286306	Chromosome	193020115
+GCF_965140235.1	Caretta caretta	8467	Chromosome	2217236305
+GCF_033958435.1	Carettochelys insculpta	44489	Chromosome	2180317067
+GCF_964058835.1	Carex rostrata	241230	Chromosome	380999594
+GCF_000690535.1	Cariama cristata	54380	Scaffold	1132245425
+GCF_000150535.2	Carica papaya	3649	Scaffold	369781828
+GCF_000164805.1	Carlito syrichta	1868482	Scaffold	3453847770
+GCF_018687715.1	Carya illinoinensis	32201	Chromosome	674272338
+GCF_040712315.1	Castanea sativa	21020	Chromosome	715869006
+GCF_047511655.1	Castor canadensis	51338	Chromosome	2814832999
+GCF_021464435.1	Cataglyphis hispanica	1086592	Chromosome	206388925
+GCF_009819885.2	Catharus ustulatus	91951	Chromosome	1131616530
+GCF_000203815.1	Cavenderia fasciculata	261658	Scaffold	31019208
+GCF_034190915.1	Cavia porcellus	10141	Scaffold	3145520116
+GCF_023349555.1	Cebidichthys violaceus	271503	Scaffold	575643635
+GCF_001604975.1	Cebus imitator	2715852	Scaffold	2717703182
+GCF_001692895.1	Cenococcum geophilum 1.58	794803	Scaffold	177557160
+GCF_046629955.1	Centroberyx affinis	166261	Contig	774638115
+GCF_048128805.1	Centroberyx gerrardi	166262	Chromosome	779177424
+GCF_019232065.1	Centrocercus urophasianus	9002	Scaffold	1010657860
+GCF_030273125.1	Centropristis striata	184440	Chromosome	926021963
+GCF_000671375.1	Centruroides sculpturatus	218467	Scaffold	925474958
+GCF_030686945.1	Centruroides vittatus	120091	Scaffold	760156134
+GCF_000341935.2	Cephus cinctus	211228	Scaffold	160731354
+GCF_003144195.1	Ceraceosorus guamensis	1522189	Scaffold	24148100
+GCF_001652005.2	Ceratina calcarata	156304	Scaffold	198802613
+GCF_000347755.3	Ceratitis capitata	7213	Scaffold	436474819
+GCF_044167205.1	Ceratocystis lukuohia	2019550	Contig	31721542
+GCF_000503995.2	Ceratosolen solmsi marchali	326594	Scaffold	276157622
+GCF_000283155.1	Ceratotherium simum simum	73337	Scaffold	2464350348
+GCF_000955945.1	Cercocebus atys	9531	Scaffold	2848246356
+GCF_033473495.1	Cercospora beticola	122368	Complete Genome	36074111
+GCF_019650295.1	Cercospora kikuchii	84275	Contig	34440063
+GCF_019320065.1	Cervus canadensis	1574408	Chromosome	2526613007
+GCF_910594005.1	Cervus elaphus	9860	Chromosome	2886603524
+GCF_964194155.1	Cetorhinus maximus	57982	Chromosome	3993849873
+GCF_051107435.1	Chaetodon auriga	39042	Chromosome	663087921
+GCF_039877785.1	Chaetodon trifascialis	109706	Chromosome	662489023
+GCF_033439085.1	Chaetomium fimeti	1854472	Contig	35321551
+GCF_000143365.1	Chaetomium globosum CBS 148.51	306901	Scaffold	34276485
+GCF_033439665.1	Chaetomium strumarium	1170767	Contig	32422668
+GCF_020726465.1	Chaetomium tenue	1854479	Contig	34154134
+GCF_000747805.2	Chaetura pelagica	8897	Scaffold	1118724105
+GCF_029207755.1	Chamaea fasciata	190680	Scaffold	1194528561
+GCF_033026475.1	Channa argus	215402	Chromosome	675457141
+GCF_024489055.1	Chanodichthys erythropterus	933992	Chromosome	1085510300
+GCF_902362185.1	Chanos chanos	29144	Chromosome	656912816
+GCF_000708025.1	Charadrius vociferus	50402	Scaffold	1219859583
+GCF_018320785.1	Cheilinus undulatus	241271	Chromosome	1173455521
+GCF_017976325.1	Chelmon rostratus	109905	Chromosome	644191893
+GCF_015237465.2	Chelonia mydas	8469	Chromosome	2134358617
+GCF_003597395.2	Chelonoidis abingdonii	106734	Chromosome	2256468705
+GCF_013357705.1	Chelonus insularis	460826	Scaffold	135730493
+GCF_948465745.1	Chenopodium album	3559	Chromosome	1593843283
+GCF_001683475.1	Chenopodium quinoa	63459	Scaffold	1333398936
+GCF_038502225.1	Cherax quadricarinatus	27406	Chromosome	3954007681
+GCF_004010195.1	Chiloscyllium plagiosum	36176	Chromosome	3556460701
+GCF_047496795.1	Chiloscyllium punctatum	137246	Chromosome	5274411202
+GCF_000276665.1	Chinchilla lanigera	34839	Scaffold	2390852391
+GCF_950005125.1	Chionomys nivalis	269649	Chromosome	2393390621
+GCF_022539635.2	Chironomus tepperi	113505	Contig	202325903
+GCF_009829145.1	Chiroxiphia lanceolata	296741	Chromosome	1089631598
+GCF_000002595.2	Chlamydomonas reinhardtii	3055	Chromosome	111098438
+GCF_000695195.1	Chlamydotis macqueenii	187382	Scaffold	1086566339
+GCF_000147415.1	Chlorella variabilis	554065	Scaffold	46159512
+GCF_047675955.1	Chlorocebus sabaeus	60711	Chromosome	3267373866
+GCF_015220235.1	Choloepus didactylus	27675	Chromosome	3214686105
+GCF_000350225.1	Chondrus crispus	2769	Scaffold	104800334
+GCF_025370935.1	Choristoneura fumiferana	7141	Chromosome	575343295
+GCF_963924245.1	Chroicocephalus ridibundus	1192867	Chromosome	1417554307
+GCF_011386835.1	Chrysemys picta bellii	8478	Chromosome	2372089908
+GCF_000296735.1	Chrysochloris asiatica	185453	Scaffold	4210093806
+GCF_905475395.1	Chrysoperla carnea	189513	Chromosome	560232532
+GCF_000331145.2	Cicer arietinum	3827	Chromosome	530271971
+GCF_034638445.1	Ciconia boyciana	52775	Chromosome	1240615254
+GCF_000648675.2	Cimex lectularius	79782	Scaffold	510833625
+GCF_963662255.1	Cinclus cinclus	127875	Chromosome	1170837027
+GCF_018327825.1	Ciona intestinalis	7719	Chromosome	140258035
+GCF_022201045.2	Citrus sinensis	2711	Complete Genome	298977511
+GCF_000493195.1	Citrus x clementina	85681	Scaffold	301364702
+GCF_000835475.1	Cladophialophora bantiana CBS 173.52	1442370	Scaffold	36722552
+GCF_000365165.1	Cladophialophora carrionii CBS 160.54	1279043	Scaffold	28991111
+GCF_000835495.1	Cladophialophora immunda	569365	Scaffold	43029152
+GCF_000585535.1	Cladophialophora psammophila CBS 110553	1182543	Scaffold	39420127
+GCF_000585515.1	Cladophialophora yegresii CBS 114405	1182544	Scaffold	27898422
+GCF_011745625.1	Cladosporium halotolerans	1052096	Scaffold	27912799
+GCF_024256425.1	Clarias gariepinus	13013	Chromosome	969604269
+GCF_947623445.1	Clavelina lepadiformis	159417	Chromosome	210074726
+GCF_014636115.1	Clavispora lusitaniae	36911	Contig	12128633
+GCF_023055335.1	Clinocottus analis	304258	Scaffold	538100726
+GCF_949628265.1	Cloeon dipterum	197152	Chromosome	190111064
+GCF_900700415.2	Clupea harengus	7950	Chromosome	786308905
+GCF_902728285.1	Clytia hemisphaerica	252671	Scaffold	420978673
+GCF_951640355.1	Cnephaeus nilssonii	3371016	Chromosome	2064102006
+GCF_000149335.2	Coccidioides immitis RS	246410	Scaffold	28947925
+GCF_018416015.2	Coccidioides posadasii str. Silveira	443226	Complete Genome	28193268
+GCF_907165205.1	Coccinella septempunctata	41139	Chromosome	398849173
+GCF_000258705.1	Coccomyxa subellipsoidea C-169	574566	Contig	48826616
+GCF_032717465.1	Coenobita brevimanus	1547439	Chromosome	4733026297
+GCF_036785885.1	Coffea arabica	13443	Chromosome	1198133039
+GCF_003713205.1	Coffea eugenioides	49369	Chromosome	699903961
+GCF_025118155.1	Cokeromyces recurvatus	90255	Contig	28120762
+GCF_905220415.1	Colias croceus	72248	Chromosome	324897031
+GCF_028858725.1	Colius striatus	57412	Chromosome	1212464869
+GCF_013123115.1	Colletes gigas	935657	Scaffold	273056604
+GCF_051014445.1	Colletes latitarsis	2605962	Chromosome	757410764
+GCF_030869225.1	Colletotrichum abscissum	1671311	Scaffold	53936108
+GCF_030867785.1	Colletotrichum acutatum	27357	Contig	49057477
+GCF_013390185.1	Colletotrichum aenigma	1215731	Contig	59189926
+GCF_026319265.1	Colletotrichum chrysophilum	1836956	Contig	55966644
+GCF_030867565.1	Colletotrichum costaricense	1209916	Scaffold	51625248
+GCF_034447905.1	Colletotrichum destructivum	34406	Complete Genome	51750812
+GCF_027942845.1	Colletotrichum fioriniae	710243	Scaffold	49445812
+GCF_000319635.2	Colletotrichum fructicola Nara gc5	1213859	Contig	59542867
+GCF_011800055.1	Colletotrichum gloeosporioides	474922	Scaffold	61904035
+GCF_030913485.1	Colletotrichum godetiae	1209918	Contig	51652851
+GCF_000149035.1	Colletotrichum graminicola M1.001	645133	Scaffold	51604658
+GCF_001672515.1	Colletotrichum higginsianum IMI 349063	759273	Chromosome	50716103
+GCF_011947395.1	Colletotrichum karsti	1095194	Scaffold	51850041
+GCF_023278565.1	Colletotrichum lupini	145971	Complete Genome	63407421
+GCF_030913465.1	Colletotrichum navitas	681940	Contig	52434554
+GCF_001831195.1	Colletotrichum orchidophilum	1209926	Scaffold	48556462
+GCF_030867605.1	Colletotrichum paranaense	1914294	Contig	49177916
+GCF_030913505.1	Colletotrichum phormii	359342	Contig	51666170
+GCF_011075155.1	Colletotrichum scovillei	1209932	Contig	52001227
+GCF_013390195.1	Colletotrichum siamense	690259	Contig	62936415
+GCF_022836535.1	Colletotrichum spaethianum	700344	Contig	50915707
+GCF_030869305.1	Colletotrichum tamarilloi	1209934	Scaffold	52071711
+GCF_014235925.2	Colletotrichum truncatum	5467	Contig	57008971
+GCF_000951035.1	Colobus angolensis palliatus	336983	Scaffold	2970124662
+GCF_033807715.1	Cololabis saira	129043	Chromosome	1146345828
+GCF_904425465.1	Colossoma macropomum	42526	Scaffold	1221847006
+GCF_036013475.1	Columba livia	8932	Chromosome	1325566026
+GCF_029603195.1	Condylostylus longicornis	2530218	Contig	543988939
+GCF_000260355.1	Condylura cristata	143302	Scaffold	1769662895
+GCF_963514075.1	Conger conger	82655	Chromosome	1136402888
+GCF_000271625.1	Coniophora puteana RWD-64-598 SS2	741705	Scaffold	42968544
+GCF_000281105.1	Coniosporium apollinis CBS 100218	1168221	Scaffold	28645321
+GCF_009176525.2	Contarinia nasturtii	265458	Scaffold	185885008
+GCF_964194025.1	Convolutriloba macropyga	536237	Chromosome	1175981408
+GCF_000648655.2	Copidosoma floridanum	29053	Scaffold	553956141
+GCF_000182895.1	Coprinopsis cinerea okayama7#130	240176	Contig	36150142
+GCF_003945725.1	Corapipo altera	415028	Scaffold	1095745976
+GCF_001636725.1	Cordyceps fumosorosea ARSEF 2679	1081104	Scaffold	33485962
+GCF_000225605.1	Cordyceps militaris CM01	983644	Scaffold	32268578
+GCF_020615455.1	Coregonus clupeaformis	59861	Chromosome	2753270621
+GCF_030987335.1	Cornus florida	4283	Scaffold	1253041134
+GCF_963422355.1	Corticium candelabrum	121492	Chromosome	185491545
+GCF_000691975.1	Corvus brachyrhynchos	85066	Scaffold	1091312783
+GCF_000738735.6	Corvus cornix cornix	932674	Chromosome	1030864775
+GCF_020740725.1	Corvus hawaiiensis	134902	Chromosome	1151594481
+GCF_017639235.1	Corvus kubaryi	68294	Scaffold	1057484666
+GCF_009650955.1	Corvus moneduloides	1196302	Chromosome	1112734094
+GCF_901000735.1	Corylus avellana	13451	Chromosome	369779143
+GCF_030265065.1	Corythoichthys intestinalis	161448	Chromosome	1326793283
+GCF_020080835.1	Cotesia glomerata	32391	Chromosome	288846213
+GCF_013202065.1	Cotesia typhae	2053667	Contig	186662351
+GCF_900634415.1	Cottoperca gobio	56716	Chromosome	609391784
+GCF_001577835.2	Coturnix japonica	93934	Chromosome	927640260
+GCF_053477285.1	Crassostrea virginica	6565	Chromosome	529025936
+GCF_000223135.1	Cricetulus griseus	10029	Scaffold	2399770464
+GCF_003668045.3	Cricetulus griseus	10029	Chromosome	2366634374
+GCF_001723895.1	Crocodylus porosus	8502	Scaffold	2049519336
+GCF_008692635.1	Crocuta crocuta	9678	Scaffold	2348360376
+GCF_016545835.1	Crotalus tigris	88082	Contig	1612002213
+GCF_011745365.1	Cryphonectria parasitica EP155	660469	Scaffold	43870411
+GCF_001720205.1	Cryptococcus amylolentus CBS 6039	1295533	Scaffold	20254996
+GCF_000836335.1	Cryptococcus bacillisporus CA1280	1296109	Complete Genome	17825526
+GCF_036417295.1	Cryptococcus decagattii	1859122	Complete Genome	17768546
+GCF_000149385.1	Cryptococcus deneoformans B-3501A	283643	Chromosome	19699782
+GCF_000091045.1	Cryptococcus deneoformans JEC21	214684	Chromosome	19051922
+GCF_001720195.1	Cryptococcus depauperatus CBS 7841	1295531	Complete Genome	16179376
+GCF_002954075.1	Cryptococcus deuterogattii R265	294750	Chromosome	17550122
+GCF_000185945.1	Cryptococcus gattii WM276	367775	Chromosome	18374760
+GCF_000149245.1	Cryptococcus neoformans H99	235443	Chromosome	18891193
+GCF_000835755.1	Cryptococcus tetragattii IND107	1296105	Chromosome	17799622
+GCF_001720155.1	Cryptococcus wingfieldii CBS 7118	1295528	Scaffold	19969799
+GCF_030272615.1	Cryptomeria japonica	3369	Chromosome	9046532310
+GCF_000194455.1	Cryptomonas paramaecium	2898	Chromosome	487066
+GCF_001865355.1	Cryptosporidium andersoni	117008	Scaffold	9088557
+GCF_009768925.1	Cryptosporidium bovis	310047	Scaffold	9111170
+GCF_000006425.1	Cryptosporidium hominis TU502	353151	Scaffold	8743570
+GCF_000006515.1	Cryptosporidium muris RN66	441375	Scaffold	9245251
+GCF_000165345.1	Cryptosporidium parvum Iowa II	353152	Chromosome	9102324
+GCF_009792415.1	Cryptosporidium ryanae	515981	Scaffold	9059344
+GCF_004936735.1	Cryptosporidium sp. chipmunk genotype I	1280935	Scaffold	9052409
+GCF_001865345.1	Cryptosporidium ubiquitum	857276	Scaffold	8970213
+GCF_002891405.2	Cryptotermes secundus	105785	Scaffold	1018932804
+GCF_003426905.1	Ctenocephalides felis	7515	Scaffold	775452550
+GCF_019924925.1	Ctenopharyngodon idella	7959	Chromosome	893198495
+GCF_017976375.1	Cuculus canorus	55661	Chromosome	1180136575
+GCF_025177605.1	Cucumis melo	3656	Chromosome	438252206
+GCF_000004075.3	Cucumis sativus	3659	Chromosome	224801081
+GCF_002738345.1	Cucurbita maxima	3661	Scaffold	271413401
+GCF_002738365.1	Cucurbita moschata	3662	Scaffold	269943085
+GCF_002806865.2	Cucurbita pepo subsp. pepo	3664	Chromosome	259381069
+GCF_010015615.1	Cucurbitaria berberidis CBS 394.84	1168544	Scaffold	32905402
+GCF_016801865.2	Culex pipiens pallens	42434	Chromosome	566339288
+GCF_015732765.1	Culex quinquefasciatus	7176	Chromosome	573214445
+GCF_036172545.1	Culicoides brevitarsis	469753	Chromosome	129492607
+GCF_044706935.1	Curcuma longa	136217	Chromosome	368886077
+GCF_030864355.1	Cutaneotrichosporon cavernicola	279322	Complete Genome	20237334
+GCF_008065305.1	Cutaneotrichosporon oleaginosum	879819	Contig	19820908
+GCF_000091205.1	Cyanidioschyzon merolae strain 10D	280699	Complete Genome	16546747
+GCF_002901205.1	Cyanistes caeruleus	156563	Scaffold	1186980630
+GCF_001661405.1	Cyberlindnera jadinii NRRL Y-1542	983966	Scaffold	13018415
+GCF_009769545.1	Cyclopterus lumpus	8103	Chromosome	572885595
+GCF_002999335.1	Cyclospora cayetanensis	88456	Contig	44363576
+GCF_948474715.1	Cydia amplana	1869771	Chromosome	504318984
+GCF_963556715.1	Cydia fagiglandana	1458189	Chromosome	555051570
+GCF_033807575.1	Cydia pomonella	82600	Chromosome	642246045
+GCF_910591565.1	Cydia splendana	1100963	Chromosome	630601649
+GCF_947568885.1	Cydia strobilella	1100964	Chromosome	542588748
+GCF_013377495.2	Cygnus atratus	8868	Chromosome	1124217020
+GCF_009769625.2	Cygnus olor	8869	Chromosome	1134169903
+GCF_029955315.1	Cylas formicarius	197179	Scaffold	391099484
+GCF_001531365.2	Cynara cardunculus var. scolymus	59895	Chromosome	724962400
+GCF_027409185.1	Cynocephalus volans	110931	Chromosome	2814418120
+GCF_000523025.1	Cynoglossus semilaevis	244447	Chromosome	470182763
+GCF_001299255.1	Cyphellophora attinorum	1664694	Contig	30363635
+GCF_000365145.1	Cyphellophora europaea CBS 101466	1220924	Scaffold	28781303
+GCF_001594065.2	Cyphomyrmex costatus	456900	Scaffold	299845939
+GCF_016077235.1	Cyprinodon tularosa	77115	Contig	1086882241
+GCF_000732505.1	Cyprinodon variegatus	28743	Scaffold	1035167975
+GCF_018340385.1	Cyprinus carpio	7962	Chromosome	1680118328
+GCF_038088225.1	Cyrtonyx montezumae	9017	Scaffold	1011858581
+GCF_039999085.1	Cystobasidium minutum MCA 4210	1397322	Scaffold	20824934
+GCF_002600585.1	Cystoisospora suis	483139	Scaffold	83597486
+GCF_000292625.1	Dacryopinax primogenitus	1858805	Scaffold	29503487
+GCF_025091365.1	Daktulosphaira vitifoliae	58002	Scaffold	282588554
+GCF_022478825.1	Daldinia caldariorum	326644	Scaffold	35556611
+GCF_008694065.1	Daldinia childiae	326645	Scaffold	38652569
+GCF_022478715.1	Daldinia decipiens	326647	Scaffold	35255283
+GCF_022478755.1	Daldinia loculata	103429	Scaffold	37819304
+GCF_022497035.1	Daldinia vernicosa	114800	Scaffold	35841789
+GCF_025399875.1	Dalotia coriaria	877792	Scaffold	193876233
+GCF_033118175.1	Dama dama	30532	Chromosome	3104280228
+GCF_018135715.1	Danaus plexippus	13037	Chromosome	245173502
+GCF_903798145.1	Danio aesculapii	1142201	Chromosome	1381485597
+GCF_049306965.1	Danio rerio	7955	Complete Genome	1448791966
+GCF_022539665.2	Daphnia carinata	120202	Chromosome	108144665
+GCF_020631705.1	Daphnia magna	35525	Chromosome	161452108
+GCF_021134715.1	Daphnia pulex	6669	Chromosome	133181052
+GCF_021234035.1	Daphnia pulicaria	35523	Chromosome	185057732
+GCF_030445035.2	Dasypus novemcinctus	9361	Chromosome	3610534858
+GCF_001625215.2	Daucus carota subsp. sativus	79200	Chromosome	440713325
+GCF_001447935.2	Debaryomyces fabryi	58627	Contig	11695966
+GCF_000006445.2	Debaryomyces hansenii CBS767	284592	Chromosome	12152486
+GCF_002288925.2	Delphinapterus leucas	9749	Scaffold	2362758273
+GCF_949987515.2	Delphinus delphis	9728	Chromosome	2663516986
+GCF_039654945.1	Dendrobates tinctorius	92724	Contig	6355763190
+GCF_001605985.2	Dendrobium catenatum	906689	Scaffold	1104107363
+GCF_020466585.1	Dendroctonus ponderosae	77166	Scaffold	223597517
+GCF_004324835.1	Dendronephthya gigantea	151771	Contig	286131786
+GCF_027789765.1	Dendropsophus ebraccatus	150705	Chromosome	2214937069
+GCF_900700375.2	Denticeps clupeoides	299321	Chromosome	567401054
+GCF_038994185.2	Dermacentor albipictus	60249	Chromosome	2210616132
+GCF_023375885.2	Dermacentor andersoni	34620	Chromosome	2425198141
+GCF_013339745.2	Dermacentor silvarum	543639	Chromosome	2474293395
+GCF_050947875.1	Dermacentor variabilis	34621	Chromosome	2477349138
+GCF_024713945.1	Dermatophagoides farinae	6954	Chromosome	62428314
+GCF_027571235.1	Dermatophagoides pteronyssinus	6956	Scaffold	56739868
+GCF_009764565.3	Dermochelys coriacea	27794	Chromosome	2164762090
+GCF_030435595.1	Desarmillaria tabescens	1929756	Contig	74875987
+GCF_022682495.2	Desmodus rotundus	9430	Chromosome	2119704833
+GCF_040954645.1	Diabrotica undecimpunctata	50387	Chromosome	1742964013
+GCF_917563875.1	Diabrotica virgifera virgifera	50390	Chromosome	2533404242
+GCF_001412515.2	Diachasma alloeum	454923	Scaffold	384371871
+GCF_034640455.1	Diachasmimorpha longicaudata	58733	Chromosome	194452999
+GCF_040938485.1	Diadema antillarum	105358	Contig	1754659819
+GCF_964275005.1	Diadema setosum	31175	Chromosome	912728646
+GCF_000475195.1	Diaphorina citri	121845	Scaffold	485705082
+GCF_026229845.1	Diaporthe amygdali	1214568	Scaffold	51483502
+GCF_019321695.1	Diaporthe batatas	748121	Contig	54186171
+GCF_014595645.1	Diaporthe citri	83186	Contig	63685968
+GCF_905237075.1	Dicentrarchus labrax	13489	Scaffold	695892153
+GCF_020826845.1	Diceros bicornis minor	77932	Chromosome	3005519209
+GCF_000275845.1	Dichomitus squalens LYAD-421 SS1	732165	Scaffold	42748430
+GCF_033296635.1	Dichotomopilus funicola	1934379	Scaffold	32615522
+GCF_000004695.1	Dictyostelium discoideum AX4	352472	Chromosome	34149409
+GCF_000190715.1	Dictyostelium purpureum	5786	Scaffold	32967225
+GCF_010094145.1	Didymella exigua CBS 183.55	1150837	Scaffold	34389227
+GCF_027946475.1	Didymosphaeria variabile	1932322	Contig	39450705
+GCF_001313825.1	Dinoponera quadriceps	609295	Scaffold	259665865
+GCF_026250575.1	Diorhabda carinulata	1163345	Chromosome	415369604
+GCF_026230105.1	Diorhabda sublineata	1163346	Chromosome	456219552
+GCF_009730915.1	Dioscorea cayenensis subsp. rotundata	55577	Chromosome	584153202
+GCF_014633365.1	Diospyros lotus	55363	Chromosome	630098508
+GCF_025882075.1	Dioszegia hungarica	4972	Contig	20956552
+GCF_001883845.1	Diplodia corticola	236234	Scaffold	34986079
+GCF_021436955.1	Diplodia seriata	420778	Contig	37536239
+GCF_038497935.1	Dipodascopsis tothii	44089	Scaffold	13125970
+GCF_024711535.1	Dipodomys merriami	94247	Scaffold	3365237443
+GCF_000151885.1	Dipodomys ordii	10020	Scaffold	2236368823
+GCF_019054845.1	Dipodomys spectabilis	105255	Contig	2844766008
+GCF_021155765.1	Diprion similis	362088	Chromosome	270225736
+GCF_010015565.1	Dissoconium aciculare CBS 342.82	1314786	Scaffold	26537235
+GCF_001186385.1	Diuraphis noxia	143948	Scaffold	395057805
+GCF_008704595.1	Diutina rugosa	5481	Scaffold	13445959
+GCF_037039965.1	Doryrhamphus excisus	161450	Chromosome	497388357
+GCF_010015815.1	Dothidotthia symphoricarpi CBS 119687	1392245	Scaffold	34433519
+GCF_001625195.1	Drechmeria coniospora	98403	Chromosome	32831003
+GCF_020536995.1	Dreissena polymorpha	45954	Chromosome	1797942340
+GCF_022702325.1	Drepanopeziza brunnea f. sp. 'multigermtubi'	698441	Contig	51946279
+GCF_036370855.1	Dromaius novaehollandiae	8790	Chromosome	1468706110
+GCF_019393635.1	Dromiciops gliroides	33562	Chromosome	3303199800
+GCF_009650485.2	Drosophila albomicans	7291	Chromosome	167525814
+GCF_017639315.1	Drosophila ananassae	7217	Chromosome	213817545
+GCF_001654025.1	Drosophila arizonae	7263	Scaffold	141386800
+GCF_025231255.1	Drosophila biarmipes	125945	Chromosome	193597863
+GCF_030179905.1	Drosophila bipectinata	42026	Chromosome	191877550
+GCF_011750605.1	Drosophila busckii	30019	Chromosome	118492362
+GCF_018152505.1	Drosophila elegans	30023	Contig	178445117
+GCF_003286155.1	Drosophila erecta	7220	Contig	146538397
+GCF_018153835.1	Drosophila eugracilis	29029	Contig	164811307
+GCF_018152265.1	Drosophila ficusphila	30025	Contig	167832931
+GCF_018153295.1	Drosophila grimshawi	7222	Contig	191382978
+GCF_900245975.1	Drosophila guanche	7266	Scaffold	140632981
+GCF_025200985.1	Drosophila gunungcola	103775	Chromosome	189841955
+GCF_003285905.1	Drosophila hydei	7224	Contig	153741574
+GCF_004354385.1	Drosophila innubila	198719	Chromosome	167978031
+GCF_030179895.1	Drosophila kikkawai	30033	Chromosome	188497101
+GCF_004382145.1	Drosophila mauritiana	7226	Chromosome	152298302
+GCF_000001215.4	Drosophila melanogaster	7227	Chromosome	143706478
+GCF_003369915.1	Drosophila miranda	7229	Chromosome	287096000
+GCF_018153725.1	Drosophila mojavensis	7230	Contig	163170721
+GCF_035044405.1	Drosophila montana	40370	Contig	191421679
+GCF_023558535.2	Drosophila nasuta	42062	Chromosome	171766801
+GCF_001654015.2	Drosophila navojoa	7232	Scaffold	147357603
+GCF_003285875.2	Drosophila novamexicana	47314	Contig	177223868
+GCF_018151105.1	Drosophila obscura	7282	Contig	179834232
+GCF_003286085.1	Drosophila persimilis	7234	Contig	195512972
+GCF_009870125.1	Drosophila pseudoobscura	7237	Chromosome	163266851
+GCF_018152115.1	Drosophila rhopaloa	1041015	Contig	193508231
+GCF_016746245.2	Drosophila santomea	129105	Chromosome	146800522
+GCF_004382195.2	Drosophila sechellia	7238	Chromosome	153084571
+GCF_002093755.2	Drosophila serrata	7274	Contig	196034539
+GCF_016746395.2	Drosophila simulans	7240	Chromosome	131663590
+GCF_008121235.1	Drosophila subobscura	7241	Chromosome	126232139
+GCF_014743375.2	Drosophila subpulchrella	1486046	Chromosome	265153789
+GCF_023558435.1	Drosophila sulfurigaster albostrigata	89887	Chromosome	168251146
+GCF_043229965.1	Drosophila suzukii	28584	Chromosome	282295391
+GCF_030179915.1	Drosophila takahashii	29030	Chromosome	195929306
+GCF_016746235.2	Drosophila teissieri	7243	Chromosome	149494471
+GCF_018151085.1	Drosophila tropicalis	46794	Contig	211041385
+GCF_030788295.1	Drosophila virilis	7244	Chromosome	189440335
+GCF_018902025.1	Drosophila willistoni	7260	Chromosome	246985538
+GCF_016746365.2	Drosophila yakuba	7245	Chromosome	147883098
+GCF_014839835.1	Dryobates pubescens	118200	Chromosome	1187939694
+GCF_001272555.1	Dufourea novaeangliae	178035	Scaffold	279505983
+GCF_027744805.1	Dunckerocampus dactyliophorus	161453	Chromosome	670648883
+GCF_002303985.1	Durio zibethinus	66656	Scaffold	715230256
+GCF_024521655.1	Durotheca rogersii	419775	Contig	48181149
+GCF_963678975.1	Dysidea avara	196820	Chromosome	550830897
+GCF_900963305.2	Echeneis naucrates	173247	Chromosome	544212633
+GCF_000524195.1	Echinococcus granulosus	6210	Scaffold	110837706
+GCF_000313985.2	Echinops telfairi	9371	Scaffold	2947103070
+GCF_000687185.1	Egretta garzetta	188379	Scaffold	1206484573
+GCF_000499425.1	Eimeria acervulina	5801	Scaffold	45830609
+GCF_000499605.1	Eimeria maxima	5804	Scaffold	45975062
+GCF_000499745.2	Eimeria mitis	44415	Scaffold	72240319
+GCF_000499385.1	Eimeria necatrix	51315	Scaffold	55007932
+GCF_000499545.2	Eimeria tenella	5802	Scaffold	51859607
+GCF_000442705.2	Elaeis guineensis	51953	Chromosome	1841922575
+GCF_951216825.1	Electrona antarctica	206093	Chromosome	1427425719
+GCF_041902795.1	Electrophorus electricus	8005	Chromosome	833427914
+GCF_013358815.1	Electrophorus electricus	8005	Chromosome	589358956
+GCF_036324505.1	Eleginops maclovinus	56733	Chromosome	606289673
+GCF_000299155.1	Elephantulus edwardii	28737	Scaffold	3843982861
+GCF_024166365.1	Elephas maximus indicus	99487	Chromosome	3401247148
+GCF_035609145.1	Eleutherodactylus coqui	57060	Chromosome	3371297528
+GCF_023053635.1	Elgaria multicarinata webbii	159646	Chromosome	1790500004
+GCF_022577435.1	Embiotoca jacksoni	100190	Scaffold	634668633
+GCF_019669845.1	Emericellopsis atlantica	2614577	Scaffold	27300990
+GCF_022114955.1	Emericellopsis cladophorae	2686198	Scaffold	26937373
+GCF_000372725.1	Emiliania huxleyi CCMP1516	280463	Scaffold	167675649
+GCF_003031625.1	Empidonax traillii	164674	Scaffold	1123485537
+GCF_026122565.2	Emydura macquarii macquarii	1129001	Contig	1924425589
+GCF_028017835.1	Emys orbicularis	82168	Chromosome	2309740635
+GCF_000091225.2	Encephalitozoon cuniculi GB-M1	284813	Chromosome	2497519
+GCF_000277815.2	Encephalitozoon hellem ATCC 50504	907965	Chromosome	2251784
+GCF_000146465.1	Encephalitozoon intestinalis ATCC 50506	876142	Chromosome	2216898
+GCF_000280035.1	Encephalitozoon romaleae SJ-2008	1178016	Chromosome	2187595
+GCF_000464535.1	Endocarpon pusillum Z07020	1263415	Scaffold	37130611
+GCF_034702125.1	Engraulis encrasicolus	184585	Chromosome	1435183673
+GCF_040894005.1	Engystomops pustulosus	76066	Chromosome	2158203323
+GCF_002288905.1	Enhydra lutris kenyoni	391180	Scaffold	2455260235
+GCF_043641665.1	Enoplosus armatus	215367	Chromosome	579881259
+GCF_000209125.1	Entamoeba dispar SAW760	370354	Scaffold	30633164
+GCF_000208925.1	Entamoeba histolytica HM-1:IMSS	294381	Scaffold	20835395
+GCF_000330505.1	Entamoeba invadens IP1	370355	Scaffold	40878307
+GCF_000257125.1	Entamoeba nuttalli P19	1076696	Scaffold	14399953
+GCF_033978785.1	Entelurus aequoreus	161455	Chromosome	1892198045
+GCF_041222505.1	Epargyreus clarus	520877	Scaffold	451785667
+GCF_011397635.1	Epinephelus fuscoguttatus	293821	Chromosome	1046995804
+GCF_041903045.1	Epinephelus lanceolatus	310571	Chromosome	1089387278
+GCF_006386435.1	Epinephelus moara	300413	Chromosome	1030460988
+GCF_945859705.1	Episyrphus balteatus	286459	Chromosome	535345329
+GCF_022376455.1	Epithele typhae	378194	Contig	56143418
+GCF_027574615.1	Eptesicus fuscus	29078	Chromosome	2008057866
+GCF_041296235.1	Equus asinus	9793	Chromosome	2797756172
+GCF_041296265.1	Equus caballus	9796	Chromosome	2769438211
+GCF_037783145.1	Equus przewalskii	9798	Chromosome	2499640368
+GCF_021613505.1	Equus quagga	89248	Chromosome	2500914156
+GCF_010015585.1	Eremomyces bilateralis CBS 781.70	1392243	Scaffold	26864015
+GCF_000235365.1	Eremothecium cymbalariae DBVPG#7215	931890	Chromosome	9669424
+GCF_000091025.4	Eremothecium gossypii ATCC 10895	284811	Complete Genome	9095748
+GCF_001548555.1	Eremothecium sinecaudum	45286	Complete Genome	8922523
+GCF_965152235.1	Eretmochelys imbricata	27787	Chromosome	2217987207
+GCF_010389155.1	Erigeron canadensis	72917	Chromosome	426223753
+GCF_950295315.1	Erinaceus europaeus	9365	Chromosome	2720683831
+GCF_024679095.1	Eriocheir sinensis	95602	Chromosome	1765827443
+GCF_903797595.1	Erithacus rubecula	37610	Chromosome	1086738418
+GCF_900747795.2	Erpetoichthys calabaricus	27687	Chromosome	3613534470
+GCF_000504015.1	Erythranthe guttata	4155	Scaffold	321641293
+GCF_031021105.1	Erythrolamprus reginae	121349	Chromosome	1964049041
+GCF_028021215.1	Eschrichtius robustus	9764	Chromosome	2982418581
+GCF_011004845.1	Esox lucius	8010	Chromosome	918731919
+GCF_013103735.1	Etheostoma cragini	417921	Chromosome	643078674
+GCF_008692095.1	Etheostoma spectabile	54343	Chromosome	854790067
+GCF_028564815.1	Eubalaena glacialis	27606	Chromosome	2843675187
+GCF_028583425.1	Eublepharis macularius	481883	Chromosome	2237379946
+GCF_016545825.1	Eucalyptus grandis	71139	Chromosome	615891308
+GCF_026437365.1	Eucyclogobius newberryi	166745	Scaffold	984795555
+GCF_001483705.2	Eufriesea mexicana	516756	Scaffold	595427025
+GCF_041146395.1	Eulemur rufifrons	859984	Chromosome	2415577446
+GCF_029931775.1	Euleptes europaea	460621	Chromosome	1781916107
+GCF_004028035.1	Eumetopias jubatus	34886	Scaffold	2418246527
+GCF_945859685.1	Eupeodes corollae	290404	Chromosome	648195582
+GCF_963576675.1	Euphorbia lathyris	212925	Chromosome	1020389306
+GCF_053919585.1	Euprymna scolopes	6613	Chromosome	5899119343
+GCF_040869045.1	Eurosta solidaginis	178769	Chromosome	1907801847
+GCF_000690775.1	Eurypyga helias	54383	Scaffold	1088019637
+GCF_000591075.1	Eurytemora carolleeae	1294199	Scaffold	389032277
+GCF_000478725.1	Eutrema salsugineum	72664	Scaffold	243110105
+GCF_040115645.1	Euwallacea fornicatus	995702	Chromosome	219832364
+GCF_039881205.1	Euwallacea similis	1736056	Chromosome	177600458
+GCF_001417965.1	Exaiptasia diaphana	2652724	Scaffold	256132296
+GCF_039878825.1	Excalfactoria chinensis	46218	Chromosome	966847183
+GCF_000709125.1	Exophiala aquamarina CBS 119918	1182545	Scaffold	41566958
+GCF_035927105.1	Exophiala bonariae	1690606	Contig	37886950
+GCF_000230625.1	Exophiala dermatitidis NIH/UT8656	858893	Scaffold	26350763
+GCF_000836275.1	Exophiala mesophila	212818	Scaffold	29273723
+GCF_000835515.1	Exophiala oligosperma	215243	Scaffold	38224514
+GCF_000836115.1	Exophiala spinifera	91928	Scaffold	32912349
+GCF_022695815.1	Exophiala viscosa	2486360	Scaffold	28289675
+GCF_000835505.1	Exophiala xenobiotica	348802	Scaffold	31405760
+GCF_000359705.1	Exserohilum turcica Et28A	671987	Scaffold	43013545
+GCF_023638135.1	Falco biarmicus	345155	Chromosome	1285492283
+GCF_023634085.1	Falco cherrug	345164	Chromosome	1309366964
+GCF_017639655.2	Falco naumanni	148594	Chromosome	1215702009
+GCF_023634155.1	Falco peregrinus	8954	Chromosome	1311580791
+GCF_963210335.1	Falco punctatus	148596	Chromosome	1279260504
+GCF_015220075.1	Falco rusticolus	120794	Chromosome	1195829278
+GCF_018350175.1	Felis catus	9685	Chromosome	2425730029
+GCF_051991245.1	Festucalex cinctus	1073243	Chromosome	695194371
+GCF_000313525.1	Fibroporia radiculosa	599839	Scaffold	28378039
+GCF_000247815.1	Ficedula albicollis	59894	Chromosome	1118326800
+GCF_021052385.1	Filobasidium floriforme	5210	Contig	27469088
+GCF_025526975.1	Fimicolochytrium jonesii	1396493	Contig	30619153
+GCF_002217175.1	Folsomia candida	158441	Scaffold	221702752
+GCF_000271605.1	Fomitiporia mediterranea MF3/22	694068	Scaffold	63354419
+GCF_022376445.1	Fomitopsis serialis	139415	Contig	66694225
+GCF_001651985.1	Fonsecaea erecta	1367422	Scaffold	34747975
+GCF_001642475.1	Fonsecaea monophora	254056	Contig	35229797
+GCF_000836435.1	Fonsecaea multimorphosa CBS 102226	1442371	Scaffold	33447075
+GCF_001646965.1	Fonsecaea nubica	856822	Scaffold	33787447
+GCF_000835455.1	Fonsecaea pedrosoi CBS 271.37	1442368	Scaffold	34688880
+GCF_000388065.1	Fonticula alba	691883	Scaffold	31216622
+GCF_000806365.1	Fopius arisanus	64838	Scaffold	153631861
+GCF_003651465.1	Formica exsecta	72781	Scaffold	277633851
+GCF_000184155.1	Fragaria vesca subsp. vesca	101020	Chromosome	214217322
+GCF_000697945.3	Frankliniella occidentalis	133901	Scaffold	405722110
+GCF_011392965.1	Frieseomelitta varia	561572	Scaffold	275421029
+GCF_012274545.1	Fukomys damarensis	885580	Scaffold	2334358650
+GCF_000690835.1	Fulmarus glacialis	30455	Scaffold	1141395646
+GCF_020509005.1	Fulvia fulva	5499	Complete Genome	67169167
+GCF_011125445.2	Fundulus heteroclitus	8078	Chromosome	1203489213
+GCF_003316985.1	Fusarium coffeatum	231269	Contig	37769732
+GCF_026873545.1	Fusarium falciforme	195108	Complete Genome	53563088
+GCF_020744385.1	Fusarium flagelliforme	2675880	Contig	40328194
+GCF_900079805.1	Fusarium fujikuroi IMI 58289	1279085	Chromosome	43832314
+GCF_000240135.3	Fusarium graminearum PH-1	229533	Chromosome	36458046
+GCF_025433545.1	Fusarium keratoplasticum	1328300	Chromosome	49462855
+GCF_900044065.1	Fusarium mangiferae	192010	Scaffold	46292722
+GCF_019915245.1	Fusarium musae	1042133	Chromosome	44015302
+GCF_000260195.1	Fusarium odoratissimum NRRL 54006	1089451	Scaffold	46553780
+GCF_000149955.1	Fusarium oxysporum f. sp. lycopersici 4287	426428	Chromosome	61386934
+GCF_013085055.1	Fusarium oxysporum Fo47	660027	Complete Genome	50358849
+GCF_019609905.1	Fusarium poae	36050	Chromosome	43859651
+GCF_900067095.1	Fusarium proliferatum ET1	1227346	Scaffold	45210324
+GCF_000303195.2	Fusarium pseudograminearum CS3096	1028729	Chromosome	36863345
+GCF_020744475.1	Fusarium redolens	48865	Contig	52563400
+GCF_023522795.1	Fusarium solani	169388	Contig	59379714
+GCF_013396075.1	Fusarium subglutinans	42677	Contig	44177197
+GCF_013396195.1	Fusarium tjaetaba	1567544	Scaffold	43066134
+GCF_000151355.1	Fusarium vanettenii 77-13-4	660122	Scaffold	51286497
+GCF_020744135.1	Fusarium venenatum	56646	Contig	37452605
+GCF_000149555.1	Fusarium verticillioides 7600	334819	Chromosome	41791161
+GCF_026213295.1	Gadus chalcogrammus	1042646	Chromosome	629920150
+GCF_031168955.1	Gadus macrocephalus	80720	Chromosome	555681083
+GCF_902167405.1	Gadus morhua	8049	Chromosome	669949713
+GCF_000145635.1	Gaeumannomyces tritici R3-111a-1	644352	Scaffold	43618147
+GCF_000341285.1	Galdieria sulphuraria	130081	Scaffold	13712004
+GCF_000255335.2	Galendromus occidentalis	34638	Scaffold	151460383
+GCF_000696425.1	Galeopterus variegatus	482537	Scaffold	3187643824
+GCF_026898425.1	Galleria mellonella	7137	Contig	471899840
+GCF_016699485.2	Gallus gallus	9031	Chromosome	1053315467
+GCF_016700215.2	Gallus gallus	9031	Chromosome	1050511239
+GCF_019740435.1	Gambusia affinis	33528	Chromosome	680149392
+GCF_025024155.1	Gamsiella multidivaricata	101098	Contig	37665308
+GCF_049309525.1	Garra rufa	137080	Chromosome	1391285389
+GCF_964276395.1	Gasterosteus aculeatus	69293	Chromosome	511138727
+GCF_033153095.1	Gastrolobium bilobum	150636	Contig	591270798
+GCF_030936135.1	Gavia stellata	37040	Chromosome	1321270170
+GCF_001723915.1	Gavialis gangeticus	94835	Scaffold	2640775248
+GCF_001447785.1	Gekko japonicus	146911	Scaffold	2490257917
+GCF_046128005.1	Genypterus blacodes	154954	Contig	463765610
+GCF_012550715.1	Geosmithia morbida	1094350	Scaffold	26543684
+GCF_000277835.1	Geospiza fortis	48883	Scaffold	1065292181
+GCF_902459505.2	Geotrypetes seraphini	260995	Chromosome	3779413726
+GCF_000002435.2	Giardia duodenalis	5741	Chromosome	12078186
+GCF_016097555.1	Gigantopelta aegis	1735272	Chromosome	1149605642
+GCF_025201335.1	Gilbertella persicaria	101096	Contig	25732466
+GCF_054371585.1	Giraffa tippelskirchi	439328	Complete Genome	2578316437
+GCF_021462225.1	Girardinichthys multiradiatus	208333	Chromosome	1150004004
+GCF_964340395.1	Glandiceps talaboti	1443217	Chromosome	590492491
+GCF_000409485.1	Glarea lozoyensis ATCC 20868	1116229	Scaffold	39509734
+GCF_963455315.2	Globicephala melas	9731	Chromosome	2651276051
+GCF_000344685.1	Gloeophyllum trabeum ATCC 11539	670483	Scaffold	37178225
+GCF_014805625.2	Glossina fuscipes	7396	Scaffold	389358103
+GCF_000004515.6	Glycine max	3847	Chromosome	978386919
+GCF_004193775.1	Glycine soja	3848	Chromosome	1013211804
+GCF_949357685.1	Gobio gobio	27704	Chromosome	1460662624
+GCF_951799975.1	Gobius niger	85417	Chromosome	870555617
+GCF_007399415.2	Gopherus evgoodei	1825980	Chromosome	2298547364
+GCF_025201925.1	Gopherus flavomarginatus	286002	Chromosome	2460542086
+GCF_954871325.1	Gordionus sp. m RMFG-2023	3053472	Chromosome	287640266
+GCF_029281585.2	Gorilla gorilla gorilla	9595	Chromosome	3545834224
+GCF_025698485.1	Gossypium arboreum	29729	Chromosome	1620504428
+GCF_007990345.1	Gossypium hirsutum	3635	Chromosome	2305241538
+GCF_025698545.1	Gossypium raimondii	29730	Chromosome	750205487
+GCF_900634775.2	Gouania willdenowi	441366	Chromosome	937150793
+GCF_016433145.1	Gracilinanus agilis	191870	Chromosome	3701017385
+GCF_004785775.1	Grammomys surdaster	491861	Scaffold	2412664998
+GCF_000223845.1	Gregarina niphandrodes	110365	Scaffold	14009070
+GCF_000143105.1	Grosmannia clavigera kw1407	655863	Scaffold	29794006
+GCF_028858705.1	Grus americana	9117	Chromosome	1257821324
+GCF_964106855.1	Grus grus	40816	Chromosome	1352263658
+GCF_000002975.1	Guillardia theta	55529	Chromosome	551264
+GCF_000315625.1	Guillardia theta CCMP2712	905079	Scaffold	87145349
+GCF_019112545.1	Guyanagaster necrorhizus	856835	Scaffold	53686691
+GCF_902827175.1	Gymnodraco acuticeps	8218	Scaffold	996888495
+GCF_018139145.2	Gymnogyps californianus	33616	Chromosome	1240248578
+GCF_963280865.1	Gymnoscopelus braueri	948025	Chromosome	1367966668
+GCF_001263275.1	Habropoda laboriosa	597456	Scaffold	296954667
+GCF_048455015.1	Haemaphysalis longicornis	44386	Scaffold	3091334561
+GCF_050003625.1	Haematobia irritans	7368	Chromosome	1173502364
+GCF_027477595.1	Haemorhous mexicanus	30427	Chromosome	1148216196
+GCF_947461875.1	Haliaeetus albicilla	8969	Chromosome	1320298205
+GCF_000737465.1	Haliaeetus leucocephalus	52644	Scaffold	1178409481
+GCF_033239565.1	Halichoeres trimaculatus	147232	Scaffold	849908974
+GCF_964656455.1	Halichoerus grypus	9711	Chromosome	2400061917
+GCF_963675165.1	Halichondria panicea	6063	Chromosome	131456761
+GCF_050948215.1	Halictus rubicundus	77578	Chromosome	618167500
+GCF_037392515.1	Haliotis asinina	109174	Chromosome	1143434573
+GCF_022045235.1	Haliotis cracherodii	6455	Scaffold	1182234246
+GCF_003918875.1	Haliotis rubra	36100	Scaffold	1378265264
+GCF_023055435.1	Haliotis rufescens	6454	Scaffold	1334454214
+GCF_025201355.1	Halteromyces radiatus	101107	Contig	26215609
+GCF_000696795.3	Halyomorpha halys	286706	Scaffold	1150087594
+GCF_018398535.1	Haplochromis burtoni	8153	Scaffold	854572272
+GCF_914767665.1	Harmonia axyridis	115357	Chromosome	425524972
+GCF_003227715.2	Harpegnathos saltator	610380	Scaffold	334161684
+GCF_026419915.1	Harpia harpyja	202280	Chromosome	1351447071
+GCF_036169615.1	Heliangelus exortis	472823	Chromosome	1049650714
+GCF_002127325.2	Helianthus annuus	4232	Chromosome	3009595538
+GCF_030705265.1	Helicoverpa armigera	29058	Chromosome	355232002
+GCF_022581195.2	Helicoverpa zea	7113	Chromosome	375165593
+GCF_000326865.2	Helobdella robusta	6412	Scaffold	235049875
+GCF_019097595.1	Hemibagrus wyckioides	337641	Chromosome	789799567
+GCF_027244095.1	Hemicordylus capensis	884348	Chromosome	2294751221
+GCF_020745735.1	Hemiscyllium ocellatum	170820	Chromosome	3983466396
+GCF_000018645.1	Hemiselmis andersenii	464988	Chromosome	571872
+GCF_048418815.1	Hemitrygon akajei	2704970	Chromosome	4229631903
+GCF_033568475.1	Henckelia pumila	405737	Chromosome	884533598
+GCF_000315915.1	Henningerozyma blattae CBS 6284	1071380	Chromosome	14048593
+GCF_035084215.1	Heptranchias perlo	212740	Chromosome	3249915908
+GCF_905115235.1	Hermetia illucens	343691	Chromosome	1004932590
+GCF_014898765.1	Herpailurus yagouaroundi	1608482	Scaffold	2473123098
+GCF_002168275.1	Herrania umbratica	108875	Scaffold	234039246
+GCF_022747635.1	Hetaerina americana	62018	Scaffold	1629772411
+GCF_000320585.1	Heterobasidion irregulare TC 32-1	747525	Scaffold	33649967
+GCF_000247695.1	Heterocephalus glaber	10181	Scaffold	2618188253
+GCF_036365525.1	Heterodontus francisci	7792	Chromosome	6013048672
+GCF_032191835.1	Heteronotia binoei	13085	Chromosome	2633446684
+GCF_000004825.1	Heterostelium album PN500	670386	Scaffold	32970186
+GCF_030052815.1	Hevea brasiliensis	3981	Chromosome	1876490218
+GCF_006381635.1	Hibiscus syriacus	106335	Scaffold	1826769743
+GCF_001891065.2	Hippocampus comes	109280	Scaffold	492114877
+GCF_025434085.1	Hippocampus zosterae	109293	Chromosome	544504747
+GCF_009819705.1	Hippoglossus hippoglossus	8267	Chromosome	596775069
+GCF_022539355.2	Hippoglossus stenolepis	195615	Chromosome	602147347
+GCF_030028045.1	Hippopotamus amphibius kiboko	575201	Chromosome	2538242855
+GCF_001890085.2	Hipposideros armiger	186990	Scaffold	2236309530
+GCF_020360975.1	Hirsutella rhossiliensis	111463	Scaffold	81749301
+GCF_015227805.2	Hirundo rustica	43150	Chromosome	1105955550
+GCF_020186115.1	Histomonas meleagridis	135588	Scaffold	43414808
+GCF_000150115.1	Histoplasma capsulatum G186AR	447093	Scaffold	30438878
+GCF_000149585.1	Histoplasma mississippiense	2059318	Scaffold	32988475
+GCF_021130785.1	Homalodisca vitripennis	197043	Chromosome	2304988238
+GCF_018991925.1	Homarus americanus	6706	Scaffold	2292059586
+GCF_000001405.40	Homo sapiens	9606	Chromosome	3099441038
+GCF_009914755.1	Homo sapiens	9606	Complete Genome	3117275501
+GCF_029633855.1	Hoplias malabaricus	27720	Chromosome	1186354877
+GCF_904849725.1	Hordeum vulgare subsp. vulgare	112509	Chromosome	4225577519
+GCF_000348985.1	Huiozyma naganishii CBS 8797	1071383	Chromosome	10845821
+GCF_963169125.1	Humulus lupulus	3486	Chromosome	2488098718
+GCF_003009895.1	Hyaena hyaena	95912	Scaffold	2374716107
+GCF_000764305.2	Hyalella azteca	294128	Scaffold	542348180
+GCF_002865645.1	Hyaloscypha bicolor E	1095630	Scaffold	82384847
+GCF_964215635.1	Hydra viridissima	6082	Chromosome	243968693
+GCF_038396675.1	Hydra vulgaris	6087	Complete Genome	911675201
+GCF_037890685.1	Hydra vulgaris	6087	Complete Genome	834212037
+GCF_029227915.1	Hydractinia symbiolongicarpus	13093	Chromosome	480922349
+GCF_029499605.1	Hyla sarda	327740	Chromosome	4142159359
+GCF_026225885.1	Hylaeus anthracinus	313031	Scaffold	254516172
+GCF_026283585.1	Hylaeus volcanicus	313075	Chromosome	252651163
+GCF_009828535.3	Hylobates moloch	81572	Scaffold	2848323459
+GCF_030144855.1	Hypanus sabinus	79690	Chromosome	4044869043
+GCF_040937935.1	Hyperolius riggenbachi	752182	Chromosome	4915935452
+GCF_949752795.1	Hyperoodon ampullatus	48744	Chromosome	2828744367
+GCF_001661395.1	Hyphopichia burtonii NRRL Y-1933	984485	Scaffold	12403110
+GCF_021917145.1	Hypomesus transpacificus	137520	Chromosome	437273953
+GCF_003589595.1	Hyposmocoma kahamanoa	1477025	Scaffold	731440758
+GCF_022984875.1	Hypoxylon fragiforme	63214	Contig	36400909
+GCF_022578975.1	Hypoxylon trugodes	326681	Scaffold	39350407
+GCF_000220395.1	Ichthyophthirius multifiliis	5932	Scaffold	48799969
+GCF_023375685.1	Ictalurus furcatus	66913	Chromosome	825459183
+GCF_001660625.3	Ictalurus punctatus	7998	Chromosome	842926452
+GCF_052094955.1	Ictidomys tridecemlineatus	43179	Chromosome	3144977123
+GCF_021365365.1	Ilyonectria robusta	1079257	Contig	59648482
+GCF_907164915.1	Impatiens glandulifera	253017	Chromosome	653879104
+GCF_027791375.1	Indicator indicator	1002788	Chromosome	1147325966
+GCF_001879475.1	Ipomoea nil	35883	Scaffold	734803190
+GCF_003576645.1	Ipomoea triloba	35885	Chromosome	461827428
+GCF_921293095.1	Ischnura elegans	197161	Chromosome	1722738530
+GCF_016920785.2	Ixodes scapularis	6945	Scaffold	2226883318
+GCF_020740685.1	Jaculus jaculus	51337	Chromosome	2863848715
+GCF_003144245.1	Jaminaea rosea	1569628	Scaffold	16615586
+GCF_014843425.1	Jatropha curcas	180498	Scaffold	266800151
+GCF_004785595.1	Juglans microcarpa x Juglans regia	2249226	Chromosome	527895757
+GCF_001411555.2	Juglans regia	51240	Chromosome	572786133
+GCF_000497045.1	Kalmanozyma brasiliensis GHG001	1365824	Scaffold	17325407
+GCF_000304475.1	Kazachstania africana CBS 2517	1071382	Chromosome	11130140
+GCF_025024165.1	Kickxella alabastrina	61397	Contig	22263034
+GCF_000002515.2	Kluyveromyces lactis	28985	Complete Genome	10689156
+GCF_001417885.1	Kluyveromyces marxianus DMKU3-1042	1003335	Complete Genome	10920159
+GCF_036327395.1	Knufia obscura	1635080	Contig	30507620
+GCF_038497685.1	Kockiozyma suomiensis	1337062	Scaffold	14000343
+GCF_002102565.1	Kockovaella imperatae	4999	Contig	17465713
+GCF_026419965.1	Kogia breviceps	27615	Chromosome	2555838840
+GCF_000027005.1	Komagataella phaffii GS115	644223	Chromosome	9216378
+GCF_001649575.2	Kryptolebias marmoratus	37003	Chromosome	680638340
+GCF_000576695.1	Kuraishia capsulata CBS 1993	1382522	Scaffold	11371246
+GCF_000512585.2	Kwoniella bestiolae CBS 10118	1296100	Complete Genome	24551665
+GCF_036426115.1	Kwoniella botswanensis	1268659	Complete Genome	23007246
+GCF_000512565.2	Kwoniella dejecticola CBS 10117	1296121	Complete Genome	23932770
+GCF_036810415.1	Kwoniella dendrophila CBS 6074	1295534	Complete Genome	23026020
+GCF_036810445.1	Kwoniella europaea PYCC6329	1423913	Complete Genome	22833461
+GCF_000507465.2	Kwoniella mangroviensis CBS 8507	1296122	Chromosome	22796923
+GCF_039105145.1	Kwoniella newhampshirensis	1651941	Chromosome	20459564
+GCF_000512605.2	Kwoniella pini CBS 10737	1296096	Complete Genome	20887338
+GCF_008629635.2	Kwoniella shandongensis	1734106	Complete Genome	21305292
+GCF_035658355.1	Kwoniella shivajii	564305	Complete Genome	22171496
+GCF_022985175.1	Labeo rohita	84645	Chromosome	1126541939
+GCF_963930695.1	Labrus bergylta	56723	Chromosome	720210020
+GCF_963584025.1	Labrus mixtus	508554	Chromosome	740563171
+GCF_000143565.1	Laccaria bicolor S238N-H82	486041	Scaffold	64877444
+GCF_009819535.1	Lacerta agilis	80427	Chromosome	1391387079
+GCF_000938715.1	Lachancea lanzarotensis	1245769	Scaffold	11092131
+GCF_000142805.1	Lachancea thermotolerans CBS 6340	559295	Chromosome	10392862
+GCF_007821495.1	Lachnellula hyalina	1316788	Contig	33828344
+GCF_052625555.1	Lactuca saligna	75948	Chromosome	2155816994
+GCF_002870075.5	Lactuca sativa	4236	Complete Genome	2601098885
+GCF_051521515.1	Lactuca serriola	75943	Chromosome	2552029383
+GCF_052849685.1	Lactuca virosa	75947	Chromosome	3378627238
+GCF_001632365.1	Laetiporus sulphureus 93-53	1314785	Scaffold	39909705
+GCF_949774975.1	Lagenorhynchus albirostris	27610	Chromosome	2544819402
+GCF_019238085.1	Lagopus leucura	30410	Scaffold	1016020572
+GCF_023343835.1	Lagopus muta	64668	Chromosome	1026755127
+GCF_964198595.1	Lampetra fluviatilis	7748	Chromosome	1042458987
+GCF_965212315.1	Lampetra planeri	7750	Chromosome	960362263
+GCF_029633865.1	Lampris incognitus	2546036	Chromosome	1482357630
+GCF_000972845.2	Larimichthys crocea	215358	Chromosome	657923191
+GCF_964199755.1	Larus michahellis	119627	Chromosome	1405564706
+GCF_012971845.1	Lasiodiplodia theobromae	45133	Contig	43694574
+GCF_051020765.1	Lasioglossum baleicum	434251	Chromosome	595325230
+GCF_030549165.1	Lasiosphaeria miniovina	1954250	Contig	49418628
+GCF_001640805.2	Lates calcarifer	8187	Chromosome	673797687
+GCF_037157495.1	Lathamus discolor	678569	Chromosome	1241003407
+GCF_024323335.1	Lathyrus oleraceus	3888	Chromosome	3796066963
+GCF_037176945.1	Latimeria chalumnae	7897	Chromosome	2947609019
+GCF_023078275.1	Leguminivora glycinivorella	1035111	Chromosome	657423512
+GCF_000002845.2	Leishmania braziliensis MHOM/BR/75/M2904	420245	Chromosome	32068771
+GCF_000227135.1	Leishmania donovani	5661	Chromosome	32444968
+GCF_017916305.1	Leishmania enriettii	5663	Chromosome	33318864
+GCF_000002875.2	Leishmania infantum JPCM5	435258	Chromosome	32122061
+GCF_000002725.2	Leishmania major strain Friedlin	347515	Complete Genome	32855089
+GCF_017916325.1	Leishmania martiniquensis	1580590	Chromosome	32413670
+GCF_000234665.1	Leishmania mexicana MHOM/GT/2001/U1103	929439	Chromosome	32108741
+GCF_017916335.1	Leishmania orientalis	2249476	Chromosome	34194276
+GCF_000755165.1	Leishmania panamensis	5679	Chromosome	30688794
+GCF_017918215.1	Leishmania sp. Ghana 2012 LV757	2803181	Chromosome	35953538
+GCF_017918225.1	Leishmania sp. Namibia	2802991	Chromosome	34118624
+GCF_020740605.2	Lemur catta	9447	Chromosome	2245584463
+GCF_021015755.1	Lentinula edodes	5353	Contig	45594472
+GCF_003813185.1	Lentinus tigrinus ALCF2SS1-7	1328758	Scaffold	39530113
+GCF_018350155.1	Leopardus geoffroyi	46844	Chromosome	2426370816
+GCF_016086655.4	Lepeophtheirus salmonis	72036	Chromosome	647090668
+GCF_965140285.1	Lepidochelys kempii	8472	Chromosome	2219022919
+GCF_001604755.1	Lepidothrix coronata	321398	Scaffold	1079577334
+GCF_040954835.1	Lepisosteus oculatus	7918	Chromosome	1200589847
+GCF_905404315.1	Leptidea sinapis	189913	Chromosome	685583065
+GCF_025532065.1	Leptinotarsa decemlineata	7539	Scaffold	810459509
+GCF_031893055.1	Leptodactylus fuscus	238119	Chromosome	2197979350
+GCF_001293395.1	Leptomonas pyrrhocoris	157538	Scaffold	30379903
+GCF_000349705.1	Leptonychotes weddellii	9713	Scaffold	3156886159
+GCF_019393585.1	Leptopilina boulardi	63433	Scaffold	354804354
+GCF_015476425.1	Leptopilina heterotoma	63436	Contig	484694486
+GCF_000691785.1	Leptosomus discolor	188344	Scaffold	1136244952
+GCF_033115175.1	Lepus europaeus	9983	Chromosome	2930954587
+GCF_014066305.1	Letharia columbiana	112416	Contig	52265057
+GCF_014066315.1	Letharia lupina	560253	Contig	49166941
+GCF_015708825.2	Lethenteron reissneri	7753	Chromosome	1063012140
+GCF_028641065.1	Leucoraja erinaceus	7782	Chromosome	2190844947
+GCF_036924035.1	Leuresthes tenuis	355514	Scaffold	917098913
+GCF_029851405.1	Lichtheimia ornata	688661	Scaffold	37534108
+GCF_963576545.1	Limanda limanda	27771	Chromosome	717580706
+GCF_038497785.1	Limtongia smithiae	1125753	Scaffold	14146010
+GCF_000517525.1	Limulus polyphemus	6850	Scaffold	1828256766
+GCF_002104995.1	Linderina pennispora	61395	Contig	26202545
+GCF_010093535.1	Lindgomyces ingoldianus	673940	Scaffold	69030646
+GCF_040581485.1	Linepithema humile	83485	Chromosome	244426654
+GCF_910592395.1	Lineus longissimus	88925	Chromosome	391165532
+GCF_001039355.2	Lingula anatina	7574	Scaffold	406282338
+GCF_032854445.1	Liolophura sinensis	3198878	Chromosome	609495693
+GCF_038497795.1	Lipomyces arxii	56418	Scaffold	11916093
+GCF_038497645.1	Lipomyces chichibuensis	1546026	Scaffold	16367653
+GCF_038497915.1	Lipomyces doorenjongii	383834	Scaffold	18877777
+GCF_038497905.1	Lipomyces japonicus	56871	Scaffold	13369807
+GCF_038497815.1	Lipomyces oligophaga	45792	Scaffold	13579278
+GCF_029532465.1	Lipomyces tetrasporus	54092	Contig	20779202
+GCF_963383615.1	Lipophrys pholis	56720	Chromosome	768226363
+GCF_000442215.2	Lipotes vexillifer	118797	Scaffold	2419479385
+GCF_964261635.1	Lissotriton helveticus	256425	Chromosome	23170028842
+GCF_037356315.1	Lithobates pipiens	8404	Scaffold	5869026128
+GCF_036872675.1	Lithohypha guttulata	1690604	Scaffold	24440621
+GCF_037325665.1	Littorina saxatilis	31220	Chromosome	1256192465
+GCF_000183805.2	Loa loa	7209	Scaffold	91365832
+GCF_002105155.1	Lobosporangium transversale	64571	Contig	42768949
+GCF_963989305.1	Lodderomyces beijingensis	1775926	Complete Genome	15114296
+GCF_030384665.1	Lodderomyces elongisporus	36914	Complete Genome	16086460
+GCF_019359855.2	Lolium perenne	4522	Chromosome	2264761315
+GCF_022539505.1	Lolium rigidum	89674	Chromosome	2438467165
+GCF_046129695.1	Lonchura striata	40157	Chromosome	1207550942
+GCF_010015895.1	Lontra canadensis	76717	Scaffold	2405748306
+GCF_000327385.1	Lottia gigantea	225164	Scaffold	359505668
+GCF_012489685.1	Lotus japonicus	34305	Chromosome	553706387
+GCF_030014295.1	Loxodonta africana	9785	Chromosome	3540876381
+GCF_022045245.1	Lucilia cuprina	7375	Chromosome	409159265
+GCF_015586225.1	Lucilia sericata	13632	Contig	565289533
+GCF_001865875.1	Lupinus angustifolius	3871	Chromosome	609203021
+GCF_902655055.1	Lutra lutra	9657	Chromosome	2438442342
+GCF_024334085.1	Lutzomyia longipalpis	7200	Chromosome	147838017
+GCF_019175385.1	Lycium barbarum	112863	Chromosome	1669658834
+GCF_029784015.1	Lycium ferocissimum	112874	Chromosome	1219357132
+GCF_047948215.1	Lycorma delicatula	130591	Chromosome	2201051051
+GCF_007474595.2	Lynx canadensis	61383	Chromosome	2407810255
+GCF_022079265.1	Lynx rufus	61384	Scaffold	2439239374
+GCF_037042905.1	Lytechinus pictus	7653	Chromosome	811721768
+GCF_018143015.1	Lytechinus variegatus	7654	Chromosome	869582435
+GCF_037993035.2	Macaca fascicularis	9541	Complete Genome	3060038958
+GCF_049350105.2	Macaca mulatta	9544	Complete Genome	3115120525
+GCF_043159975.1	Macaca nemestrina	9545	Chromosome	3116288670
+GCF_024542745.1	Macaca thibetana thibetana	257877	Chromosome	2822383045
+GCF_013358625.1	Macadamia integrifolia	60698	Chromosome	744777467
+GCF_015104395.2	Macrobrachium nipponense	159736	Chromosome	4253862858
+GCF_040412425.1	Macrobrachium rosenbergii	79674	Chromosome	3176521071
+GCF_028750875.1	Macrosteles quadrilineatus	74068	Scaffold	1317891973
+GCF_037893015.1	Macrotis lagotis	92651	Chromosome	3655715178
+GCF_010093625.1	Macroventuria anomochaeta	301207	Scaffold	33336106
+GCF_045866475.1	Madurella fahalii	1157608	Contig	40045822
+GCF_025612915.1	Magallana angulata	2784310	Chromosome	624273838
+GCF_963853765.1	Magallana gigas	29159	Chromosome	563985803
+GCF_029962835.1	Magnolia sinica	86752	Chromosome	1838578862
+GCF_902498895.1	Magnusiomyces paraingens	2606893	Contig	21189208
+GCF_027887155.1	Malaclemys terrapin pileata	2991368	Chromosome	2211221380
+GCF_029873635.1	Malania oleifera	397392	Chromosome	1494424960
+GCF_000181695.2	Malassezia globosa CBS 7966	425265	Contig	8954998
+GCF_029542785.1	Malassezia japonica	223818	Complete Genome	8433779
+GCF_001278385.1	Malassezia pachydermatis	77020	Scaffold	8150648
+GCF_003290485.1	Malassezia restricta	76775	Complete Genome	7330907
+GCF_000349305.1	Malassezia sympodialis ATCC 42132	1230383	Scaffold	7669689
+GCF_029542925.1	Malassezia vespertilionis	2020962	Complete Genome	7595203
+GCF_030247185.1	Malaya genurostris	325434	Chromosome	831262279
+GCF_030028575.1	Malurus melanocephalus	175006	Scaffold	1020668800
+GCF_042453785.1	Malus domestica	3750	Complete Genome	650775246
+GCF_916048215.2	Malus sylvestris	3752	Chromosome	640969901
+GCF_025592945.1	Manacus candei	415023	Contig	1121284527
+GCF_001715985.3	Manacus vitellinus	328815	Scaffold	1072328541
+GCF_000951045.1	Mandrillus leucophaeus	9568	Scaffold	3061992840
+GCF_014839805.1	Manduca sexta	7130	Chromosome	470021481
+GCF_011075055.1	Mangifera indica	29780	Chromosome	391961648
+GCF_001659605.2	Manihot esculenta	3983	Chromosome	639586700
+GCF_902806685.2	Maniola hyperantus	2795564	Chromosome	408137179
+GCF_905333055.1	Maniola jurtina	191418	Chromosome	402038846
+GCF_040802235.1	Manis javanica	9974	Chromosome	2559979548
+GCF_030020395.1	Manis pentadactyla	143292	Chromosome	2840164579
+GCF_018924745.1	Marasmius oreades	181124	Chromosome	44306131
+GCF_047511675.1	Marmota flaviventris	93162	Chromosome	2704651887
+GCF_001458135.2	Marmota marmota marmota	9994	Scaffold	2506852125
+GCF_021218885.2	Marmota monax	9995	Scaffold	2638774606
+GCF_963455335.1	Martes martes	29065	Chromosome	2484633589
+GCF_900324485.3	Mastacembelus armatus	205130	Chromosome	591935101
+GCF_008632895.1	Mastomys coucha	35658	Chromosome	2507168619
+GCF_903064755.1	Maudiozyma barnettii	61262	Scaffold	12616033
+GCF_020497125.1	Mauremys mutica	74926	Chromosome	2484351270
+GCF_016161935.1	Mauremys reevesii	260615	Chromosome	2367590653
+GCF_041146795.1	Maylandia zebra	106582	Chromosome	962175383
+GCF_003473485.1	Medicago truncatula	3880	Chromosome	429612362
+GCF_050947335.1	Megachile rotundata	143995	Chromosome	613361532
+GCF_018812025.1	Megalobrama amblycephala	75352	Chromosome	1109871993
+GCF_013368585.1	Megalops cyprinoides	118141	Chromosome	959241634
+GCF_051020955.1	Megalopta genalis	115081	Chromosome	771760085
+GCF_003144205.1	Meira miltonrushii	1280837	Scaffold	17383515
+GCF_000204055.1	Melampsora larici-populina 98AG31	747676	Scaffold	101129028
+GCF_002803265.2	Melanaphis sacchari	742174	Scaffold	300271876
+GCF_026170545.1	Melanerpes formicivorus	211600	Scaffold	1323528184
+GCF_949748355.1	Melanostigma gelatinosum	1091424	Chromosome	661958652
+GCF_017639745.1	Melanotaenia boesemani	1250792	Chromosome	865575964
+GCF_000146605.3	Meleagris gallopavo	9103	Chromosome	1115457962
+GCF_922984935.2	Meles meles	9662	Chromosome	2738678004
+GCF_905220565.1	Melitaea cinxia	113334	Chromosome	499397863
+GCF_012275295.1	Melopsittacus undulatus	13146	Chromosome	1171617451
+GCF_028018845.1	Melospiza georgiana	44398	Chromosome	1162015399
+GCF_035770615.1	Melospiza melodia melodia	1914991	Chromosome	1541245192
+GCF_028551555.1	Melozone crissalis	40204	Contig	1412182309
+GCF_021730395.1	Mercenaria mercenaria	6596	Chromosome	1858199728
+GCF_937616625.2	Mercurialis annua	3986	Chromosome	453168992
+GCF_030254825.1	Meriones unguiculatus	10047	Chromosome	2702201048
+GCF_000691845.1	Merops nubicus	57421	Scaffold	1062961556
+GCF_000695765.1	Mesitornis unicolor	54374	Scaffold	1087290853
+GCF_017639785.1	Mesocricetus auratus	10036	Scaffold	2457062007
+GCF_964165515.1	Mesoplodon bidens	48745	Chromosome	2999082157
+GCF_025265405.1	Mesoplodon densirostris	48708	Chromosome	2683375131
+GCF_019434415.1	Metarhizium acridum	92637	Scaffold	44714781
+GCF_000804445.1	Metarhizium album ARSEF 1941	1081103	Scaffold	30449065
+GCF_013426205.1	Metarhizium brunneum	500148	Complete Genome	37771916
+GCF_000187425.2	Metarhizium robertsii ARSEF 23	655844	Scaffold	41656800
+GCF_019925205.1	Metopolophium dirhodum	44670	Chromosome	480811620
+GCF_001664035.1	Metschnikowia bicuspidata var. bicuspidata NRRL YB-4993	869754	Scaffold	16055203
+GCF_000149425.1	Meyerozyma guilliermondii ATCC 6260	294746	Scaffold	10609954
+GCF_901765095.2	Microcaecilia unicolor	1415580	Chromosome	4685923413
+GCF_040939455.1	Microcebus murinus	30608	Chromosome	2350949499
+GCF_020744255.1	Microdochium trichocladiopsis	1682393	Contig	49282715
+GCF_000090985.2	Micromonas commoda	296587	Complete Genome	20989326
+GCF_000151265.4	Micromonas pusilla CCMP1545	564608	Scaffold	21958260
+GCF_963924665.1	Micromys minutus	13151	Chromosome	2651771171
+GCF_026212275.2	Microplitis demolitor	69319	Chromosome	225878136
+GCF_029852145.1	Microplitis mediator	375433	Chromosome	269288274
+GCF_021292245.1	Micropterus dolomieu	147949	Chromosome	829570727
+GCF_014851395.1	Micropterus salmoides	27706	Scaffold	963597430
+GCF_000151145.1	Microsporum canis CBS 113480	554155	Scaffold	23241642
+GCF_003144135.1	Microstroma glucosiphilum	1684307	Scaffold	17184282
+GCF_000317375.1	Microtus ochrogaster	79684	Chromosome	2287340943
+GCF_018167655.1	Microtus oregoni	111838	Contig	3017107361
+GCF_037038515.1	Microtus pennsylvanicus	10058	Chromosome	2369119668
+GCF_001595765.1	Miniopterus natalensis	291302	Scaffold	1803099001
+GCF_964146895.1	Miniopterus schreibersii	9433	Chromosome	1850573702
+GCF_029215605.1	Mirounga angustirostris	9716	Scaffold	2430305188
+GCF_011800145.1	Mirounga leonina	9715	Scaffold	2417303335
+GCF_019320115.1	Miscanthus floridulus	154761	Chromosome	2684453698
+GCF_027580225.2	Misgurnus anguillicaudatus	75329	Chromosome	1120296596
+GCF_000760515.2	Mitosporidium daphniae	1485682	Contig	5635072
+GCF_000708205.1	Mixia osmundae IAM 14324	764103	Scaffold	13634488
+GCF_038048845.1	Mixophyes fleayi	3061075	Chromosome	2969628263
+GCF_002113885.1	Mizuhopecten yessoensis	6573	Scaffold	987568220
+GCF_030028105.1	Mobula birostris	1983395	Chromosome	4014635230
+GCF_963921235.1	Mobula hypostoma	723540	Chromosome	3475679493
+GCF_000747765.1	Moesziomyces antarcticus	84753	Scaffold	18111965
+GCF_001500285.1	Mollisia scopiformis	149040	Scaffold	48876257
+GCF_014108415.1	Molossus molossus	27622	Scaffold	2315568481
+GCF_037042795.1	Molothrus aeneus	84833	Chromosome	1177171786
+GCF_012460135.2	Molothrus ater	84834	Chromosome	1087219985
+GCF_001995035.1	Momordica charantia	3673	Scaffold	285613949
+GCF_001643675.1	Monocercomonoides exilis	2049356	Contig	82301135
+GCF_027887165.1	Monodelphis domestica	13616	Chromosome	3586166573
+GCF_005190385.1	Monodon monoceros	40151	Scaffold	2355574979
+GCF_013373865.1	Monomorium pharaonis	307658	Chromosome	325506644
+GCF_001952655.1	Monopterus albus	43700	Scaffold	684127526
+GCF_000611645.1	Monoraphidium neglectum	145388	Scaffold	69482627
+GCF_000002865.3	Monosiga brevicollis MX1	431895	Scaffold	41633360
+GCF_036669925.1	Montipora capricornis	246305	Chromosome	809264945
+GCF_036669935.1	Montipora foliosa	591990	Chromosome	789253072
+GCF_003444635.1	Morchella importuna	1174673	Scaffold	50927171
+GCF_020137385.1	Morchella sextelata	1174677	Contig	53569587
+GCF_004916995.1	Morone saxatilis	34816	Scaffold	598109547
+GCF_000414095.1	Morus notabilis	981085	Scaffold	320378613
+GCF_022376915.1	Moschus berezovskii	68408	Scaffold	2813355390
+GCF_015832195.1	Motacilla alba alba	1094192	Chromosome	1072653902
+GCF_051309035.1	Mrakia frigida	29902	Scaffold	28159101
+GCF_025094135.1	Mucor mucedo	29922	Contig	46086937
+GCF_035048745.1	Mucor velutinosus	708070	Contig	40195241
+GCF_022458985.1	Mugil cephalus	48193	Chromosome	634849760
+GCF_963930625.1	Muntiacus reevesi	9886	Chromosome	2656168540
+GCF_900094665.2	Mus caroli	10089	Chromosome	2552816249
+GCF_000001635.27	Mus musculus	10090	Chromosome	2728206152
+GCF_900095145.1	Mus pahari	10093	Chromosome	2475012951
+GCF_036884655.1	Musa acuminata AAA Group	214697	Chromosome	1533734047
+GCF_047663935.1	Musca autumnalis	221902	Scaffold	1446201459
+GCF_030504385.1	Musca domestica	7370	Scaffold	1032604506
+GCF_032173495.1	Musca vetustissima	27455	Contig	850573461
+GCF_963383645.1	Muscardinus avellanarius	39082	Chromosome	2497503975
+GCF_009829155.1	Mustela erminea	36723	Chromosome	2445200799
+GCF_030435805.1	Mustela lutreola	9666	Chromosome	2586268927
+GCF_022355385.1	Mustela nigripes	77151	Chromosome	2498532951
+GCF_011764305.1	Mustela putorius furo	9669	Contig	2577090966
+GCF_964213995.1	Mustelus asterias	112232	Chromosome	3679774521
+GCF_026914265.1	Mya arenaria	6604	Chromosome	1216068291
+GCF_014461135.1	Mycena indigotica	2126181	Contig	72886219
+GCF_001594055.1	Mycetomoellerius zeteki	64791	Scaffold	267973152
+GCF_000328475.2	Mycosarcoma maydis	5270	Chromosome	19664356
+GCF_041956435.1	Mycothermus thermophilus	85995	Scaffold	29324833
+GCF_025528875.1	Mycotypha africana	64632	Contig	29202882
+GCF_035582795.1	Mycteria americana	33587	Chromosome	1348542611
+GCF_022539395.1	Myiozetetes cayanensis	478635	Scaffold	1075628138
+GCF_902806735.1	Myodes glareolus	447135	Scaffold	2323042649
+GCF_000412655.1	Myotis brandtii	109478	Scaffold	2107242811
+GCF_963259705.1	Myotis daubentonii	98922	Chromosome	2127807131
+GCF_000327345.1	Myotis davidii	225400	Scaffold	2059799708
+GCF_000147115.1	Myotis lucifugus	59463	Scaffold	2034575300
+GCF_014108235.1	Myotis myotis	51298	Scaffold	2002780556
+GCF_964212035.1	Myotis nattereri	109481	Chromosome	2138575456
+GCF_028538775.1	Myotis yumanensis	159337	Scaffold	1952483305
+GCF_902150065.1	Myripristis murdjan	586833	Chromosome	835254674
+GCF_010093595.1	Mytilinidion resinicola	574789	Scaffold	47275052
+GCF_021869535.1	Mytilus californianus	6549	Scaffold	1651950171
+GCF_963676685.1	Mytilus edulis	6550	Chromosome	1368414245
+GCF_965363235.1	Mytilus galloprovincialis	29158	Chromosome	1385371576
+GCF_036588685.1	Mytilus trossulus	6551	Chromosome	1298571991
+GCF_964187855.1	Myxine glutinosa	7769	Chromosome	3057504053
+GCF_019703515.2	Myxocyprinus asiaticus	70543	Chromosome	2340848162
+GCF_037950935.1	Myxozyma melibiosi	54550	Contig	15330035
+GCF_001856785.1	Myzus persicae	13164	Scaffold	347296088
+GCF_008403515.1	Naegleria fowleri	5763	Scaffold	29500442
+GCF_000004985.1	Naegleria gruberi	5762	Scaffold	40964085
+GCF_003324165.1	Naegleria lovaniensis	51637	Scaffold	30830176
+GCF_045282275.1	Nakaseomyces bracarensis	273131	Contig	12739700
+GCF_010111755.1	Nakaseomyces glabratus	5478	Chromosome	12726212
+GCF_000150975.2	Nannizzia gypsea CBS 118893	535722	Scaffold	23249403
+GCF_963921795.1	Nannobrachium achirus	473322	Chromosome	1658830932
+GCF_000240725.1	Nannochloropsis gaditana CCMP526	1093141	Scaffold	33986952
+GCF_000622305.1	Nannospalax galili	1026970	Scaffold	3061408210
+GCF_000935625.1	Nanorana parkeri	125878	Scaffold	2053849526
+GCF_963989245.1	Nansenia antarctica	443705	Chromosome	1085777971
+GCF_036971445.1	Narcine bancroftii	1343680	Chromosome	3328432768
+GCF_009193385.2	Nasonia vitripennis	7425	Chromosome	297309692
+GCF_965152275.1	Natator depressus	27790	Chromosome	2173430419
+GCF_000237345.1	Naumovozyma castellii	27288	Chromosome	11219539
+GCF_000227115.2	Naumovozyma dairenensis CBS 421	1071378	Chromosome	13527580
+GCF_031761385.1	Necator americanus	51031	Chromosome	234457255
+GCF_004799145.2	Neltuma alba	207710	Contig	707081395
+GCF_000365185.1	Nelumbo nucifera	4432	Scaffold	804484421
+GCF_046127955.1	Nelusetta ayraudi	303726	Contig	576472122
+GCF_000738915.1	Nematocida ausubeli	1913371	Scaffold	4276041
+GCF_001642395.1	Nematocida displodere	1805483	Scaffold	3066400
+GCF_024244095.1	Nematocida homosporus	1912981	Scaffold	4282417
+GCF_021653875.1	Nematocida major	1912982	Scaffold	3787290
+GCF_024244105.1	Nematocida minor	1912983	Scaffold	3742434
+GCF_000250985.1	Nematocida parisii ERTm1	881290	Scaffold	4071346
+GCF_014905685.2	Nematolebias whitei	451745	Chromosome	1218316901
+GCF_932526225.1	Nematostella vectensis	45351	Chromosome	269418438
+GCF_027579695.1	Neoarius graeffei	443677	Chromosome	2341916362
+GCF_022829205.1	Neoarthrinium moseri	1658444	Scaffold	43702215
+GCF_031216515.1	Neocloeon triangulifer	2078957	Contig	152025746
+GCF_021155785.1	Neodiprion fabricii	2872261	Chromosome	260422217
+GCF_021901455.1	Neodiprion lecontei	441921	Chromosome	272073844
+GCF_021155775.2	Neodiprion pinetum	441929	Chromosome	272498186
+GCF_021901495.1	Neodiprion virginianus	2961670	Chromosome	262970509
+GCF_041146345.1	Neodothiora populina	2781224	Contig	23962758
+GCF_028018385.1	Neofelis nebulosa	61452	Chromosome	2468345093
+GCF_020171115.1	Neogale vison	452646	Chromosome	2681198719
+GCF_010093505.1	Neohortaea acidophila	245834	Scaffold	20432448
+GCF_000239395.1	Neolamprologus brichardi	32507	Scaffold	847893845
+GCF_002201575.2	Neomonachus schauinslandi	29088	Chromosome	2419443398
+GCF_003984885.1	Neopelma chrysocephalum	114329	Scaffold	1142796179
+GCF_003031525.2	Neophocaena asiaeorientalis asiaeorientalis	1706337	Scaffold	2284609912
+GCF_033783945.1	Neopsephotus bourkii	309878	Scaffold	1122590461
+GCF_000208865.1	Neospora caninum Liverpool	572307	Chromosome	57547420
+GCF_033978685.3	Nerophis lumbriciformis	546530	Chromosome	1774801482
+GCF_033978795.1	Nerophis ophidion	159077	Chromosome	1845757181
+GCF_963082525.1	Nesoenas mayeri	187126	Chromosome	1183254979
+GCF_000696875.1	Nestor notabilis	176057	Scaffold	1053559886
+GCF_000182925.2	Neurospora crassa OR74A	367110	Chromosome	41037538
+GCF_033458365.1	Neurospora hispaniola	588809	Contig	40807401
+GCF_000213175.1	Neurospora tetrasperma FGSC 2508	510951	Scaffold	39146333
+GCF_033439725.1	Neurospora tetraspora	94610	Contig	43856413
+GCF_001879085.1	Nicotiana attenuata	49451	Chromosome	2365682703
+GCF_000393655.2	Nicotiana sylvestris	4096	Chromosome	2321584986
+GCF_000715075.1	Nicotiana tabacum	4097	Chromosome	3995639705
+GCF_000390325.3	Nicotiana tomentosiformis	4098	Chromosome	1741753706
+GCF_001412225.1	Nicrophorus vespilloides	110193	Scaffold	195273382
+GCF_014356525.2	Nilaparvata lugens	108931	Chromosome	1085539448
+GCF_000708225.1	Nipponia nippon	128390	Scaffold	1223846297
+GCF_006542625.1	Nomascus leucogenys	61853	Chromosome	2843966406
+GCF_051020985.1	Nomia melanderi	2448451	Chromosome	447524585
+GCF_028372415.1	Notamacropus eugenii	9315	Chromosome	3447464908
+GCF_900518725.1	Notechis scutatus	8663	Scaffold	1665525958
+GCF_043380555.1	Nothobranchius furzeri	105023	Chromosome	1479182959
+GCF_003342845.1	Nothoprocta perdicaria	30464	Scaffold	965904370
+GCF_009762535.1	Notolabrus celidotus	1203425	Chromosome	846744125
+GCF_000735185.1	Notothenia coriiceps	8208	Scaffold	636595335
+GCF_949606895.1	Notothenia rossii	101497	Chromosome	1042884354
+GCF_964106895.1	Numenius arquata	31919	Chromosome	1348859203
+GCF_002078875.1	Numida meleagris	8996	Chromosome	1043247365
+GCF_905146905.1	Nyctereutes procyonoides	34880	Scaffold	2387080870
+GCF_013368605.1	Nyctibius grandis	48427	Chromosome	1256393467
+GCF_027406575.1	Nycticebus coucang	9470	Chromosome	2917154053
+GCF_005281655.2	Nylanderia fulva	613905	Scaffold	369947649
+GCF_008831285.2	Nymphaea colorata	210225	Chromosome	408118238
+GCF_905147045.1	Nymphalis io	171585	Chromosome	384156914
+GCF_037179485.1	Ochlerotatus camptorhynchus	644619	Contig	1079575157
+GCF_017591425.1	Ochotona curzoniae	130825	Scaffold	2086111946
+GCF_030435755.1	Ochotona princeps	9978	Chromosome	2555444530
+GCF_000260255.1	Octodon degus	10160	Scaffold	2995872505
+GCF_001194135.2	Octopus bimaculoides	37653	Chromosome	2342518435
+GCF_006345805.1	Octopus sinensis	2607531	Chromosome	2719136158
+GCF_052425735.1	Oculina patagonica	130080	Chromosome	529418093
+GCF_000321225.1	Odobenus rosmarus divergens	9708	Scaffold	2400133628
+GCF_023699985.2	Odocoileus virginianus	9874	Chromosome	2423246854
+GCF_027942865.1	Odontesthes bonariensis	219752	Chromosome	945823896
+GCF_010583005.1	Odontomachus brunneus	486640	Scaffold	393036571
+GCF_029582105.1	Oenanthe melanoleuca	2939378	Chromosome	1036256795
+GCF_019207475.1	Ogataea angusta	870730	Contig	8903801
+GCF_019207285.1	Ogataea haglerorum	1937702	Scaffold	8874124
+GCF_000187245.1	Ogataea parapolymorpha DL-1	871575	Chromosome	8874589
+GCF_020536065.1	Ogataea philodendri	1378263	Scaffold	9002259
+GCF_001664045.1	Ogataea polymorpha	460523	Contig	8974371
+GCF_002742605.1	Olea europaea var. sylvestris	158386	Chromosome	1140989389
+GCF_045791955.1	Oncorhynchus clarkii lewisi	490388	Chromosome	2404487246
+GCF_021184085.1	Oncorhynchus gorbuscha	8017	Chromosome	2690266878
+GCF_023373465.1	Oncorhynchus keta	8018	Chromosome	2556461070
+GCF_002021735.2	Oncorhynchus kisutch	8019	Chromosome	2375894934
+GCF_036934945.1	Oncorhynchus masou masou	90313	Chromosome	2664785840
+GCF_013265735.2	Oncorhynchus mykiss	8022	Chromosome	2341671972
+GCF_034236695.1	Oncorhynchus nerka	8023	Chromosome	2645619652
+GCF_018296145.1	Oncorhynchus tshawytscha	74940	Chromosome	2294842546
+GCF_036711975.1	Onthophagus taurus	166361	Chromosome	290855388
+GCF_903995425.1	Onychomys torridus	38674	Chromosome	2468394440
+GCF_012432095.1	Onychostoma macrolepis	369639	Chromosome	886569841
+GCF_017590055.1	Onychostruthus taczanowskii	356909	Scaffold	1033716807
+GCF_003672135.2	Ooceraea biroi	2015173	Chromosome	223876465
+GCF_022830035.1	Ophidiomyces ophidiicola	1387563	Scaffold	21919615
+GCF_030867145.1	Opisthocomus hoazin	30419	Chromosome	1482459898
+GCF_000715545.1	Opisthorchis viverrini	6198	Scaffold	620452578
+GCF_028296485.1	Oppia nitens	1686743	Scaffold	126096124
+GCF_046742065.1	Oratosquilla oratoria	337810	Chromosome	2965624169
+GCF_002042975.1	Orbicella faveolata	48498	Scaffold	485532801
+GCF_964199315.1	Orbicella franksi	48499	Chromosome	496972095
+GCF_000225545.1	Orbilia oligospora ATCC 24927	756982	Scaffold	40072829
+GCF_937001465.1	Orcinus orca	9733	Chromosome	2647335075
+GCF_000803265.1	Ordospora colligata OC4	1354746	Contig	2290528
+GCF_021821965.1	Ordospora pajunii	3039483	Contig	2206487
+GCF_013358895.1	Oreochromis aureus	47969	Chromosome	1005558595
+GCF_001858045.2	Oreochromis niloticus	8128	Chromosome	1005664923
+GCF_037126465.1	Ornithodoros turicata	34597	Chromosome	1071349989
+GCF_004115215.2	Ornithorhynchus anatinus	9258	Chromosome	1859264908
+GCF_000612105.2	Orussus abietinus	222816	Scaffold	186398216
+GCF_000298275.1	Orycteropus afer afer	1230840	Scaffold	4444063711
+GCF_964237555.1	Oryctolagus cuniculus	9986	Chromosome	2804657419
+GCF_014754425.2	Oryx dammah	59534	Scaffold	2707165964
+GCF_000231095.2	Oryza brachyantha	4533	Chromosome	263195077
+GCF_000147395.1	Oryza glaberrima	4538	Chromosome	347321046
+GCF_034140825.1	Oryza sativa Japonica Group	39947	Complete Genome	385710679
+GCF_053564925.1	Oryzias latipes	8090	Chromosome	863417014
+GCF_002922805.2	Oryzias melastigma	30732	Chromosome	778686656
+GCF_947507565.1	Oscarella lobularis	121494	Chromosome	65248392
+GCF_963692335.1	Osmerus eperlanus	29151	Chromosome	508721272
+GCF_038355195.1	Osmerus mordax	8014	Chromosome	497673479
+GCF_907164935.1	Osmia bicornis bicornis	1437191	Chromosome	222969496
+GCF_051020975.1	Osmia lignaria lignaria	1437193	Chromosome	498530203
+GCF_947568905.1	Ostrea edulis	37623	Chromosome	894786893
+GCF_000092065.1	Ostreococcus lucimarinus CCE9901	436017	Complete Genome	13204888
+GCF_000214015.3	Ostreococcus tauri	70448	Chromosome	12916858
+GCF_004193835.3	Ostrinia furnacalis	93504	Scaffold	435187609
+GCF_963855985.1	Ostrinia nubilalis	29057	Chromosome	495500553
+GCF_000181295.1	Otolemur garnettii	30611	Scaffold	2519724550
+GCF_016772045.2	Ovis aries	9940	Chromosome	2654047367
+GCF_042477335.2	Ovis canadensis	37174	Chromosome	2974267070
+GCF_011077185.1	Oxyura jamaicensis	8884	Chromosome	1147585764
+GCF_004022145.1	Paecilomyces variotii	264951	Contig	30105809
+GCF_040436345.1	Pagrus major	143350	Chromosome	785972034
+GCF_036898095.1	Palaemon carinicauda	392227	Chromosome	5857136127
+GCF_029289425.2	Pan paniscus	9597	Chromosome	3244888708
+GCF_028858775.2	Pan troglodytes	9598	Chromosome	3177739762
+GCF_027358585.1	Pangasianodon hypophthalmus	310915	Chromosome	764974446
+GCF_002211085.1	Panicum hallii	206008	Chromosome	535889049
+GCF_016808335.1	Panicum virgatum	38727	Chromosome	1129857985
+GCF_014898815.1	Panonychus citri	50023	Contig	83967451
+GCF_018350215.1	Panthera leo	9689	Chromosome	2297552363
+GCF_046562885.1	Panthera onca	9690	Chromosome	2303345105
+GCF_024362965.1	Panthera pardus	9691	Scaffold	2441326314
+GCF_018350195.1	Panthera tigris	9694	Chromosome	2408678698
+GCF_023721935.1	Panthera uncia	29064	Chromosome	2433972596
+GCF_029531705.1	Pantherophis guttatus	94885	Scaffold	1708105946
+GCF_036320965.1	Panulirus ornatus	150431	Chromosome	2652407876
+GCF_003573695.1	Papaver somniferum	3469	Chromosome	2715377404
+GCF_912999745.1	Papilio machaon	76193	Chromosome	252114018
+GCF_000836215.1	Papilio polytes	76194	Scaffold	227005758
+GCF_000836235.2	Papilio xuthus	66420	Scaffold	223546057
+GCF_008728515.1	Papio anubis	9555	Chromosome	2869804647
+GCF_000150735.1	Paracoccidioides brasiliensis Pb18	502780	Scaffold	29952540
+GCF_000150705.2	Paracoccidioides lutzii Pb01	502779	Scaffold	32925248
+GCF_024713975.1	Paralichthys olivaceus	8255	Chromosome	588170514
+GCF_019649055.1	Paramacrobiotus metropolitanus	2943436	Scaffold	170509133
+GCF_900634625.2	Parambassis ranga	210632	Chromosome	551012959
+GCF_000165425.1	Paramecium tetraurelia	5888	Scaffold	72094543
+GCF_000141845.1	Paramecium tetraurelia strain d4-2	412030	Chromosome	984602
+GCF_030506205.2	Paramisgurnus dabryanus	90735	Chromosome	1043469091
+GCF_048594095.1	Paramormyrops kingsleyae	1676925	Chromosome	933939706
+GCF_001642045.1	Paraphaeosphaeria sporulosa	1460663	Scaffold	38464024
+GCF_905163445.1	Pararge aegeria	116150	Chromosome	516571003
+GCF_000146915.1	Parastagonospora nodorum SN15	321614	Scaffold	37164226
+GCF_043381705.1	Parasteatoda tepidariorum	114398	Chromosome	1123819019
+GCF_033297405.1	Parathielavia appendiculata	2587402	Scaffold	32737472
+GCF_049243985.1	Paroedura picta	143630	Chromosome	1751518920
+GCF_001522545.3	Parus major	9157	Chromosome	1020293992
+GCF_036417665.1	Passer domesticus	48849	Chromosome	1310114252
+GCF_014805655.1	Passer montanus	9160	Scaffold	1039949367
+GCF_037038585.1	Patagioenas fasciata	372321	Chromosome	1454324034
+GCF_932274485.2	Patella vulgata	6465	Chromosome	695367781
+GCF_015706575.1	Patiria miniata	46514	Scaffold	608344308
+GCF_902652985.1	Pecten maximus	6579	Chromosome	918306378
+GCF_024362695.1	Pectinophora gossypiella	13191	Chromosome	476494545
+GCF_000006295.1	Pediculus humanus corporis	121224	Scaffold	110781312
+GCF_030463565.1	Pelecanus crispus	36300	Chromosome	1314568463
+GCF_036321145.2	Pelmatolapia mariae	158779	Chromosome	972201687
+GCF_036172605.1	Pelobates fuscus	191477	Chromosome	3606456729
+GCF_049634645.1	Pelodiscus sinensis	13735	Chromosome	2243870947
+GCF_042242105.1	Pempheris klunzingeri	3127111	Chromosome	646252061
+GCF_019202785.1	Penaeus chinensis	139456	Chromosome	1466063637
+GCF_018983055.1	Penaeus indicus	29960	Scaffold	1930286013
+GCF_017312705.1	Penaeus japonicus	27405	Scaffold	1704994957
+GCF_015228065.2	Penaeus monodon	6687	Chromosome	2391040180
+GCF_042767895.1	Penaeus vannamei	6689	Chromosome	1796874110
+GCF_001890105.1	Penicilliopsis zonata CBS 506.65	1073090	Scaffold	26088231
+GCF_028826965.1	Penicillium alfredii	1506179	Contig	27430394
+GCF_028827245.1	Penicillium angulare	116970	Contig	37782843
+GCF_028974205.1	Penicillium antarcticum	416450	Contig	30836278
+GCF_028826775.1	Penicillium argentinense	1131581	Contig	33838379
+GCF_001773325.1	Penicillium arizonense	1835702	Scaffold	33729052
+GCF_028827265.1	Penicillium atrosanguineum	1132637	Contig	28612168
+GCF_028826915.1	Penicillium bovifimosum	126998	Contig	27188871
+GCF_028827555.1	Penicillium brevicompactum	5074	Contig	34726155
+GCF_028826845.1	Penicillium canariense	189055	Contig	31521451
+GCF_028828765.1	Penicillium canescens	5083	Contig	46284494
+GCF_028827025.1	Penicillium cataractarum	2100454	Contig	37446941
+GCF_028974085.1	Penicillium chermesinum	63820	Contig	27581382
+GCF_028827035.1	Penicillium chrysogenum	5076	Contig	32379777
+GCF_028974065.1	Penicillium cinerascens	70096	Contig	29467041
+GCF_028827155.1	Penicillium citrinum	5077	Contig	31396546
+GCF_028827145.1	Penicillium concentricum	293559	Contig	29963931
+GCF_028826855.1	Penicillium coprophilum	36646	Contig	29014640
+GCF_028827165.1	Penicillium cosmopolitanum	1131564	Contig	40034523
+GCF_028827405.1	Penicillium crustosum	36656	Contig	32953279
+GCF_028827525.1	Penicillium daleae	63821	Contig	39657045
+GCF_028827545.1	Penicillium diatomitis	2819901	Contig	33965862
+GCF_016767815.1	Penicillium digitatum	36651	Complete Genome	26336737
+GCF_000769745.1	Penicillium expansum	27334	Contig	32356048
+GCF_001561935.1	Penicillium griseofulvum	5078	Contig	29140916
+GCF_028827665.1	Penicillium hispanicum	1080232	Contig	27868179
+GCF_028827395.1	Penicillium hordei	40994	Contig	33792161
+GCF_028827675.1	Penicillium lagena	94218	Contig	27859125
+GCF_028827895.1	Penicillium longicatenatum	1561947	Contig	32457776
+GCF_028827695.1	Penicillium maclennaniae	1343394	Contig	27935234
+GCF_028827735.1	Penicillium macrosclerotiorum	303699	Contig	33645934
+GCF_028827825.1	Penicillium malachiteum	1324776	Contig	35880773
+GCF_028828005.1	Penicillium manginii	203109	Contig	38623079
+GCF_028829835.1	Penicillium mononematosum	268346	Contig	30158902
+GCF_028828085.1	Penicillium nucicola	1850975	Contig	31087567
+GCF_028828045.1	Penicillium odoratum	1167516	Contig	32405987
+GCF_001723175.1	Penicillium oxalicum	69781	Chromosome	30795872
+GCF_028828445.1	Penicillium paradoxum	176176	Contig	28923777
+GCF_964197705.1	Penicillium psychrofluorescens	3158075	Chromosome	26257727
+GCF_028828465.1	Penicillium psychrosexuale	1002107	Contig	27827857
+GCF_028828015.1	Penicillium pulvis	1562058	Contig	32647626
+GCF_028828495.1	Penicillium riverlandense	1903569	Contig	27919989
+GCF_028829455.1	Penicillium robsamsonii	1792511	Contig	29159420
+GCF_015533775.1	Penicillium roqueforti	5082	Scaffold	26941230
+GCF_028828025.1	Penicillium rubens	1108849	Contig	30336503
+GCF_028829775.1	Penicillium samsonianum	1882272	Contig	38201884
+GCF_028829755.1	Penicillium solitum	60172	Contig	33256298
+GCF_028829465.1	Penicillium soppii	69789	Contig	32085433
+GCF_028828155.1	Penicillium subrubescens	1316194	Contig	39968067
+GCF_028828555.1	Penicillium taxi	168475	Contig	27925195
+GCF_028828195.1	Penicillium verhagenii	1562060	Contig	32288599
+GCF_028828655.1	Penicillium verrucosum	60171	Contig	32831822
+GCF_028829585.1	Penicillium vulpinum	29845	Contig	31511571
+GCF_028829765.1	Penicillium waksmanii	69791	Contig	37575496
+GCF_004354835.1	Perca flavescens	8167	Chromosome	877439799
+GCF_010015445.1	Perca fluviatilis	8168	Chromosome	951345774
+GCF_009829125.3	Periophthalmus magnuspinnatus	409849	Chromosome	752605561
+GCF_040183065.1	Periplaneta americana	6978	Chromosome	3231918202
+GCF_000006405.1	Perkinsus marinus ATCC 50983	423536	Scaffold	86605074
+GCF_023159225.1	Perognathus longimembris pacificus	214514	Chromosome	2212099196
+GCF_007827085.1	Peromyscus californicus insignis	564181	Scaffold	2467923528
+GCF_949786415.1	Peromyscus eremicus	42410	Chromosome	2916547091
+GCF_004664715.2	Peromyscus leucopus	10041	Chromosome	2475164510
+GCF_049852395.1	Peromyscus maniculatus bairdii	230844	Chromosome	2587065283
+GCF_000516985.1	Pestalotiopsis fici W106-1	1229662	Scaffold	51910726
+GCF_028583685.1	Petaurus breviceps papuanus	3040969	Scaffold	3464704272
+GCF_048934315.1	Petromyzon marinus	7757	Chromosome	1808332251
+GCF_033815535.1	Pezoporus flaviventris	889875	Contig	1263767824
+GCF_034315485.1	Pezoporus occidentalis	407982	Contig	1132638028
+GCF_028554395.1	Pezoporus wallicus	35540	Contig	1141458063
+GCF_016906955.1	Phacochoerus africanus	41426	Chromosome	2435083091
+GCF_032191515.1	Phaenicophaeus curvirostris	33595	Chromosome	1315410253
+GCF_000392275.1	Phaeoacremonium minimum UCRPA7	1286976	Scaffold	47465449
+GCF_000150955.2	Phaeodactylum tricornutum CCAP 1055/1	556484	Chromosome	27450724
+GCF_000687285.1	Phaethon lepturus	97097	Scaffold	1152958507
+GCF_949628215.1	Phalacrocorax aristotelis	126867	Chromosome	1279116138
+GCF_963921805.1	Phalacrocorax carbo	9209	Chromosome	1283623959
+GCF_001263595.1	Phalaenopsis equestris	78828	Scaffold	1064051384
+GCF_965637545.1	Phallusia mammillata	59560	Chromosome	240331983
+GCF_000300595.1	Phanerochaete carnosa HHB-10118-sp	650164	Scaffold	46293325
+GCF_003287225.1	Phascolarctos cinereus	38626	Scaffold	3192623321
+GCF_000499845.2	Phaseolus vulgaris	3885	Chromosome	537154354
+GCF_004143745.1	Phasianus colchicus	9054	Scaffold	1017507340
+GCF_030411735.1	Phialemonium atrogriseum	1093897	Scaffold	33593884
+GCF_947086385.1	Phlebotomus argentipes	94469	Scaffold	97615085
+GCF_024763615.1	Phlebotomus papatasi	29031	Chromosome	351607531
+GCF_004348235.1	Phoca vitulina	9720	Scaffold	2363579318
+GCF_963924675.1	Phocoena phocoena	9742	Chromosome	2512713112
+GCF_008692025.1	Phocoena sinus	42100	Chromosome	2371524154
+GCF_943737965.1	Phodopus roborovskii	109678	Contig	2384223288
+GCF_009389715.1	Phoenix dactylifera	42345	Chromosome	772315838
+GCF_910591455.1	Pholis gunnellus	56726	Chromosome	588680419
+GCF_008802855.1	Photinus pyralis	7054	Scaffold	471511253
+GCF_949152265.1	Phoxinus phoxinus	58324	Chromosome	950479694
+GCF_958298935.1	Phragmites australis	29695	Chromosome	848669966
+GCF_024500275.1	Phycodurus eques	693459	Chromosome	666479602
+GCF_001638985.1	Phycomyces blakesleeanus NRRL 1555(-)	763407	Scaffold	53939167
+GCF_046119375.1	Phyllobates terribilis	111132	Scaffold	10565289555
+GCF_024500385.1	Phyllopteryx taeniolatus	161469	Chromosome	652157009
+GCF_038381095.1	Phyllosticta capitalensis	121624	Contig	32461131
+GCF_038021145.1	Phyllosticta citriasiana	595635	Contig	33767235
+GCF_038025025.1	Phyllosticta citribraziliensis	989973	Contig	31354043
+GCF_004126475.2	Phyllostomus discolor	89673	Chromosome	2108832841
+GCF_019186645.2	Phyllostomus hastatus	9423	Scaffold	2089223459
+GCF_024137745.1	Phymastichus coffea	108790	Contig	421229823
+GCF_000002425.5	Physcomitrium patens	3218	Chromosome	471971527
+GCF_028476545.2	Physella acuta	109671	Contig	702002063
+GCF_002837175.3	Physeter macrocephalus	9755	Chromosome	2496209109
+GCF_018691715.1	Phytophthora cinnamomi	4785	Scaffold	109702272
+GCF_000142945.1	Phytophthora infestans T30-4	403677	Scaffold	228543505
+GCF_000247585.1	Phytophthora nicotianae INRA-310	761204	Scaffold	82389172
+GCF_020800215.1	Phytophthora ramorum	164328	Scaffold	57451392
+GCF_000149755.1	Phytophthora sojae	67593	Scaffold	82597641
+GCF_003054445.1	Pichia kudriavzevii	4909	Complete Genome	10812555
+GCF_001661235.1	Pichia membranifaciens NRRL Y-2026	763406	Scaffold	11582150
+GCF_905147105.1	Pieris brassicae	7116	Chromosome	292325833
+GCF_905475465.1	Pieris napi	78633	Chromosome	319186907
+GCF_905147795.1	Pieris rapae	64459	Chromosome	256355036
+GCF_002776525.5	Piliocolobus tephrosceles	591936	Chromosome	2993041957
+GCF_016745375.1	Pimephales promelas	90988	Scaffold	1066412313
+GCF_014108245.1	Pipistrellus kuhlii	59472	Scaffold	1775688541
+GCF_003945595.2	Pipra filicauda	649802	Scaffold	1081944082
+GCF_024613125.1	Pisolithus orientalis	936130	Contig	57997239
+GCF_008641045.1	Pistacia vera	55513	Scaffold	671119336
+GCF_047495875.1	Pithys albifrons albifrons	3385563	Chromosome	1144301792
+GCF_029215685.1	Pituophis catenifer annectens	94852	Scaffold	1682881129
+GCF_950023065.1	Planococcus citri	170843	Chromosome	403646906
+GCF_900097015.1	Plasmodium adleri (nom. inval.)	880535	Chromosome	22190694
+GCF_900002375.2	Plasmodium berghei ANKA	5823	Chromosome	18740246
+GCF_023973825.1	Plasmodium brasilianum	5824	Chromosome	31374054
+GCF_900002335.3	Plasmodium chabaudi chabaudi	31271	Chromosome	18938342
+GCF_001680005.1	Plasmodium coatneyi	208452	Chromosome	27685530
+GCF_000321355.1	Plasmodium cynomolgi strain B	1120755	Chromosome	26181343
+GCF_000002765.6	Plasmodium falciparum 3D7	36329	Complete Genome	23292622
+GCF_000956335.1	Plasmodium fragile	5857	Scaffold	25878926
+GCF_001602025.1	Plasmodium gaboni	647221	Chromosome	20356150
+GCF_900005855.1	Plasmodium gallinaceum	5849	Scaffold	24997804
+GCF_002157705.1	Plasmodium gonderi	77519	Scaffold	32965758
+GCF_000524495.1	Plasmodium inui San Antonio 1	1237626	Scaffold	27405027
+GCF_000006355.2	Plasmodium knowlesi strain H	5851	Chromosome	24359384
+GCF_900090045.1	Plasmodium malariae	5858	Chromosome	33577742
+GCF_001601855.1	Plasmodium reichenowi	5854	Chromosome	20477502
+GCF_900005765.1	Plasmodium relictum	85471	Chromosome	22571969
+GCF_900681995.1	Plasmodium vinckei vinckei	54757	Chromosome	18338688
+GCF_000002415.2	Plasmodium vivax	5855	Chromosome	27007701
+GCF_900002385.2	Plasmodium yoelii	5861	Complete Genome	23043114
+GCF_900000015.1	Plasmopara halstedii	4781	Scaffold	75321785
+GCF_949316205.1	Platichthys flesus	8260	Chromosome	597120941
+GCF_963455305.1	Plecotus auritus	61862	Chromosome	2163204650
+GCF_008729295.1	Plectropomus leopardus	160734	Chromosome	895688574
+GCF_022343315.1	Plenodomus lingam	5022	Scaffold	42037832
+GCF_031143425.1	Pleurodeles waltl	8319	Chromosome	19767450834
+GCF_947347685.1	Pleuronectes platessa	8262	Chromosome	687388084
+GCF_014466165.1	Pleurotus ostreatus	5322	Contig	34897228
+GCF_027563975.2	Plodia interpunctella	58824	Chromosome	291316876
+GCF_932276165.1	Plutella xylostella	51655	Chromosome	323302761
+GCF_001477545.1	Pneumocystis carinii B80	1408658	Contig	7661456
+GCF_001477535.1	Pneumocystis jirovecii RU7	1408657	Contig	8396240
+GCF_000349005.2	Pneumocystis murina B123	1069680	Contig	7501343
+GCF_001653235.2	Pochonia chlamydosporia 170	1380566	Chromosome	44215803
+GCF_003704095.1	Pocillopora damicornis	46731	Scaffold	234333463
+GCF_036669915.1	Pocillopora verrucosa	203993	Chromosome	353416094
+GCF_964188305.1	Podarcis bocagei	90520	Chromosome	1615189422
+GCF_951804945.1	Podarcis cretensis	1330250	Chromosome	1507609967
+GCF_964188315.1	Podarcis muralis	64176	Chromosome	1522624192
+GCF_964106645.1	Podarcis pityusensis	74359	Chromosome	1515356318
+GCF_027172205.1	Podarcis raffonei	65483	Chromosome	1513131503
+GCF_000226545.1	Podospora anserina S mat+	515849	Scaffold	34718894
+GCF_035222275.1	Podospora bellae-mahoneyi	2093777	Chromosome	34330348
+GCF_035222485.1	Podospora pseudoanserina	2609844	Chromosome	34828952
+GCF_035222375.1	Podospora pseudocomata	2093779	Chromosome	34981282
+GCF_035222475.1	Podospora pseudopauciseta	2093780	Chromosome	36064112
+GCF_030490865.1	Poecile atricapillus	48891	Chromosome	1251116877
+GCF_000485575.1	Poecilia formosa	48698	Scaffold	748923461
+GCF_001443285.1	Poecilia latipinna	48699	Scaffold	815144743
+GCF_001443325.1	Poecilia mexicana	48701	Scaffold	801711499
+GCF_904066995.2	Poecilia reticulata	8081	Chromosome	744968266
+GCF_027474105.1	Poeciliopsis prolifica	188132	Scaffold	674152735
+GCF_051106095.1	Pogona vitticeps	103695	Chromosome	1752814424
+GCF_015220805.1	Pogoniulus pusillus	488313	Chromosome	1272338968
+GCF_000187915.1	Pogonomyrmex barbatus	144034	Scaffold	235645958
+GCF_001313835.1	Polistes canadensis	91411	Scaffold	211202212
+GCF_001465965.1	Polistes dominula	743375	Scaffold	208026220
+GCF_010416935.1	Polistes fuscatus	30207	Scaffold	219116742
+GCF_949987615.1	Pollachius pollachius	185739	Chromosome	606750899
+GCF_011947565.3	Pollicipes pollicipes	41117	Scaffold	769714693
+GCF_025602895.1	Polychytrium aggregatum	110093	Contig	64917104
+GCF_030449975.1	Polyergus mexicanus	615972	Scaffold	252309906
+GCF_017654505.1	Polyodon spathula	7913	Chromosome	1542066908
+GCF_016835505.1	Polypterus senegalus	55291	Chromosome	3673863536
+GCF_003073045.1	Pomacea canaliculata	400727	Chromosome	440143917
+GCF_028885655.2	Pongo abelii	9601	Chromosome	3259853530
+GCF_028885625.2	Pongo pygmaeus	9600	Chromosome	3220935163
+GCF_005239225.2	Populus alba	43335	Chromosome	416395670
+GCF_000495115.2	Populus euphratica	75702	Scaffold	494920918
+GCF_951802175.1	Populus nigra	3691	Chromosome	413224811
+GCF_000002775.5	Populus trichocarpa	3694	Chromosome	392162179
+GCF_017918235.1	Porcisia hertigi	2761500	Chromosome	34958538
+GCF_958299795.1	Porites lutea	51062	Chromosome	541644883
+GCF_019968955.1	Porospora cf. gigantea A	2853593	Scaffold	8812657
+GCF_019968985.1	Porospora cf. gigantea B	2853592	Scaffold	9021702
+GCF_017591435.1	Portunus trituberculatus	210409	Chromosome	1005046021
+GCF_002117355.1	Postia placenta MAD-698-R-SB12	670580	Scaffold	42452888
+GCF_000485595.1	Priapulus caudatus	37621	Scaffold	511723334
+GCF_900007245.1	Priceomyces carsonii	28549	Scaffold	11764505
+GCF_022965805.1	Primulina eburnea	1245227	Chromosome	812379215
+GCF_012295235.1	Primulina huaijiensis	1492673	Chromosome	469494361
+GCF_025594145.1	Primulina tabacum	48773	Chromosome	800977396
+GCF_021018805.1	Prinia subflava	208062	Chromosome	1119947663
+GCF_016509475.1	Prionailurus bengalensis	37029	Chromosome	2435702060
+GCF_022837055.1	Prionailurus viverrinus	61388	Chromosome	2461545606
+GCF_044704955.1	Pristiophorus japonicus	55135	Chromosome	5923050865
+GCF_009764475.1	Pristis pectinata	685728	Chromosome	2267840987
+GCF_040958095.1	Procambarus clarkii	6728	Chromosome	4028952570
+GCF_000956105.1	Propithecus coquereli	379532	Scaffold	2798135037
+GCF_024137725.1	Prorops nasuta	863751	Contig	295123319
+GCF_029017545.1	Prosopis cineraria	364024	Scaffold	691392202
+GCF_001527695.2	Protobothrops mucrosquamatus	103944	Scaffold	1673859098
+GCF_002105105.1	Protomyces lactucae-debilis	2754530	Contig	12928838
+GCF_963924005.1	Protomyctophum bolini	443714	Chromosome	1148206488
+GCF_019279795.1	Protopterus annectens	7888	Chromosome	40054324612
+GCF_002207925.1	Prunus avium	42229	Scaffold	272361615
+GCF_902201215.1	Prunus dulcis	3755	Chromosome	227599157
+GCF_000346735.1	Prunus mume	102107	Chromosome	233872527
+GCF_000346465.2	Prunus persica	3760	Chromosome	227411381
+GCF_907164565.1	Psammomys obesus	48139	Scaffold	2364980841
+GCF_000340215.1	Pseudocercospora fijiensis CIRAD86	383855	Scaffold	74141167
+GCF_902827115.2	Pseudochaenichthys georgianus	52239	Chromosome	1026205435
+GCF_001641265.1	Pseudogymnoascus destructans	655981	Scaffold	35818201
+GCF_001662655.1	Pseudogymnoascus verrucosus	342668	Scaffold	30174856
+GCF_029220125.1	Pseudoliparis swirei	2059687	Chromosome	626438928
+GCF_002105095.1	Pseudomassariella vexata	1141098	Contig	44711451
+GCF_002006095.1	Pseudomyrmex gracilis	219809	Scaffold	282776121
+GCF_900518735.1	Pseudonaja textilis	8673	Scaffold	1590035073
+GCF_028390025.1	Pseudophryne corroboree	495146	Chromosome	8872758793
+GCF_036250125.1	Pseudopipra pipra	415032	Chromosome	1165201947
+GCF_000331425.1	Pseudopodoces humilis	181119	Scaffold	1042980823
+GCF_024679245.1	Pseudorasbora parva	51549	Chromosome	1228852188
+GCF_039906515.1	Pseudorca crassidens	82174	Chromosome	2674592094
+GCF_010093815.1	Pseudovirgaria hyperparasitica	470096	Scaffold	35440147
+GCF_000417875.1	Pseudozyma flocculosa PF-1	1277687	Scaffold	23305380
+GCF_000403515.1	Pseudozyma hubeiensis SY62	1305764	Scaffold	18442938
+GCF_017499595.1	Psilocybe cubensis	181762	Chromosome	46389424
+GCF_963264785.1	Psittacula echo	232653	Chromosome	1203813063
+GCF_000699245.1	Pterocles gutturalis	240206	Scaffold	1069324295
+GCF_021234165.1	Pteronotus mesoamericanus	1884717	Scaffold	2074649091
+GCF_000325575.1	Pteropus alecto	9402	Scaffold	1985958707
+GCF_902729225.1	Pteropus medius	143291	Scaffold	1985219947
+GCF_000151845.1	Pteropus vampyrus	132908	Scaffold	2198284804
+GCF_051014685.1	Ptiloglossa arizonensis	3350558	Chromosome	998710894
+GCF_041260155.1	Ptychodera flava	63121	Chromosome	1161750505
+GCF_000149925.1	Puccinia graminis f. sp. tritici CRL 75-36-700-3	418459	Scaffold	88644628
+GCF_021901695.1	Puccinia striiformis f. sp. tritici	168172	Chromosome	89491239
+GCF_026914185.1	Puccinia triticina	208348	Complete Genome	122823596
+GCF_003327715.1	Puma concolor	9696	Scaffold	2432949531
+GCF_000264995.1	Punctularia strigosozonata HHB-11173 SS5	741275	Scaffold	34171901
+GCF_000239375.1	Pundamilia nyererei	303518	Scaffold	830133247
+GCF_949316345.1	Pungitius pungitius	134920	Chromosome	480434100
+GCF_007655135.1	Punica granatum	22663	Chromosome	320335647
+GCF_018831695.1	Puntigrus tetrazona	1606681	Chromosome	730801986
+GCF_023168085.1	Purpureocillium lilacinum	33203	Contig	38571925
+GCF_022605165.1	Purpureocillium takamizusanense	2060973	Complete Genome	35574015
+GCF_015220715.1	Pygocentrus nattereri	42514	Chromosome	1222050449
+GCF_000699105.1	Pygoscelis adeliae	9238	Scaffold	1216600033
+GCF_003171515.1	Pyrenophora tritici-repentis	45151	Chromosome	40738834
+GCF_017590135.1	Pyrgilauda ruficollis	221976	Scaffold	1045967452
+GCF_004355905.1	Pyricularia grisea	148305	Chromosome	44557582
+GCF_000002495.2	Pyricularia oryzae 70-15	242507	Chromosome	40979121
+GCF_004337985.1	Pyricularia pennisetigena	1578925	Chromosome	49117040
+GCF_963583255.1	Pyrus communis	23211	Chromosome	487337232
+GCF_019419815.1	Pyrus x bretschneideri	225117	Contig	509113298
+GCF_000186305.1	Python bivittatus	176946	Scaffold	1435034535
+GCF_032062135.1	Pyxicephalus adspersus	30357	Chromosome	1440301248
+GCF_001633185.2	Quercus lobata	97700	Chromosome	845947251
+GCF_932294415.1	Quercus robur	38942	Chromosome	789187406
+GCF_002906115.3	Quercus suber	58331	Scaffold	759831951
+GCF_025331425.1	Radiomyces spectabilis	64574	Contig	30409402
+GCF_963514005.1	Raja brachyura	223862	Chromosome	2700450552
+GCF_900074925.1	Ramularia collo-cygni	112498	Scaffold	32254922
+GCF_905171775.1	Rana temporaria	8407	Chromosome	4111422596
+GCF_032444005.1	Ranitomeya imitator	111125	Chromosome	5956610564
+GCF_051348905.1	Ranitomeya variabilis	490064	Chromosome	5645589471
+GCF_000801105.2	Raphanus sativus	3726	Chromosome	433430583
+GCF_041956645.1	Rasamsonia byssochlamydoides	89139	Scaffold	29320293
+GCF_000968595.1	Rasamsonia emersonii CBS 393.64	1408163	Contig	28248805
+GCF_036323735.1	Rattus norvegicus	10116	Chromosome	2849581192
+GCF_011064425.1	Rattus rattus	10117	Chromosome	2382770976
+GCF_035927965.1	Recurvomyces mirabilis	574656	Scaffold	27128294
+GCF_042764415.1	Remersonia thermophila	72144	Complete Genome	27414229
+GCF_013731165.1	Rhagoletis pomonella	28610	Scaffold	1223288327
+GCF_001687245.2	Rhagoletis zephyria	28612	Scaffold	1109796908
+GCF_963969265.1	Rhamphochromis sp. 'chilingali'	454631	Chromosome	921167628
+GCF_028389875.1	Rhea pennata	8795	Chromosome	1269000025
+GCF_901001135.2	Rhinatrema bivittatum	194408	Chromosome	5319222779
+GCF_021869965.1	Rhincodon typus	259920	Chromosome	2881325413
+GCF_030035675.1	Rhineura floridana	261503	Chromosome	2307419594
+GCF_029890125.1	Rhinichthys klamathensis goyatoka	3034132	Contig	1065491053
+GCF_000835555.1	Rhinocladiella mackenziei CBS 650.93	1442369	Scaffold	32474431
+GCF_050947455.1	Rhinoderma darwinii	43563	Chromosome	3657511227
+GCF_004115265.2	Rhinolophus ferrumequinum	59479	Chromosome	2075768562
+GCF_964194185.1	Rhinolophus hipposideros	77218	Chromosome	2171311786
+GCF_036562045.2	Rhinolophus sinicus	89399	Chromosome	2036377185
+GCF_001698545.2	Rhinopithecus bieti	61621	Scaffold	2975774845
+GCF_007565055.1	Rhinopithecus roxellana	61622	Chromosome	3038460517
+GCF_053455715.1	Rhinoraja longicauda	667116	Chromosome	2198843048
+GCF_043290135.1	Rhipicephalus microplus	6941	Chromosome	3265175345
+GCF_013339695.2	Rhipicephalus sanguineus	34632	Chromosome	2365502231
+GCF_016906535.1	Rhizoctonia solani	456999	Complete Genome	40703773
+GCF_041956525.1	Rhizomucor pusillus	4840	Scaffold	25384556
+GCF_026210795.1	Rhizophagus irregularis	588596	Chromosome	146773001
+GCF_000149305.1	Rhizopus delemar RA 99-880	246409	Scaffold	46087117
+GCF_002708625.1	Rhizopus microsporus ATCC 52813	1340429	Scaffold	25972395
+GCF_020921035.1	Rhodamnia argentea	178133	Chromosome	346714100
+GCF_049639745.1	Rhodnius prolixus	13249	Scaffold	588460904
+GCF_030253575.1	Rhododendron vialii	182163	Chromosome	532733691
+GCF_022264815.1	Rhodofomes roseus	34475	Contig	38369625
+GCF_001329695.1	Rhodotorula graminis WP1	578459	Scaffold	21013998
+GCF_050403185.1	Rhodotorula pacifica	1495444	Contig	20374152
+GCF_050403205.1	Rhodotorula paludigena	86838	Contig	20813848
+GCF_000320785.1	Rhodotorula toruloides NP11	1130832	Scaffold	20223942
+GCF_003676215.2	Rhopalosiphum maidis	43146	Chromosome	326023155
+GCF_020882245.1	Rhopalosiphum padi	40932	Chromosome	338184925
+GCF_013076305.1	Rhopilema esculentum	499914	Scaffold	256689583
+GCF_030347505.1	Rhynchophorus ferrugineus	354439	Scaffold	777687773
+GCF_019578655.1	Ricinus communis	3988	Chromosome	315619833
+GCF_028500815.1	Rissa tridactyla	75485	Chromosome	1353621101
+GCF_002994745.2	Rosa chinensis	74649	Chromosome	515118979
+GCF_958449725.1	Rosa rugosa	74645	Chromosome	417128682
+GCF_014176215.1	Rousettus aegyptiacus	9407	Scaffold	1893602072
+GCF_026571515.1	Ruditapes philippinarum	129788	Contig	1408116862
+GCF_046630445.1	Rutidosis leptorrhynchoides	125765	Chromosome	5642349851
+GCF_943734655.1	Sabethes cyaneus	53552	Chromosome	676043992
+GCF_000146045.2	Saccharomyces cerevisiae S288C	559292	Complete Genome	12071326
+GCF_001298625.1	Saccharomyces eubayanus	1080349	Chromosome	11670174
+GCF_947243775.1	Saccharomyces kudriavzevii IFO 1802	226230	Complete Genome	11913776
+GCF_947241705.1	Saccharomyces mikatae IFO 1815	226126	Complete Genome	12104871
+GCF_002079055.1	Saccharomyces paradoxus	27291	Chromosome	12021328
+GCF_020623625.1	Saccharomycodes ludwigii	36035	Chromosome	12500424
+GCF_037102585.1	Saccharomycopsis crataegensis	43959	Scaffold	17100033
+GCF_000003605.3	Saccoglossus kowalevskii	10224	Scaffold	775049609
+GCF_036850765.1	Saccopteryx bilineata	59482	Chromosome	2612309609
+GCF_036850995.1	Saccopteryx leptura	249018	Chromosome	2576497192
+GCF_032062105.1	Saccostrea cuccullata	36930	Contig	1170583295
+GCF_033153115.1	Saccostrea echinata	191078	Contig	923089651
+GCF_003676395.1	Sagmatias obliquidens	3371155	Scaffold	2334450779
+GCF_048565385.1	Saimiri boliviensis	27679	Chromosome	2747459968
+GCF_001661265.1	Saitoella complicata NRRL Y-17804	698492	Scaffold	14136186
+GCF_902148845.1	Salarias fasciatus	181472	Chromosome	797490645
+GCF_030463535.1	Salminus brasiliensis	930266	Chromosome	1066483687
+GCF_905237065.1	Salmo salar	8030	Chromosome	2756584103
+GCF_901001165.2	Salmo trutta	8032	Chromosome	2371863509
+GCF_000188695.1	Salpingoeca rosetta	946362	Scaffold	55440309
+GCF_045679555.1	Salvelinus alpinus	8036	Chromosome	2367887750
+GCF_029448725.1	Salvelinus fontinalis	8038	Chromosome	2496185110
+GCF_016432855.1	Salvelinus namaycush	8040	Chromosome	2345496725
+GCF_002910315.2	Salvelinus sp. IW2-2015	2691554	Chromosome	2169536488
+GCF_023119035.1	Salvia hispanica	49212	Chromosome	321318253
+GCF_028751815.1	Salvia miltiorrhiza	226208	Chromosome	530963680
+GCF_004379255.2	Salvia splendens	180675	Chromosome	805931446
+GCF_008315115.2	Sander lucioperca	283035	Chromosome	901221791
+GCF_031162955.1	Sander vitreus	283036	Chromosome	791702833
+GCF_009761245.1	Sapajus apella	9515	Scaffold	2729201088
+GCF_000281045.1	Saprolegnia diclina VS20	1156394	Scaffold	62885792
+GCF_000151545.1	Saprolegnia parasitica CBS 223.65	695850	Scaffold	53093248
+GCF_902635505.1	Sarcophilus harrisii	9305	Chromosome	3086657325
+GCF_963854185.1	Sardina pilchardus	27697	Chromosome	869396467
+GCF_035928015.1	Saxophila tyrrhenica	1690608	Scaffold	25918878
+GCF_003285725.1	Scaptodrosophila lebanonensis	7225	Contig	247077949
+GCF_964197995.1	Scardinius erythrophthalmus	58319	Chromosome	1229649543
+GCF_020382885.2	Scatophagus argus	75038	Chromosome	570785501
+GCF_000732125.1	Scedosporium apiospermum	563466	Scaffold	43437139
+GCF_019175285.1	Sceloporus undulatus	8520	Chromosome	1905484175
+GCF_036850825.1	Scheffersomyces amazonensis	1078765	Contig	14209774
+GCF_036884675.1	Scheffersomyces coipomensis	1788519	Contig	14757374
+GCF_019049425.1	Scheffersomyces spartinae	45513	Contig	12132557
+GCF_000209165.1	Scheffersomyces stipitis CBS 6054	322104	Chromosome	15441179
+GCF_036884685.1	Scheffersomyces xylosifermentans	1304137	Contig	17250428
+GCF_021461395.2	Schistocerca americana	7009	Chromosome	8990354198
+GCF_023864275.1	Schistocerca cancellata	274614	Chromosome	8536877781
+GCF_023897955.1	Schistocerca gregaria	7010	Chromosome	8742418402
+GCF_023898315.1	Schistocerca nitens	7011	Chromosome	8822555691
+GCF_021461385.2	Schistocerca piceifrons	274613	Chromosome	8742443784
+GCF_023864345.2	Schistocerca serialis cubense	2023355	Chromosome	9082806520
+GCF_000699445.3	Schistosoma haematobium	6185	Chromosome	400271889
+GCF_000237925.1	Schistosoma mansoni	6183	Chromosome	364518427
+GCF_000143185.2	Schizophyllum commune H4-8	578458	Scaffold	38670379
+GCF_000004155.1	Schizosaccharomyces cryophilus OY26	653667	Scaffold	11554764
+GCF_000149845.2	Schizosaccharomyces japonicus yFS275	402676	Scaffold	11733154
+GCF_000150505.1	Schizosaccharomyces octosporus yFS286	483514	Scaffold	11634473
+GCF_027921745.1	Schizosaccharomyces osmophilus	2545709	Complete Genome	11416521
+GCF_000002945.2	Schizosaccharomyces pombe	4896	Chromosome	12571820
+GCF_902686445.1	Sciurus carolinensis	30640	Chromosome	2815397268
+GCF_902686455.1	Sciurus vulgaris	55149	Chromosome	2878591032
+GCF_900964775.1	Scleropages formosus	113540	Chromosome	784546363
+GCF_000146945.2	Sclerotinia sclerotiorum 1980 UF-70	665079	Scaffold	38330312
+GCF_027409825.1	Scomber japonicus	13676	Chromosome	828681152
+GCF_963691925.1	Scomber scombrus	13677	Chromosome	764141294
+GCF_022379125.1	Scophthalmus maximus	52904	Chromosome	538217135
+GCF_902713615.2	Scyliorhinus canicula	7830	Chromosome	4220389930
+GCF_047496885.1	Scyliorhinus torazame	75743	Chromosome	6451259511
+GCF_035594125.1	Scylla paramamosain	85552	Chromosome	1210760420
+GCF_043250625.1	Sebastes fasciatus	394691	Chromosome	833835073
+GCF_015220745.1	Sebastes umbrosus	72105	Chromosome	800904020
+GCF_000143415.4	Selaginella moellendorffii	88036	Scaffold	212315224
+GCF_022749685.1	Semicossyphus pulcher	241346	Scaffold	794106426
+GCF_022539315.1	Serinus canaria	9135	Chromosome	1050336073
+GCF_021018895.1	Seriola aureovittata	2871759	Chromosome	647095223
+GCF_002260705.1	Seriola dumerili	41447	Scaffold	677669644
+GCF_002814215.2	Seriola lalandi dorsalis	1841481	Scaffold	731680489
+GCF_000218685.1	Serpula lacrymans var. lacrymans S7.9	578457	Scaffold	42797233
+GCF_000512975.1	Sesamum indicum	4182	Chromosome	274906174
+GCF_000263155.2	Setaria italica	4555	Chromosome	405732883
+GCF_005286985.2	Setaria viridis	4556	Chromosome	397277387
+GCF_048544455.1	Silene latifolia	37657	Chromosome	2716323241
+GCF_014805685.1	Silurus meridionalis	175797	Chromosome	742579920
+GCF_900408965.1	Simochromis diagramma	43689	Scaffold	848827444
+GCF_020085105.1	Siniperca chuatsi	119488	Chromosome	718804017
+GCF_001515605.1	Sinocyclocheilus anshuiensis	1608454	Scaffold	1632701648
+GCF_001515645.1	Sinocyclocheilus grahami	75366	Scaffold	1750271176
+GCF_001515625.1	Sinocyclocheilus rhinocerous	307959	Scaffold	1655769822
+GCF_003268045.1	Sipha flava	143950	Scaffold	353179758
+GCF_051911475.1	Siphateles boraxobius	180520	Contig	1238633766
+GCF_009176505.1	Sitodiplosis mosellana	263140	Scaffold	208784321
+GCF_002938485.1	Sitophilus oryzae	7048	Scaffold	770550206
+GCF_048593235.1	Sminthopsis crassicaudata	9301	Chromosome	3239981553
+GCF_042370955.1	Sodiomyces alcalophilus JCM 7366	591952	Scaffold	54417234
+GCF_003711515.1	Sodiomyces alkalinus F11	1314773	Scaffold	43450096
+GCF_947179165.1	Solanum dulcamara	45834	Chromosome	946304905
+GCF_036512215.1	Solanum lycopersicum	4081	Chromosome	832773323
+GCF_001406875.1	Solanum pennellii	28526	Chromosome	926426464
+GCF_019186545.1	Solanum stenotomum	172797	Chromosome	846249028
+GCF_000226075.1	Solanum tuberosum	4113	Scaffold	705779115
+GCF_900185275.1	Solanum verrucosum	315347	Scaffold	662264359
+GCF_019176455.1	Solea senegalensis	28829	Chromosome	603518608
+GCF_958295425.1	Solea solea	90069	Chromosome	643757955
+GCF_016802725.1	Solenopsis invicta	13686	Chromosome	378101515
+GCF_033870435.1	Sordaria macrospora	5147	Complete Genome	39444728
+GCF_027595985.1	Sorex araneus	42254	Chromosome	2405993548
+GCF_029834395.1	Sorex fumeus	62283	Contig	2873555620
+GCF_000003195.3	Sorghum bicolor	4558	Chromosome	708735318
+GCF_003851025.1	Sparassis crispa	139825	Contig	39020349
+GCF_900880675.2	Sparus aurata	8175	Chromosome	833578411
+GCF_000223485.1	Spathaspora passalidarum NRRL Y-27907	619300	Scaffold	13182099
+GCF_027358695.1	Spea bombifrons	233779	Chromosome	987655159
+GCF_964194105.1	Spermophilus citellus	9997	Chromosome	3090032603
+GCF_902148855.1	Sphaeramia orbicularis	375764	Chromosome	1342662642
+GCF_021028975.2	Sphaerodactylus townsendi	933632	Chromosome	1810846735
+GCF_001186125.1	Sphaeroforma arctica JP610	667725	Scaffold	121588341
+GCF_000320565.1	Sphaerulina musiva SO2202	692275	Scaffold	29352103
+GCF_020520425.1	Spinacia oleracea	3562	Chromosome	894256318
+GCF_000497125.1	Spironucleus salmonicida	348837	Chromosome	14545911
+GCF_000182565.1	Spizellomyces punctatus DAOM BR117	645134	Scaffold	24131112
+GCF_023101765.2	Spodoptera frugiperda	7108	Chromosome	383907753
+GCF_002706865.2	Spodoptera litura	69820	Chromosome	429567674
+GCF_005498985.1	Sporisorium graminicola	280036	Chromosome	19565848
+GCF_050403365.1	Sporobolomyces koalae	500713	Contig	18348248
+GCF_050403485.1	Sporobolomyces salmoneus	183962	Contig	20345533
+GCF_000820605.1	Sporothrix brasiliensis 5110	1398154	Contig	33205847
+GCF_000961545.1	Sporothrix schenckii 1099-18	1397361	Contig	32375103
+GCF_963457725.1	Sprattus sprattus	196075	Chromosome	840315637
+GCF_949319135.1	Squalius cephalus	8284	Chromosome	1101913912
+GCF_000690725.1	Stegastes partitus	144197	Scaffold	800491834
+GCF_010614865.2	Stegodyphus dumicola	202533	Scaffold	2551176228
+GCF_030684315.1	Stegostoma tigrinum	3053191	Chromosome	3198515386
+GCF_951394435.1	Stenella coeruleoalba	9737	Chromosome	2691406842
+GCF_000264905.1	Stereum hirsutum FP-91666 SS1	721885	Scaffold	46511623
+GCF_051989625.1	Stigmatopora argus	161581	Chromosome	464095202
+GCF_051989575.1	Stigmatopora nigra	161582	Chromosome	375402015
+GCF_963082655.1	Stomoxys calcitrans	35570	Chromosome	1070934565
+GCF_004027225.2	Strigops habroptila	2489341	Chromosome	1148597545
+GCF_031877795.1	Strix aluco	111821	Chromosome	1414783145
+GCF_047716275.1	Strix uralensis	36305	Chromosome	1380990639
+GCF_000002235.5	Strongylocentrotus purpuratus	7668	Scaffold	921840143
+GCF_001040885.1	Strongyloides ratti	34506	Chromosome	43150242
+GCF_040807025.1	Struthio camelus	8801	Chromosome	1452018929
+GCF_014824575.3	Sturnira hondurensis	192404	Scaffold	2096403328
+GCF_001447265.1	Sturnus vulgaris	9172	Scaffold	1036755994
+GCF_964204865.1	Styela clava	7725	Chromosome	376784849
+GCF_002571385.2	Stylophora pistillata	50429	Scaffold	397587675
+GCF_001640025.1	Sugiyamaella lignohabitans	796027	Complete Genome	15938258
+GCF_001661415.1	Suhomyces tanzawaensis NRRL Y-17324	984487	Scaffold	13136204
+GCF_016758785.1	Suillus bovinus	48563	Contig	47496138
+GCF_016758775.1	Suillus clintonianus	1904413	Contig	46838326
+GCF_016758755.1	Suillus discolor	1912936	Contig	60609832
+GCF_016647785.1	Suillus fuscotomentosus	1912939	Contig	79655913
+GCF_016628075.1	Suillus paluster	48578	Contig	61993750
+GCF_016647745.1	Suillus plorans	116603	Contig	51861001
+GCF_016647625.1	Suillus subalutaceus	48586	Contig	64971567
+GCF_016647635.1	Suillus subaureus	48587	Contig	57660940
+GCF_024139225.1	Suncus etruscus	109475	Chromosome	2471666657
+GCF_006229205.1	Suricata suricatta	37032	Chromosome	2353578744
+GCF_000003025.6	Sus scrofa	9823	Chromosome	2501895775
+GCF_964019385.1	Sycon ciliatum	27933	Chromosome	539574681
+GCF_009819655.1	Sylvia atricapilla	48155	Chromosome	1066786587
+GCF_028878055.3	Symphalangus syndactylus	9590	Chromosome	3262887708
+GCF_947650265.1	Symphodus melops	171736	Chromosome	636351954
+GCF_963678635.1	Symsagittifera roscoffensis	84072	Chromosome	753507827
+GCF_027744825.2	Synchiropus splendidus	270530	Chromosome	582881826
+GCF_006535985.1	Synchytrium microbalum	1806994	Scaffold	26244175
+GCF_019802595.1	Syngnathoides biaculeatus	300417	Chromosome	636519225
+GCF_901709675.1	Syngnathus acus	161584	Chromosome	324331233
+GCF_024217435.2	Syngnathus scovelli	161590	Chromosome	428400902
+GCF_033458585.1	Syngnathus typhle	161592	Chromosome	435284570
+GCF_021117445.2	Syzygium oleosum	219896	Scaffold	407068374
+GCF_015852505.1	Tachyglossus aculeatus	9261	Chromosome	2213004214
+GCF_004210375.1	Tachypleus tridentatus	6853	Chromosome	2167470406
+GCF_022655615.1	Tachysurus fulvidraco	1234273	Chromosome	712016913
+GCF_030014155.1	Tachysurus vachellii	175792	Chromosome	692104899
+GCF_048771995.1	Taeniopygia guttata	59729	Chromosome	1141148522
+GCF_003711565.1	Takifugu flavidus	433684	Chromosome	366286831
+GCF_901000725.3	Takifugu rubripes	31033	Chromosome	384110215
+GCF_001896365.1	Talaromyces amestolkiae	1196081	Scaffold	33721883
+GCF_001907595.1	Talaromyces atroroseus	1441469	Scaffold	30858562
+GCF_009556855.1	Talaromyces marneffei	37727	Complete Genome	28198338
+GCF_046127475.1	Talaromyces marneffei ATCC 18224	441960	Contig	28872128
+GCF_021365285.1	Talaromyces proteolyticus	1131652	Contig	37611490
+GCF_013368755.1	Talaromyces rugulosus	121627	Complete Genome	35758560
+GCF_000003125.1	Talaromyces stipitatus ATCC 10500	441959	Scaffold	35685443
+GCF_014898055.3	Talpa occidentalis	50954	Scaffold	2080972333
+GCF_023851605.1	Tamandua tetradactyla	48850	Chromosome	3205724741
+GCF_000463585.1	Tarenaya hassleriana	28532	Scaffold	249929577
+GCF_043159265.1	Tasmannia lanceolata	3420	Contig	972038906
+GCF_000709365.1	Tauraco erythrolophus	121530	Scaffold	1155540733
+GCF_910589615.1	Taurulus bubalis	61643	Chromosome	615137073
+GCF_002237135.1	Teleopsis dalmanni	139649	Chromosome	623660103
+GCF_933228915.1	Telmatherina bonti	446457	Chromosome	986023149
+GCF_018873765.1	Telopea speciosissima	54955	Chromosome	823061212
+GCF_048541705.1	Temnothorax americanus	1964332	Scaffold	255506222
+GCF_003070985.1	Temnothorax curvispinosus	300111	Scaffold	303539295
+GCF_030848805.1	Temnothorax longispinosus	300112	Chromosome	293182087
+GCF_030848795.1	Temnothorax nylanderi	102681	Contig	313490928
+GCF_963966145.1	Tenebrio molitor	7067	Chromosome	276826441
+GCF_050624435.1	Tenrec ecaudatus	94439	Chromosome	3922859826
+GCF_002925995.2	Terrapene triunguis	2587831	Scaffold	2571267249
+GCF_000189635.1	Tetrahymena thermophila SB210	312017	Scaffold	103014375
+GCF_000239435.1	Tetranychus urticae	32264	Scaffold	90815494
+GCF_951394365.1	Tetrao urogallus	100830	Chromosome	1013167347
+GCF_000236905.1	Tetrapisispora phaffii CBS 4417	1071381	Chromosome	12115070
+GCF_000149405.2	Thalassiosira pseudonana CCMP1335	296543	Chromosome	32437365
+GCF_902500255.1	Thalassophryne amazonica	390379	Chromosome	2446592878
+GCF_009769535.1	Thamnophis elegans	35005	Chromosome	1672190305
+GCF_001077635.1	Thamnophis sirtalis	35019	Scaffold	1424897867
+GCF_000142905.1	Thecamonas trahens ATCC 50062	461836	Scaffold	28680627
+GCF_000003225.4	Theileria annulata	5874	Chromosome	8352220
+GCF_000342415.1	Theileria equi strain WA	1537102	Chromosome	11617598
+GCF_000740895.1	Theileria orientalis strain Shintoku	869250	Chromosome	8983596
+GCF_000165365.1	Theileria parva strain Muguga	333668	Chromosome	8308027
+GCF_000208745.1	Theobroma cacao	3641	Chromosome	324719311
+GCF_041956765.1	Thermoascus crustaceus	5088	Scaffold	31412805
+GCF_964235325.1	Thermobia domestica	89055	Chromosome	5131587495
+GCF_000221225.1	Thermochaetoides thermophila DSM 1495	759272	Scaffold	28322806
+GCF_041956625.1	Thermomyces dupontii	28565	Scaffold	19833760
+GCF_041956635.1	Thermomyces lanuginosus	5541	Scaffold	19915574
+GCF_042370625.1	Thermothelomyces heterothallicus CBS 202.75	1149848	Scaffold	35440081
+GCF_000226095.1	Thermothelomyces thermophilus ATCC 42464	573729	Complete Genome	38744216
+GCF_000226115.1	Thermothielavioides terrestris NRRL 8126	578455	Complete Genome	36912256
+GCF_003255815.1	Theropithecus gelada	9565	Chromosome	2889614139
+GCF_012932325.1	Thrips palmi	161013	Scaffold	237830083
+GCF_914725855.1	Thunnus albacares	8236	Chromosome	792101331
+GCF_910596095.1	Thunnus maccoyii	8240	Chromosome	782407452
+GCF_963924715.1	Thunnus thynnus	8237	Chromosome	799047066
+GCF_004353045.1	Thyridium curvatum	1093900	Contig	40366568
+GCF_007210705.1	Tigriopus californicus	6832	Chromosome	191142546
+GCF_035046505.1	Tiliqua scincoides	71010	Chromosome	1623332312
+GCF_000711695.1	Tilletiaria anomala UBC 951	1037660	Contig	18704010
+GCF_003144115.1	Tilletiopsis washingtonensis	58919	Scaffold	18761941
+GCF_000705375.1	Tinamus guttatus	94827	Scaffold	1047056493
+GCF_030247195.1	Topomyia yanbarensis	2498891	Chromosome	1168159140
+GCF_000243375.1	Torulaspora delbrueckii	4950	Chromosome	9220678
+GCF_014133895.1	Torulaspora globosa	48254	Complete Genome	9281121
+GCF_000006565.2	Toxoplasma gondii ME49	508771	Chromosome	65633124
+GCF_029784135.1	Toxorhynchites rutilus septentrionalis	329112	Chromosome	903034419
+GCF_017976425.1	Toxotes jaculatrix	941984	Chromosome	621503431
+GCF_013100865.1	Trachemys scripta elegans	31138	Chromosome	2126182493
+GCF_046630095.1	Trachinotus anak	443729	Contig	665989892
+GCF_001594075.2	Trachymyrmex cornetzi	471704	Scaffold	369078778
+GCF_001594115.1	Trachymyrmex septentrionalis	34720	Scaffold	291747019
+GCF_009764315.1	Trachypithecus francoisi	54180	Scaffold	2875554650
+GCF_000271585.1	Trametes versicolor FP-101664 SS1	717944	Scaffold	44794008
+GCF_902827165.1	Trematomus bernacchii	40690	Scaffold	867125071
+GCF_010094035.1	Trematosphaeria pertusa	390896	Scaffold	47745773
+GCF_000271645.1	Tremella mesenterica DSM 1558	578456	Scaffold	28639919
+GCF_031307605.1	Tribolium castaneum	7070	Chromosome	241845558
+GCF_015345945.1	Tribolium madens	41895	Scaffold	149377654
+GCF_024521635.1	Tricharina praecox	43433	Contig	38357564
+GCF_000243295.1	Trichechus manatus latirostris	127582	Scaffold	3103791524
+GCF_000181795.1	Trichinella spiralis	6334	Scaffold	63525422
+GCF_033847375.1	Trichoderma aggressivum f. europaeum	173218	Scaffold	38856605
+GCF_020647865.1	Trichoderma asperellum	101201	Complete Genome	37545380
+GCF_020647795.1	Trichoderma atroviride	63577	Complete Genome	37300646
+GCF_028502605.1	Trichoderma breve	2034170	Chromosome	38609973
+GCF_003025115.1	Trichoderma citrinoviride	58853	Scaffold	33215161
+GCF_001481775.2	Trichoderma gamsii	398673	Scaffold	37908251
+GCF_004382785.1	Trichoderma ghanense	65468	Scaffold	31700302
+GCF_003025095.1	Trichoderma harzianum CBS 226.95	983964	Scaffold	40980648
+GCF_000167675.1	Trichoderma reesei QM6a	431241	Scaffold	33395713
+GCF_000170995.1	Trichoderma virens Gv29-8	413071	Scaffold	39022666
+GCF_000599845.2	Trichogramma pretiosum	7493	Scaffold	187641947
+GCF_026262505.1	Trichomonas vaginalis G3	412133	Chromosome	181466644
+GCF_965637985.1	Trichomonascus vanleenenianus	2268995	Scaffold	14944666
+GCF_030014385.1	Trichomycterus rosablanca	2290929	Chromosome	1045025885
+GCF_000151125.1	Trichophyton benhamiae CBS 112371	663331	Contig	22224160
+GCF_000151425.1	Trichophyton rubrum CBS 118892	559305	Scaffold	22502330
+GCF_000151505.1	Trichophyton verrucosum HKI 0517	663202	Scaffold	22540967
+GCF_000150275.1	Trichoplax adhaerens	10228	Scaffold	105631681
+GCF_003590095.1	Trichoplusia ni	7111	Chromosome	368211209
+GCF_000293215.1	Trichosporon asahii var. asahii CBS 2479	1186058	Scaffold	24507743
+GCF_011100635.1	Trichosurus vulpecula	9337	Chromosome	3359330516
+GCF_020283565.1	Trifolium pratense	57577	Chromosome	413578898
+GCF_015846415.1	Triplophysa dalaica	1582913	Chromosome	607923607
+GCF_024868665.1	Triplophysa rosa	992332	Chromosome	684805028
+GCF_013401445.1	Tripterygium wilfordii	458696	Chromosome	348533228
+GCF_018294505.1	Triticum aestivum	4565	Chromosome	14566502436
+GCF_002162155.2	Triticum dicoccoides	85692	Chromosome	10677097747
+GCF_003073215.2	Triticum urartu	4572	Chromosome	4849077157
+GCF_001839685.1	Tritrichomonas foetus	1144522	Scaffold	67585029
+GCF_020726525.1	Truncatella angustata	152316	Contig	47102642
+GCF_000002445.2	Trypanosoma brucei brucei TREU927	185431	Chromosome	26075494
+GCF_000210295.1	Trypanosoma brucei gambiense DAL972	679716	Chromosome	22148088
+GCF_003719485.1	Trypanosoma conorhini	83891	Scaffold	21334213
+GCF_000209065.1	Trypanosoma cruzi	5693	Scaffold	89937456
+GCF_001457755.1	Trypanosoma equiperdum	5694	Scaffold	26228029
+GCF_000691245.1	Trypanosoma grayi	71804	Scaffold	20934132
+GCF_022059095.1	Trypanosoma melophagium	715481	Contig	23303718
+GCF_003719475.1	Trypanosoma rangeli	5698	Scaffold	21157315
+GCF_002087225.1	Trypanosoma theileri	67003	Scaffold	29822211
+GCF_000151645.1	Tuber melanosporum	39416	Scaffold	124945702
+GCF_964204645.1	Tubulanus polymorphus	672921	Chromosome	267806677
+GCF_000334495.1	Tupaia chinensis	246437	Scaffold	2846580235
+GCF_011762595.2	Tursiops truncatus	9739	Chromosome	2378505825
+GCF_026119805.1	Tympanuchus pallidicinctus	109042	Scaffold	994352574
+GCF_048772165.1	Typha angustifolia	59011	Complete Genome	206997856
+GCF_019914945.1	Typha latifolia	4733	Chromosome	213846373
+GCF_018691265.1	Tyto alba	56313	Scaffold	1249867532
+GCF_026930045.1	Uloborus diversus	327109	Chromosome	2151890133
+GCF_025399195.1	Umbelopsis ramanniana AG	1314678	Scaffold	23077072
+GCF_000003515.1	Uncinocarpus reesii 1704	336963	Scaffold	22327935
+GCF_029784155.1	Uranotaenia lowii	190385	Chromosome	1077644186
+GCF_045843805.1	Urocitellus parryii	9999	Chromosome	2935776410
+GCF_020975775.1	Ursus americanus	9643	Contig	2351947609
+GCF_023065955.2	Ursus arctos	9644	Chromosome	2423401459
+GCF_017311325.1	Ursus maritimus	29073	Scaffold	2330468424
+GCF_000687475.1	Ustilaginoidea virens	1159556	Complete Genome	37060086
+GCF_900519145.1	Ustilago hordei	120017	Contig	26637005
+GCF_000988165.1	Vairimorpha ceranae	40302	Contig	5690748
+GCF_036630325.1	Vairimorpha necatrix	6039	Complete Genome	15005441
+GCF_051991255.1	Vanacampus margaritifer	642989	Chromosome	628116969
+GCF_000150035.1	Vanderwaltozyma polyspora DSM 70294	436907	Scaffold	14674591
+GCF_905147765.1	Vanessa atalanta	42275	Chromosome	370420815
+GCF_905220365.1	Vanessa cardui	171605	Chromosome	424798336
+GCF_037043105.1	Vanessa tameamea	334116	Chromosome	363368026
+GCF_041260175.1	Vanrija albida	181172	Contig	22534050
+GCF_020906515.1	Vanrija pseudolonga	143232	Complete Genome	24922244
+GCF_004798865.1	Varanus komodoensis	61221	Scaffold	1507945839
+GCF_002443255.2	Varroa destructor	109461	Scaffold	368796621
+GCF_002532875.2	Varroa jacobsoni	62625	Scaffold	364328871
+GCF_000192795.1	Vavraia culicis subsp. floridensis	948595	Scaffold	6118689
+GCF_019457755.1	Venturia canescens	32260	Chromosome	290760430
+GCF_003357145.1	Venustampulla echinocandica	2656787	Scaffold	33639795
+GCF_000836295.1	Verruconis gallopava	253628	Scaffold	31780469
+GCF_000150825.1	Verticillium alfalfae VaMs.102	526221	Scaffold	32833495
+GCF_000150675.1	Verticillium dahliae VdLs.17	498257	Scaffold	33828453
+GCF_003724135.2	Verticillium nonalfalfae	1051616	Scaffold	31747483
+GCF_910589235.1	Vespa crabro	7445	Chromosome	229313526
+GCF_014083535.2	Vespa mandarinia	7446	Contig	247710421
+GCF_912470025.1	Vespa velutina	202808	Chromosome	193976845
+GCF_014466175.1	Vespula pensylvanica	30213	Chromosome	179370016
+GCF_905475345.1	Vespula vulgaris	7454	Chromosome	188185082
+GCF_029867415.1	Vicia villosa	3911	Chromosome	2034988852
+GCF_048564905.1	Vicugna pacos	30538	Chromosome	2572244716
+GCF_026979565.1	Vidua chalybeata	81927	Chromosome	1080440577
+GCF_024509145.1	Vidua macroura	187451	Chromosome	1123252761
+GCF_016808095.1	Vigna angularis	3914	Chromosome	447806493
+GCF_000741045.1	Vigna radiata var. radiata	3916	Chromosome	463085359
+GCF_018835915.1	Vigna umbellata	87088	Scaffold	414499397
+GCF_004118075.2	Vigna unguiculata	3917	Chromosome	518595462
+GCF_964194415.1	Vipera berus	31155	Chromosome	1694999861
+GCF_004353265.1	Vitis riparia	96939	Chromosome	500105807
+GCF_030704535.1	Vitis vinifera	29760	Complete Genome	494873210
+GCF_000231115.1	Vittaforma corneae ATCC 50505	993615	Scaffold	3213516
+GCF_000949405.1	Vollenhovia emeryi	411798	Scaffold	287900827
+GCF_000143455.1	Volvox carteri f. nagariensis	3068	Scaffold	137684403
+GCF_900497805.2	Vombatus ursinus	29139	Scaffold	3486580222
+GCF_018345385.1	Vulpes lagopus	494514	Chromosome	2345533697
+GCF_048418805.1	Vulpes vulpes	9627	Chromosome	2395584468
+GCF_000400465.1	Wallemia ichthyophaga EXF-994	1299270	Scaffold	9655632
+GCF_000263375.1	Wallemia mellicola CBS 633.66	671144	Scaffold	9815586
+GCF_000956235.1	Wasmannia auropunctata	64793	Scaffold	324120201
+GCF_963576615.1	Watersipora subatra	2589382	Chromosome	783738342
+GCF_010094085.1	Westerdykella ornata	318751	Scaffold	26979746
+GCF_002251995.1	Wickerhamiella sorbophila	45607	Contig	8129113
+GCF_001661255.1	Wickerhamomyces anomalus NRRL Y-366-8	683960	Scaffold	14145566
+GCF_000313485.1	Wickerhamomyces ciferrii	1041607	Contig	15901152
+GCF_029677425.1	Wolffia australiana	161112	Chromosome	358772296
+GCF_029784165.1	Wyeomyia smithii	174621	Chromosome	769230131
+GCF_021976095.1	Xenia sp. Carnegie-2017	2897299	Scaffold	222699550
+GCF_017654675.1	Xenopus laevis	8355	Chromosome	2742451793
+GCF_000004195.4	Xenopus tropicalis	8364	Chromosome	1451283599
+GCF_016859285.1	Xiphias gladius	8245	Chromosome	691763775
+GCF_001444195.1	Xiphophorus couchianus	32473	Chromosome	688524871
+GCF_003331165.1	Xiphophorus hellerii	8084	Chromosome	732889490
+GCF_002775205.1	Xiphophorus maculatus	8083	Chromosome	704304519
+GCF_022495145.1	Xylaria bambusicola	326684	Scaffold	45705225
+GCF_050948175.1	Xylocopa sonorina	1818115	Chromosome	580828064
+GCF_001619985.1	Xylona heveae TC161	1328760	Scaffold	24337763
+GCF_025860055.1	Xyrauchen texanus	154827	Chromosome	2186806939
+GCF_029203305.1	Yamadazyma tenuis	2315449	Complete Genome	10831699
+GCF_001761485.1	Yarrowia lipolytica	4952	Complete Genome	20500066
+GCF_031769215.1	Ylistrum balloti	509963	Contig	648484292
+GCF_009762305.2	Zalophus californianus	9704	Chromosome	2409668595
+GCF_010093935.1	Zasmidium cellare ATCC 36951	1080233	Scaffold	38247703
+GCF_902167145.1	Zea mays	4577	Chromosome	2182075994
+GCF_012273895.1	Zerene cesonia	33412	Chromosome	266405969
+GCF_028554725.1	Zeugodacus cucurbitae	28588	Chromosome	439243742
+GCF_960531495.1	Zeus faber	64108	Chromosome	804715226
+GCF_018446385.1	Zingiber officinale	94328	Chromosome	3090266393
+GCF_031755915.1	Ziziphus jujuba	326968	Complete Genome	393332932
+GCF_047830755.1	Zonotrichia albicollis	44394	Chromosome	1278921982
+GCF_028769735.1	Zonotrichia leucophrys gambelii	257770	Chromosome	1123996003
+GCF_000696155.1	Zootermopsis nevadensis	136037	Scaffold	485009472
+GCF_963506605.1	Zootoca vivipara	8524	Chromosome	1440239386
+GCF_036711695.1	Zophobas morio	2755281	Contig	592429719
+GCF_025766255.1	Zychaea mexicana	64656	Contig	50638590
+GCF_000026365.1	Zygosaccharomyces rouxii	4956	Chromosome	9764635
+GCF_013402915.1	Zygotorulaspora mrakii	42260	Complete Genome	10412516
+GCF_000219625.1	Zymoseptoria tritici IPO323	336722	Chromosome	39686251

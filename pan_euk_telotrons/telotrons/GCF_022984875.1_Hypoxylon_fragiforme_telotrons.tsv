@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_022984875.1	Hypoxylon_fragiforme	NW_026054762.1	606878	606898	20	+	rna-XM_049261673.1	TA	CC	0.85	TTAGG	0.5	unknown	TACCTACC	TACCTACC	TACCTACCTACCTACCTACC

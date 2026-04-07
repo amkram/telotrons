@@ -1,0 +1,2 @@
+genome_acc	genome_name	contig	start	end	length	strand	mrna	donor	acceptor	telo_coverage	repeat_type	fwd_frac	orientation	donor_8	acceptor_8	intron_seq
+GCF_043250625.1	Sebastes_fasciatus	NC_133803.1	36256413	36256443	30	+	rna-XR_012595401.1	GT	AG	0.9333333333333333	TTAGG	1.0	coding-strand	GTTAGGAG	GTTAGGAG	GTTAGGAGGTTAGAGGTTAGGGGTTAGGAG

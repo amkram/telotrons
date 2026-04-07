@@ -1,0 +1,37 @@
+{
+  "GCF_009914755.1": {
+    "acc": "GCF_009914755.1",
+    "name": "T2T_CHM13v2",
+    "description": "Telomere-to-telomere complete genome",
+    "status": "ok",
+    "error": null,
+    "timestamp": "2026-03-31T21:28:24.778615",
+    "n_introns": 349833,
+    "n_telotrons_10pct": 329,
+    "n_telotrons_30pct": 1,
+    "n_telotrons_50pct": 1,
+    "n_telotrons_70pct": 0,
+    "n_telotrons_85pct": 0,
+    "n_telotrons_95pct": 0,
+    "threshold_counts": {
+      "0.1": 329,
+      "0.3": 1,
+      "0.5": 1,
+      "0.7": 0,
+      "0.85": 0,
+      "0.95": 0
+    },
+    "boundary": {
+      "n_gt_ag": 0,
+      "n_telo85": 0,
+      "top_donor": null,
+      "top_acceptor": null,
+      "AACC_AG_pct": 0,
+      "orient_AACC": {
+        "template-strand": 0,
+        "converging": 0,
+        "coding-strand": 0
+      }
+    }
+  }
+}

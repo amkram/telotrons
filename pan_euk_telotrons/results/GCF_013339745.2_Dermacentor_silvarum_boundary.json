@@ -1,0 +1,40 @@
+{
+  "genome_id": "GCF_013339745.2_Dermacentor_silvarum",
+  "n_telotrons": 2,
+  "n_gt_ag": 2,
+  "top_donor_4": [
+    [
+      "TGGG",
+      1
+    ],
+    [
+      "TAGG",
+      1
+    ]
+  ],
+  "top_acceptor_4": [
+    [
+      "GGTT",
+      2
+    ]
+  ],
+  "orientation_breakdown": {
+    "coding-strand": {
+      "n": 2,
+      "top_acceptor": [
+        [
+          "GGTT",
+          2
+        ]
+      ]
+    },
+    "template-strand": {
+      "n": 0,
+      "top_acceptor": []
+    },
+    "converging": {
+      "n": 0,
+      "top_acceptor": []
+    }
+  }
+}
