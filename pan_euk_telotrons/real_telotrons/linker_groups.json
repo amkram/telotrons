@@ -1,0 +1,357 @@
+[
+ {
+  "type": "shared",
+  "members": [
+   [
+    "GCF_000499385.1",
+    "NW_013654861.1",
+    79217,
+    79364
+   ],
+   [
+    "GCF_000499385.1",
+    "NW_013655283.1",
+    230,
+    446
+   ]
+  ]
+ },
+ {
+  "type": "shared",
+  "members": [
+   [
+    "GCF_000499385.1",
+    "NW_013651890.1",
+    813,
+    1038
+   ],
+   [
+    "GCF_000499385.1",
+    "NW_013651890.1",
+    1415,
+    1597
+   ]
+  ]
+ },
+ {
+  "type": "shared",
+  "members": [
+   [
+    "GCF_000499605.1",
+    "NW_013564060.1",
+    17217,
+    17416
+   ],
+   [
+    "GCF_000499605.1",
+    "NW_013564060.1",
+    17489,
+    17860
+   ]
+  ]
+ },
+ {
+  "type": "shared",
+  "members": [
+   [
+    "GCF_000499425.1",
+    "NW_013549356.1",
+    7688,
+    7850
+   ],
+   [
+    "GCF_000499425.1",
+    "NW_013549356.1",
+    7385,
+    7568
+   ]
+  ]
+ },
+ {
+  "type": "shared",
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013545172.1",
+    967,
+    1076
+   ],
+   [
+    "GCF_000499545.2",
+    "NW_013542093.1",
+    1077,
+    1986
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499385.1",
+  "origin_contig": "NW_013655357.1",
+  "origin_bin_start": 31000,
+  "origin_bin_end": 32000,
+  "members": [
+   [
+    "GCF_000499385.1",
+    "NW_013655364.1",
+    250,
+    511
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499385.1",
+  "origin_contig": "NW_013651737.1",
+  "origin_bin_start": 19000,
+  "origin_bin_end": 20000,
+  "members": [
+   [
+    "GCF_000499385.1",
+    "NW_013653642.1",
+    757,
+    1409
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499605.1",
+  "origin_contig": "NW_013564545.1",
+  "origin_bin_start": 6000,
+  "origin_bin_end": 7000,
+  "members": [
+   [
+    "GCF_000499605.1",
+    "NW_013563956.1",
+    9812,
+    9932
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499425.1",
+  "origin_contig": "NW_013550363.1",
+  "origin_bin_start": 1000,
+  "origin_bin_end": 2000,
+  "members": [
+   [
+    "GCF_000499425.1",
+    "NW_013550363.1",
+    1809,
+    2160
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499425.1",
+  "origin_contig": "NW_013549076.1",
+  "origin_bin_start": 4000,
+  "origin_bin_end": 5000,
+  "members": [
+   [
+    "GCF_000499425.1",
+    "NW_013548212.1",
+    211,
+    623
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499425.1",
+  "origin_contig": "NW_013550044.1",
+  "origin_bin_start": 0,
+  "origin_bin_end": 1000,
+  "members": [
+   [
+    "GCF_000499425.1",
+    "NW_013550044.1",
+    701,
+    863
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499425.1",
+  "origin_contig": "NW_013550091.1",
+  "origin_bin_start": 0,
+  "origin_bin_end": 1000,
+  "members": [
+   [
+    "GCF_000499425.1",
+    "NW_013547664.1",
+    153,
+    362
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013542138.1",
+  "origin_bin_start": 0,
+  "origin_bin_end": 2000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013541517.1",
+    2273,
+    2930
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013542718.1",
+  "origin_bin_start": 1000,
+  "origin_bin_end": 2000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013541521.1",
+    33331,
+    33500
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013541544.1",
+  "origin_bin_start": 0,
+  "origin_bin_end": 1000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013541544.1",
+    489,
+    699
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013544468.1",
+  "origin_bin_start": 0,
+  "origin_bin_end": 1000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013541571.1",
+    807,
+    1023
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013541938.1",
+  "origin_bin_start": 1000,
+  "origin_bin_end": 2000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013543930.1",
+    2658,
+    2850
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013543931.1",
+  "origin_bin_start": 2000,
+  "origin_bin_end": 3000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013543931.1",
+    1734,
+    1943
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013543069.1",
+  "origin_bin_start": 0,
+  "origin_bin_end": 1000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013543983.1",
+    1827,
+    2030
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013543413.1",
+  "origin_bin_start": 2000,
+  "origin_bin_end": 3000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013544006.1",
+    1333,
+    1577
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013542222.1",
+  "origin_bin_start": 2000,
+  "origin_bin_end": 3000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013544111.1",
+    892,
+    1085
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013546016.1",
+  "origin_bin_start": 4000,
+  "origin_bin_end": 5000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013545094.1",
+    1086,
+    1285
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "origin_acc": "GCF_000499545.2",
+  "origin_contig": "NW_013545669.1",
+  "origin_bin_start": 0,
+  "origin_bin_end": 1000,
+  "members": [
+   [
+    "GCF_000499545.2",
+    "NW_013545611.1",
+    167,
+    368
+   ]
+  ]
+ }
+]
