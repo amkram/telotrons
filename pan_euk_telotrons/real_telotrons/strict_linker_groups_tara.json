@@ -1,0 +1,98 @@
+[
+ {
+  "type": "locus",
+  "mag": "TARA_PSW_86_MAG_00284",
+  "origin_contig": "TARA_PSW_86_MAG_00284_000000007091",
+  "origin_bin_start": 2000,
+  "origin_bin_end": 3000,
+  "members": [
+   [
+    "TARA_PSW_86_MAG_00284",
+    "TARA_PSW_86_MAG_00284_000000001875",
+    1975,
+    2141
+   ]
+  ]
+ },
+ {
+  "type": "shared",
+  "mag": "TARA_PSW_86_MAG_00284",
+  "members": [
+   [
+    "TARA_PSW_86_MAG_00284",
+    "TARA_PSW_86_MAG_00284_000000002677",
+    402,
+    829
+   ],
+   [
+    "TARA_PSW_86_MAG_00284",
+    "TARA_PSW_86_MAG_00284_000000000755",
+    623,
+    709
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "mag": "TARA_PSW_86_MAG_00284",
+  "origin_contig": "TARA_PSW_86_MAG_00284_000000000437",
+  "origin_bin_start": 0,
+  "origin_bin_end": 1000,
+  "members": [
+   [
+    "TARA_PSW_86_MAG_00284",
+    "TARA_PSW_86_MAG_00284_000000004635",
+    562,
+    776
+   ]
+  ]
+ },
+ {
+  "type": "shared",
+  "mag": "TARA_PSW_86_MAG_00284",
+  "members": [
+   [
+    "TARA_PSW_86_MAG_00284",
+    "TARA_PSW_86_MAG_00284_000000006994",
+    1702,
+    1916
+   ],
+   [
+    "TARA_PSW_86_MAG_00284",
+    "TARA_PSW_86_MAG_00284_000000011483",
+    266,
+    484
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "mag": "TARA_PSW_86_MAG_00284",
+  "origin_contig": "TARA_PSW_86_MAG_00284_000000004968",
+  "origin_bin_start": 1000,
+  "origin_bin_end": 2000,
+  "members": [
+   [
+    "TARA_PSW_86_MAG_00284",
+    "TARA_PSW_86_MAG_00284_000000008291",
+    2513,
+    2660
+   ]
+  ]
+ },
+ {
+  "type": "locus",
+  "mag": "TARA_PSW_86_MAG_00284",
+  "origin_contig": "TARA_PSW_86_MAG_00284_000000000238",
+  "origin_bin_start": 1000,
+  "origin_bin_end": 2000,
+  "members": [
+   [
+    "TARA_PSW_86_MAG_00284",
+    "TARA_PSW_86_MAG_00284_000000008291",
+    2513,
+    2660
+   ]
+  ]
+ }
+]
