@@ -253,34 +253,28 @@ def render_species_fig(species_label, groups, contigs, gff_data, telo_lookup,
             cs = contigs.get(mac, {}).get(mc, '')
             if not cs: continue
             if strand == 'rev':
-                # reverse-complement the whole locus
                 left_raw = cs[max(0, ts-flank_bp):ts] if cs else ''
                 right_raw = cs[te:te+flank_bp] if cs else ''
-                # concatenate intron + flanks then revcomp
                 whole = left_raw + seq + right_raw
                 whole_rc = revcomp(whole)
-                # Position of canonical linker in whole_rc
-                # In original (not rc), linker is at ts+pos to ts+pos+len(canon).
-                # That position relative to `whole` start is (len(left_raw) + pos)
-                # In whole_rc, same residues are at len(whole) - (len(left_raw) + pos + len(canon))
-                # plus we want flank_bp left/right of the linker in whole_rc
                 rev_link_s = len(whole) - (len(left_raw) + pos + len(canon))
-                ext_l_avail = rev_link_s
-                ext_r_avail = len(whole) - rev_link_s - len(canon)
-                ext_l = min(flank_bp, ext_l_avail)
-                ext_r = min(flank_bp, ext_r_avail)
+                ext_l = min(flank_bp, rev_link_s)
+                ext_r = min(flank_bp, len(whole) - rev_link_s - len(canon))
                 ext_seq = whole_rc[rev_link_s - ext_l : rev_link_s + len(canon) + ext_r]
                 link_off = ext_l
+                # intron position in displayed (rc): ext_l - (len(seq) - pos - len(canon))
+                intron_start_disp = ext_l - (len(seq) - pos - len(canon))
+                intron_end_disp = intron_start_disp + len(seq)
             else:
-                # fwd: extract from contig directly
                 gpos_s = ts + pos
                 gpos_e = gpos_s + len(canon)
                 ext_l = min(flank_bp, gpos_s)
                 ext_r = min(flank_bp, len(cs) - gpos_e)
                 ext_seq = cs[gpos_s - ext_l : gpos_e + ext_r]
                 link_off = ext_l
+                intron_start_disp = ext_l - pos
+                intron_end_disp = intron_start_disp + len(seq)
 
-            # Drop if N-rich
             n_frac = ext_seq.count('N') / len(ext_seq) if ext_seq else 1
             if n_frac > 0.05: continue
 
@@ -297,27 +291,37 @@ def render_species_fig(species_label, groups, contigs, gff_data, telo_lookup,
                 'kind': 'TELOTRON',
                 'annot': '; '.join(annot),
                 'link_in_unaligned': link_off,
+                'intron_start_unaligned': intron_start_disp,
+                'intron_end_unaligned': intron_end_disp,
             })
 
         if len(seqs_to_align) < 2: continue
         aligned = run_mafft(seqs_to_align)
         if len(aligned) != len(seqs_to_align): continue
 
-        # Find aligned linker columns
+        # Map unaligned position -> aligned column for each row
+        def unaln_to_aln(aln_str, unaln_pos):
+            """Given aligned sequence (with '-'), return aligned column index
+            corresponding to unaligned base index unaln_pos. Clamps to bounds."""
+            if unaln_pos < 0: return 0
+            cnt = 0
+            for i, c in enumerate(aln_str):
+                if c != '-':
+                    if cnt == unaln_pos: return i
+                    cnt += 1
+            return len(aln_str)
+
+        # Find aligned linker columns (use first row as reference)
         ref_aligned = aligned[0][1]
-        ref_unaligned_to_aligned = []
-        for i, c in enumerate(ref_aligned):
-            if c != '-': ref_unaligned_to_aligned.append(i)
         ref_link_off = row_meta[0]['link_in_unaligned']
-        if ref_link_off < len(ref_unaligned_to_aligned):
-            aligned_link_start = ref_unaligned_to_aligned[ref_link_off]
-            ref_link_end_pos = ref_link_off + len(canon)
-            if ref_link_end_pos <= len(ref_unaligned_to_aligned):
-                aligned_link_end = ref_unaligned_to_aligned[ref_link_end_pos - 1] + 1
-            else:
-                aligned_link_end = len(ref_aligned)
-        else:
-            aligned_link_start = 0; aligned_link_end = len(canon)
+        aligned_link_start = unaln_to_aln(ref_aligned, ref_link_off)
+        aligned_link_end = unaln_to_aln(ref_aligned, ref_link_off + len(canon))
+
+        # Compute aligned intron boundaries for each TELOTRON row
+        for (name, aln_str), meta in zip(aligned, row_meta):
+            if meta['kind'] == 'TELOTRON':
+                meta['intron_start_aligned'] = unaln_to_aln(aln_str, meta['intron_start_unaligned'])
+                meta['intron_end_aligned'] = unaln_to_aln(aln_str, meta['intron_end_unaligned'])
 
         rendered.append({
             'type': g['type'], 'aligned': aligned, 'meta': row_meta,
@@ -374,6 +378,20 @@ def render_species_fig(species_label, groups, contigs, gff_data, telo_lookup,
                     ha='left', va='center', fontsize=7, color=kind_color, fontweight=fw)
             render_row(ax, cur_y, seq, cls, x_start=0, char_width=1.0,
                        highlight_ranges=hl, bg_override=bg_overrides, fontsize=4.5)
+            # Telotron intron boundary bars
+            if meta['kind'] == 'TELOTRON':
+                i_s = meta.get('intron_start_aligned', 0)
+                i_e = meta.get('intron_end_aligned', len(seq))
+                # 5' splice site bar (intron start)
+                if 0 <= i_s <= len(seq):
+                    ax.add_patch(Rectangle((i_s - 0.4, cur_y), 0.7, 1.0,
+                                             facecolor='black', edgecolor='none',
+                                             zorder=5))
+                # 3' splice site bar (intron end)
+                if 0 <= i_e <= len(seq):
+                    ax.add_patch(Rectangle((i_e - 0.4, cur_y), 0.7, 1.0,
+                                             facecolor='black', edgecolor='none',
+                                             zorder=5))
             ax.text(max_w+3, cur_y+0.5, meta['annot'],
                     ha='left', va='center', fontsize=6.5, color='gray')
             cur_y += 1
