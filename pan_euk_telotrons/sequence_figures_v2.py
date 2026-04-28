@@ -170,7 +170,7 @@ def load_eimeria_with_flanks():
 # ------------------------------------------------------------------
 
 def draw_intron_with_flanks(ax, y, intron, left_flank, right_flank,
-                             family, char_w=1.0, flank_bp=40, fontsize=3.5,
+                             family, char_w=1.0, flank_bp=40, fontsize=5.0,
                              tsd_len=0, highlight=None,
                              x_offset=0):
     """Draw a row: [left_flank] [splice5'] [intron] [splice3'] [right_flank]
@@ -344,7 +344,7 @@ def figure_classes(out='real_telotrons/seqfig_classes.png', n_per=4):
             tsd = find_tsd(left[-flank_bp:], right[:flank_bp])
             draw_intron_with_flanks(ax, cur_y, seq, left, right, family,
                                      char_w=char_w, flank_bp=flank_bp,
-                                     fontsize=3.0, tsd_len=tsd)
+                                     fontsize=5.0, tsd_len=tsd)
             r = ex['rec']
             sp = r.get('species', r.get('mag', '?'))
             sp = sp.replace('TARA_', '').split('_MAG_')[0] if 'TARA' in sp else sp
@@ -464,7 +464,7 @@ def figure_shared(out='real_telotrons/seqfig_shared.png'):
         highlight1 = {pos: 'shared' for pos in range(t1['linker_offset'], t1['linker_end_offset'])}
         end_x1 = draw_intron_with_flanks(ax, 1, seq1, left1, right1, 'TTTAGGG',
                                           char_w=char_w, flank_bp=flank_bp,
-                                          fontsize=3.5,
+                                          fontsize=5.0,
                                           highlight=highlight1)
         ax.text(-25, 1.5,
                 f"{t1['contig']}\n:{t1['start']}-{t1['end']}\n({t1['length']}bp)",
@@ -477,7 +477,7 @@ def figure_shared(out='real_telotrons/seqfig_shared.png'):
             highlight2 = {}
         draw_intron_with_flanks(ax, 4, seq2, left2, right2, 'TTTAGGG',
                                  char_w=char_w, flank_bp=flank_bp,
-                                 fontsize=3.5,
+                                 fontsize=5.0,
                                  highlight=highlight2)
         ax.text(-25, 4.5,
                 f"{t2['contig']}\n:{t2['start']}-{t2['end']}\n({t2['length']}bp)",
@@ -565,7 +565,7 @@ def figure_compare(out='real_telotrons/seqfig_compare.png', n_each=8):
         left = r['left_flank_100bp']; right = r['right_flank_100bp']
         tsd = find_tsd(left[-flank_bp:], right[:flank_bp])
         draw_intron_with_flanks(ax, i, ex['seq'], left, right, 'TTAGGG',
-                                 char_w=char_w, flank_bp=flank_bp, fontsize=3.0,
+                                 char_w=char_w, flank_bp=flank_bp, fontsize=5.0,
                                  tsd_len=tsd)
         mag = r.get('mag', 'TARA').replace('TARA_', '').split('_MAG_')[0]
         ax.text(-25, i + 0.5, f"{mag} {len(ex['seq'])}bp",
@@ -576,7 +576,7 @@ def figure_compare(out='real_telotrons/seqfig_compare.png', n_each=8):
         left = r['left_flank_100bp']; right = r['right_flank_100bp']
         tsd = find_tsd(left[-flank_bp:], right[:flank_bp])
         draw_intron_with_flanks(ax, i, ex['seq'], left, right, 'TTTAGGG',
-                                 char_w=char_w, flank_bp=flank_bp, fontsize=3.0,
+                                 char_w=char_w, flank_bp=flank_bp, fontsize=5.0,
                                  tsd_len=tsd, x_offset=eim_x)
         sp = r.get('species', '').replace('Eimeria_', 'E.')
         ax.text(eim_x - 25, i + 0.5, f"{sp[:14]} {len(ex['seq'])}bp",
@@ -663,7 +663,7 @@ def figure_linkers(out='real_telotrons/seqfig_linkers.png', n_per=8):
             linker = seq[ls:le]
             cls = classify_bases(seq, family)
             x_start = 0
-            render_row(ax, cur_y, seq, cls, x_start=x_start, char_width=char_w, fontsize=3.5)
+            render_row(ax, cur_y, seq, cls, x_start=x_start, char_width=char_w, fontsize=5.0)
             # Mark linker boundaries
             ax.plot([ls, ls], [cur_y, cur_y + 1], color='green', linewidth=1.5, linestyle='--')
             ax.plot([le, le], [cur_y, cur_y + 1], color='green', linewidth=1.5, linestyle='--')
@@ -779,7 +779,7 @@ def figure_tandem_cluster(out='real_telotrons/seqfig_tandem.png'):
                     full_classes[t_start_in_vis + i] = c
 
         # Render
-        render_row(ax, 0, full_seq, full_classes, x_start=0, char_width=1.0, fontsize=3.5)
+        render_row(ax, 0, full_seq, full_classes, x_start=0, char_width=1.0, fontsize=5.0)
 
         # Mark splice sites for each telotron with black bars
         for t in telos:

@@ -38,7 +38,7 @@ def smith_waterman_simple(s1, s2, match=2, mismatch=-1, gap=-2):
     return aligned_s1, aligned_s2, mismatches
 
 
-def render_alignment_row(ax, y, s1, s2, x_start=0, char_w=1.0, fontsize=4.0):
+def render_alignment_row(ax, y, s1, s2, x_start=0, char_w=1.0, fontsize=5.5):
     """Render a base-paired alignment row with mismatches highlighted in red."""
     L = min(len(s1), len(s2))
     mismatches = [a != b for a, b in zip(s1[:L], s2[:L])]
