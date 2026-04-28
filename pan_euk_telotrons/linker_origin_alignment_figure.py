@@ -78,6 +78,36 @@ def render_alignment_row(ax, y, s1, s2, x_start=0, char_w=1.0, fontsize=4.0):
     return n_match, L
 
 
+def compute_distance_info(p, contig_telotrons):
+    """Returns dict with class, distance_str, and other distance info."""
+    same_contig = p['source_contig'] == p['origin_contig']
+    src_mid = (p['source_linker_start'] + p['source_linker_end']) // 2
+    org_mid = (p['origin_start'] + p['origin_end']) // 2
+
+    src_clen = p.get('src_contig_len', 0)
+    org_clen = p.get('origin_contig_len', 0)
+    src_dist_end = min(p['source_linker_start'], src_clen - p['source_linker_end']) if src_clen else None
+    org_dist_end = min(p['origin_start'], org_clen - p['origin_end']) if org_clen else None
+
+    in_diff_telotron = bool(p.get('origin_in_telotron'))
+
+    if in_diff_telotron:
+        cls = 'shared-linker'
+    elif same_contig:
+        cls = 'same-contig-intergenic'
+    else:
+        cls = 'cross-contig'
+
+    if same_contig:
+        dist = abs(org_mid - src_mid)
+        dist_str = f"{dist:,}bp apart on same contig"
+    else:
+        dist_str = (f"src {src_dist_end:,}bp from end | "
+                    f"origin {org_dist_end:,}bp from end")
+
+    return cls, dist_str, src_dist_end, org_dist_end
+
+
 def render_pairs(pairs_subset, out_path, title):
     """Render a batch of pairs to one figure."""
     char_w = 1.0
@@ -109,13 +139,13 @@ def render_pairs(pairs_subset, out_path, title):
         y_base = idx * PAIR_HEIGHT
         linker = p['linker_seq']
 
-        # Header
-        gap_info = ""
-        if p['source_contig'] == p['origin_contig'] and p['src_telotron_start']:
-            gap = abs(p['source_linker_start'] - p['origin_start'])
-            gap_info = f" | same contig, {gap:,}bp away"
-        else:
-            gap_info = f" | different contig"
+        # Header — compute class and distance
+        cls, dist_str, src_d, org_d = compute_distance_info(p, None)
+        cls_color = {
+            'shared-linker': 'darkgreen',
+            'same-contig-intergenic': 'darkblue',
+            'cross-contig': 'darkred',
+        }.get(cls, 'black')
 
         in_telo = "INSIDE another telotron" if p.get('origin_in_telotron') else "intergenic/exon"
         subtelo = f"<5kb from contig end ({p['origin_dist_to_end']:,}bp)" if p['origin_dist_to_end'] < 5000 else f"internal ({p['origin_dist_to_end']:,}bp from end)"
@@ -124,16 +154,27 @@ def render_pairs(pairs_subset, out_path, title):
         strand_info = "fwd" if p['origin_strand'] == '+' else "rev-comp"
 
         ax.text(-25, y_base + 0.5,
-                f"#{idx+1}", ha='left', va='center', fontsize=11, fontweight='bold')
+                f"#{p.get('global_idx', idx+1)}", ha='left', va='center', fontsize=11, fontweight='bold')
         ax.text(0, y_base + 0.5,
-                f"{p['acc']}: {p['source_contig']}:{p['source_linker_start']}-{p['source_linker_end']} → {p['origin_contig']}:{p['origin_start']}-{p['origin_end']} ({strand_info}){gap_info}",
+                f"{p['acc']}: {p['source_contig']}:{p['source_linker_start']}-{p['source_linker_end']} → "
+                f"{p['origin_contig']}:{p['origin_start']}-{p['origin_end']} ({strand_info})",
                 ha='left', va='center', fontsize=8, fontweight='bold')
-        ax.text(0, y_base + 1.3,
+
+        # Distance + class on its own line, color-coded
+        ax.text(0, y_base + 1.2,
+                f"DISTANCE: {dist_str}  |  CLASS: ",
+                ha='left', va='center', fontsize=8, fontweight='bold')
+        ax.text(180, y_base + 1.2,
+                cls.upper(),
+                ha='left', va='center', fontsize=8, fontweight='bold', color=cls_color)
+
+        ax.text(0, y_base + 1.9,
                 f"BLAST: {p['pident']:.1f}% identity over {p['aln_length']}bp | linker length: {len(linker)}bp | "
                 f"origin: {in_telo}, {subtelo}",
                 ha='left', va='center', fontsize=7.5, color='gray', fontstyle='italic')
 
-        # Row 1 (y = y_base + 2): source telotron with linker highlighted
+        # Adjust y offsets to account for the extra header line we added
+        # Row 1 (y = y_base + 2.5): source telotron with linker highlighted
         src_seq = p.get('src_telotron_intron_seq', '')
         src_start_telo = p.get('src_telotron_start')
         if src_seq and src_start_telo:
@@ -248,11 +289,35 @@ def main():
         pairs = json.load(f)
     print(f"Loaded {len(pairs)} linker→origin pairs")
 
+    # Need contig lengths for distance computation
+    from collections import defaultdict
+    contig_lens = {}
+    for acc in set(p['acc'] for p in pairs):
+        gen = next(Path(f'genomes/{acc}').rglob('*.fna'), None)
+        if not gen: continue
+        cur, n = None, 0
+        with open(gen) as f:
+            for line in f:
+                if line.startswith('>'):
+                    if cur: contig_lens[(acc, cur)] = n
+                    cur = line[1:].strip().split()[0]
+                    n = 0
+                else:
+                    n += len(line.strip())
+            if cur: contig_lens[(acc, cur)] = n
+
+    for p in pairs:
+        p['src_contig_len'] = contig_lens.get((p['acc'], p['source_contig']), 0)
+        # origin_contig_len already in p
+
     # Sort: prioritize cases where origin is in another telotron, then by pident
     pairs_sorted = sorted(pairs, key=lambda p: (
         not p.get('origin_in_telotron'),
         -p['pident']
     ))
+    # Add global index to track them across batches
+    for i, p in enumerate(pairs_sorted):
+        p['global_idx'] = i + 1
 
     # Save in batches of 6
     batch_size = 6

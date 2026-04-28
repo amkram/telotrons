@@ -63,9 +63,17 @@ def main():
                 f"#{i+1} {p['origin_contig']} ({clen/1000:.1f}kb) {same_contig}",
                 ha='right', va='center', fontsize=7)
 
-        # Annotate hit details
+        # Annotate hit details — include distance src↔origin
+        if p['source_contig'] == p['origin_contig']:
+            src_mid = (p['source_linker_start'] + p['source_linker_end']) // 2
+            org_mid = (p['origin_start'] + p['origin_end']) // 2
+            dist_apart = abs(org_mid - src_mid)
+            dist_str = f"{dist_apart:,}bp apart"
+        else:
+            dist_str = "different contig"
+
         ax.text(clen + max_clen * 0.005, y + 0.25,
-                f" {p['pident']:.0f}% | {p['aln_length']}bp | dist_to_end={p['origin_dist_to_end']:,}bp",
+                f" {p['pident']:.0f}% | {p['aln_length']}bp | end={p['origin_dist_to_end']:,}bp | {dist_str}",
                 ha='left', va='center', fontsize=6)
 
     ax.set_xlim(-max_clen * 0.3, max_clen * 1.3)
