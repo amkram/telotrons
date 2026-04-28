@@ -1,0 +1,31 @@
+{
+  "total_linkers": 8701,
+  "length_buckets": {
+    "short_5_30": 2129,
+    "medium_30_120": 5569,
+    "long_120plus": 1003
+  },
+  "orientation_breakdown": {
+    "short_5_30": {
+      "no_telo_pct": 16.862376702677313,
+      "fwd_only_pct": 38.421794269610146,
+      "rev_only_pct": 36.12024424612494,
+      "both_pct": 8.5955847815876,
+      "n": 2129
+    },
+    "medium_30_120": {
+      "no_telo_pct": 6.751660980427366,
+      "fwd_only_pct": 30.831388040940922,
+      "rev_only_pct": 28.981863889387682,
+      "both_pct": 33.43508708924403,
+      "n": 5569
+    },
+    "long_120plus": {
+      "no_telo_pct": 1.5952143569292123,
+      "fwd_only_pct": 17.148554336989033,
+      "rev_only_pct": 17.846460618145564,
+      "both_pct": 63.40977068793619,
+      "n": 1003
+    }
+  }
+}

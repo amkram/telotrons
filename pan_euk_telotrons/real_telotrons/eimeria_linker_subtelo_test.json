@@ -1,0 +1,8 @@
+{
+  "src_dist_pct_lt_5kb": 45.853658536585364,
+  "hit_dist_pct_lt_5kb": 95.83333333333333,
+  "background_pct_lt_5kb": 33.25,
+  "n_source": 1230,
+  "n_hits": 24,
+  "n_background": 2000
+}

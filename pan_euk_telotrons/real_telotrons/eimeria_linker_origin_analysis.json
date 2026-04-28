@@ -1,0 +1,17 @@
+{
+  "total_linkers_blasted": 1230,
+  "distribution_non_self_hq_hits": {
+    "median": 0.0,
+    "mean": 0.01951219512195122,
+    "max": 2,
+    "buckets": {
+      "0_1": 1207,
+      "1_3": 23,
+      "3_10": 0,
+      "10_100": 0,
+      "100_plus": 0
+    }
+  },
+  "n_with_paralogs_3plus": 0,
+  "n_single_copy": 22
+}

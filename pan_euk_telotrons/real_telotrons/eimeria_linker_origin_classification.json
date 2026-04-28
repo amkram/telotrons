@@ -1,0 +1,15 @@
+{
+  "stats": {
+    "total_hits": 24,
+    "within_telotron": 5,
+    "subtelomeric": 0,
+    "subtelomeric_5kb": 23,
+    "on_same_contig": 7,
+    "on_diff_contig": 17
+  },
+  "linkers_with_telotron_paralog": 5,
+  "category_counts": {
+    "outside_telotron": 19,
+    "within_OTHER_telotron": 5
+  }
+}

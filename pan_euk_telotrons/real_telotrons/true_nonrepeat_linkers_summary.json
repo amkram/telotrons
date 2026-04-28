@@ -1,0 +1,13 @@
+{
+  "total_linkers": 8701,
+  "pure_nonrepeat": 751,
+  "contaminated": 7950,
+  "low_telo": 649,
+  "medium_pure_nonrepeat": 395,
+  "pure_nonrepeat_length_distribution": {
+    "short_15_30": 340,
+    "medium_short_30_60": 314,
+    "medium_long_60_120": 81,
+    "long_120plus": 16
+  }
+}

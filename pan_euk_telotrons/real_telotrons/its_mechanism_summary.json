@@ -1,0 +1,49 @@
+{
+  "total": 186,
+  "by_classification": {
+    "SINGLE_G": 113,
+    "SINGLE_C": 70,
+    "NO_TELO": 3
+  },
+  "species_per_class": {
+    "SINGLE_G": 34,
+    "SINGLE_C": 34,
+    "NO_TELO": 1
+  },
+  "family_distribution": {
+    "TTTGGG": 4,
+    "TTAGGG": 41,
+    "TTAGG": 51,
+    "TTTAGGG": 84,
+    "TTGGGG": 3,
+    "null": 3
+  },
+  "mean_variant_frac_per_class": {
+    "SINGLE_G": 0.38111005052483443,
+    "SINGLE_C": 0.2900561999005476
+  },
+  "mean_tsd_per_class": {
+    "SINGLE_G": 1.1415929203539823,
+    "SINGLE_C": 0.6857142857142857,
+    "NO_TELO": 0.0
+  },
+  "pct_with_tsd_per_class": {
+    "SINGLE_G": 9.734513274336283,
+    "SINGLE_C": 8.571428571428571,
+    "NO_TELO": 0.0
+  },
+  "mean_nr2cf_halfsites_per_class": {
+    "SINGLE_G": 0.07207207207207207,
+    "SINGLE_C": 0.07246376811594203
+  },
+  "linker_length_distribution": {
+    "n": 0,
+    "min": 0,
+    "max": 0,
+    "mean": 0,
+    "median": 0,
+    "short_5_30": 0,
+    "medium_30_120": 0,
+    "long_120plus": 0
+  }
+}

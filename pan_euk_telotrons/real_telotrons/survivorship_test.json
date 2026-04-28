@@ -1,0 +1,102 @@
+{
+  "TARA_PSW_86_MAG_00284": {
+    "cds": {
+      "bp": 25954834,
+      "telo_kmers": 42295,
+      "telo_windows": 313495,
+      "total_windows": 15090209
+    },
+    "intron": {
+      "bp": 8579472,
+      "telo_kmers": 517965,
+      "telo_windows": 773447,
+      "total_windows": 1071137
+    },
+    "intergenic": {
+      "bp": 36312805,
+      "telo_kmers": 457137,
+      "telo_windows": 2319202,
+      "total_windows": 26876534
+    }
+  },
+  "TARA_PON_109_MAG_00250": {
+    "cds": {
+      "bp": 17262967,
+      "telo_kmers": 20939,
+      "telo_windows": 181434,
+      "total_windows": 11092149
+    },
+    "intron": {
+      "bp": 3389579,
+      "telo_kmers": 94382,
+      "telo_windows": 142546,
+      "total_windows": 325533
+    },
+    "intergenic": {
+      "bp": 22818155,
+      "telo_kmers": 158972,
+      "telo_windows": 922722,
+      "total_windows": 17922841
+    }
+  },
+  "TARA_ARC_108_MAG_00319": {
+    "cds": {
+      "bp": 32614716,
+      "telo_kmers": 26589,
+      "telo_windows": 420415,
+      "total_windows": 21537861
+    },
+    "intron": {
+      "bp": 7019000,
+      "telo_kmers": 155698,
+      "telo_windows": 351010,
+      "total_windows": 1063302
+    },
+    "intergenic": {
+      "bp": 47291913,
+      "telo_kmers": 202726,
+      "telo_windows": 2221730,
+      "total_windows": 38124651
+    }
+  },
+  "TARA_PSE_93_MAG_00226": {
+    "cds": {
+      "bp": 12948748,
+      "telo_kmers": 19990,
+      "telo_windows": 144867,
+      "total_windows": 7743114
+    },
+    "intron": {
+      "bp": 2329661,
+      "telo_kmers": 51425,
+      "telo_windows": 75994,
+      "total_windows": 172876
+    },
+    "intergenic": {
+      "bp": 19159565,
+      "telo_kmers": 179990,
+      "telo_windows": 1107161,
+      "total_windows": 15446750
+    }
+  },
+  "TARA_AOS_82_MAG_00154": {
+    "cds": {
+      "bp": 6833603,
+      "telo_kmers": 14699,
+      "telo_windows": 95827,
+      "total_windows": 3728257
+    },
+    "intron": {
+      "bp": 2222631,
+      "telo_kmers": 108273,
+      "telo_windows": 163391,
+      "total_windows": 246559
+    },
+    "intergenic": {
+      "bp": 9606396,
+      "telo_kmers": 148199,
+      "telo_windows": 659720,
+      "total_windows": 6974099
+    }
+  }
+}

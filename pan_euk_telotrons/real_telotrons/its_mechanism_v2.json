@@ -1,0 +1,212 @@
+{
+  "n_total": 55449,
+  "n_pan_euk": 183,
+  "n_tara": 55266,
+  "class_distribution_by_dataset": {
+    "pan_euk": {
+      "SINGLE_G": 113,
+      "SINGLE_C": 70
+    },
+    "tara": {
+      "SINGLE_G": 20230,
+      "SINGLE_C": 23132,
+      "CONVERGING_WITHLINKER": 10058,
+      "CONVERGING_NOLINKER": 1537,
+      "DIVERGING_WITHLINKER": 284,
+      "NONE": 21,
+      "DIVERGING_NOLINKER": 4
+    }
+  },
+  "linker_length_buckets_per_class": {
+    "CONVERGING_WITHLINKER": {
+      "n": 10058,
+      "short_5_30": 3486,
+      "medium_30_120": 5569,
+      "long_120plus": 1003
+    },
+    "DIVERGING_WITHLINKER": {
+      "n": 284,
+      "short_5_30": 52,
+      "medium_30_120": 166,
+      "long_120plus": 66
+    }
+  },
+  "tsd_presence_per_class": {
+    "SINGLE_G": {
+      "n": 20343,
+      "pct_with_tsd_3plus": 6.896721230890233,
+      "mean_tsd_when_present": 4.516749821810406,
+      "mean_tsd_all": 0.31150764390699504
+    },
+    "SINGLE_C": {
+      "n": 23202,
+      "pct_with_tsd_3plus": 7.189035427980347,
+      "mean_tsd_when_present": 4.654676258992806,
+      "mean_tsd_all": 0.33462632531678305
+    },
+    "CONVERGING_WITHLINKER": {
+      "n": 10058,
+      "pct_with_tsd_3plus": 7.029230463312786,
+      "mean_tsd_when_present": 4.603960396039604,
+      "mean_tsd_all": 0.32362298667727185
+    },
+    "CONVERGING_NOLINKER": {
+      "n": 1537,
+      "pct_with_tsd_3plus": 8.132726089785296,
+      "mean_tsd_when_present": 6.352,
+      "mean_tsd_all": 0.516590761223162
+    },
+    "DIVERGING_WITHLINKER": {
+      "n": 284,
+      "pct_with_tsd_3plus": 5.985915492957746,
+      "mean_tsd_when_present": 3.411764705882353,
+      "mean_tsd_all": 0.20422535211267606
+    },
+    "NONE": {
+      "n": 21,
+      "pct_with_tsd_3plus": 4.761904761904762,
+      "mean_tsd_when_present": 3.0,
+      "mean_tsd_all": 0.14285714285714285
+    },
+    "DIVERGING_NOLINKER": {
+      "n": 4,
+      "pct_with_tsd_3plus": 0.0,
+      "mean_tsd_when_present": 0.0,
+      "mean_tsd_all": 0.0
+    }
+  },
+  "variant_frac_per_class": {
+    "SINGLE_G": {
+      "mean": 0.3335034894879943,
+      "n": 18015
+    },
+    "SINGLE_C": {
+      "mean": 0.3340254523157349,
+      "n": 20656
+    },
+    "CONVERGING_WITHLINKER": {
+      "mean": 0.33037197843948285,
+      "n": 9354
+    },
+    "CONVERGING_NOLINKER": {
+      "mean": 0.24637722212793806,
+      "n": 1402
+    },
+    "DIVERGING_WITHLINKER": {
+      "mean": 0.267472983955894,
+      "n": 270
+    },
+    "NONE": {
+      "mean": 0.3469782111048253,
+      "n": 20
+    },
+    "DIVERGING_NOLINKER": {
+      "mean": 0.46709181587768783,
+      "n": 3
+    }
+  },
+  "tti_frac_per_class": {
+    "SINGLE_G": {
+      "mean": 0.03862123047417954,
+      "n": 18015
+    },
+    "SINGLE_C": {
+      "mean": 0.039429082958994714,
+      "n": 20656
+    },
+    "CONVERGING_WITHLINKER": {
+      "mean": 0.035179713561930996,
+      "n": 9354
+    },
+    "CONVERGING_NOLINKER": {
+      "mean": 0.023707735206389604,
+      "n": 1402
+    },
+    "DIVERGING_WITHLINKER": {
+      "mean": 0.02775824938261785,
+      "n": 270
+    },
+    "NONE": {
+      "mean": 0.03956342618682081,
+      "n": 20
+    },
+    "DIVERGING_NOLINKER": {
+      "mean": 0.06704276019949308,
+      "n": 3
+    }
+  },
+  "nr2cf_halfsites_per_class": {
+    "SINGLE_G": {
+      "mean": 0.18556751708204297,
+      "pct_with_any": 13.631224499827951,
+      "n": 20343
+    },
+    "SINGLE_C": {
+      "mean": 0.19330230152573055,
+      "pct_with_any": 13.908283768640635,
+      "n": 23202
+    },
+    "CONVERGING_WITHLINKER": {
+      "mean": 0.19636110558759196,
+      "pct_with_any": 14.326903957049115,
+      "n": 10058
+    },
+    "CONVERGING_NOLINKER": {
+      "mean": 0.12491867273910215,
+      "pct_with_any": 9.303838646714379,
+      "n": 1537
+    },
+    "DIVERGING_WITHLINKER": {
+      "mean": 0.30985915492957744,
+      "pct_with_any": 20.422535211267604,
+      "n": 284
+    },
+    "NONE": {
+      "mean": 0.09523809523809523,
+      "pct_with_any": 9.523809523809524,
+      "n": 21
+    },
+    "DIVERGING_NOLINKER": {
+      "mean": 0.0,
+      "pct_with_any": 0.0,
+      "n": 4
+    }
+  },
+  "microhomology_per_class": {
+    "SINGLE_G": {
+      "mean_5p": 1.3341690016221797,
+      "mean_3p": 1.268151206803323,
+      "n": 20343
+    },
+    "SINGLE_C": {
+      "mean_5p": 1.2683389362985948,
+      "mean_3p": 1.3129902594603913,
+      "n": 23202
+    },
+    "CONVERGING_WITHLINKER": {
+      "mean_5p": 1.3519586398886458,
+      "mean_3p": 1.3403261085702922,
+      "n": 10058
+    },
+    "CONVERGING_NOLINKER": {
+      "mean_5p": 1.376057254391672,
+      "mean_3p": 1.36174365647365,
+      "n": 1537
+    },
+    "DIVERGING_WITHLINKER": {
+      "mean_5p": 1.6373239436619718,
+      "mean_3p": 1.5246478873239437,
+      "n": 284
+    },
+    "NONE": {
+      "mean_5p": 1.380952380952381,
+      "mean_3p": 1.5714285714285714,
+      "n": 21
+    },
+    "DIVERGING_NOLINKER": {
+      "mean_5p": 0.5,
+      "mean_3p": 3.75,
+      "n": 4
+    }
+  }
+}
