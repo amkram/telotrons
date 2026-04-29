@@ -33,9 +33,24 @@ variant_phase_report.html
 fig_pif1_ku70_proof.png
 fig_reviewer_experiments.png
 
-# Large pan-euk checkpoint (can be regenerated)  
+# Large pan-euk checkpoint (can be regenerated)
 pan_euk_telotrons/checkpoint.json
 pan_euk_telotrons/ultra_checkpoint.json
+pan_euk_telotrons/ultra_checkpoint_v2b.json
+pan_euk_telotrons/ultra_tara_checkpoint.json
+
+# Extra genomes (NCBI downloads, regenerable)
+pan_euk_telotrons/genomes_extra/
+
+# Downstream analysis tree (32 GB; contains many large TSVs/genomes)
+pan_euk_telotrons/downstream/
+
+# BLAST artifacts (concatenated FASTAs and indices, regenerable from genomes/)
+pan_euk_telotrons/real_telotrons/eimeria_linker_blast/apicomplexa_genomes.fa
+pan_euk_telotrons/real_telotrons/eimeria_linker_blast/apicomplexa_db.*
+pan_euk_telotrons/real_telotrons/eimeria_linker_blast/eimeria_linkers_vs_apicomplexa.blastn.tsv
+pan_euk_telotrons/real_telotrons/terc_blast/terc_db.fa
+pan_euk_telotrons/real_telotrons/terc_blast/terc_db.*
 
 # Human survey raw data
 human_telotron_survey/1kg_ont_vienna/results/telo_sv_hits_vcf.json
