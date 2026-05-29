@@ -128,23 +128,34 @@ def classify(seq, motif):
 
 
 def main():
+    global MAX_LINKER_TELO, MIN_LINKER
     ap = argparse.ArgumentParser()
     ap.add_argument("--final", required=True)
     ap.add_argument("--refseq-dir", required=True)
     ap.add_argument("--tara-dir", required=True)
     ap.add_argument("--out-loci", required=True)
     ap.add_argument("--out-kmers", required=True)
+    # Linker definition is threshold-sensitive (and was version-unstable). Expose
+    # it so the call is documented/tunable; linker_telomeric_frac is emitted per
+    # locus so the F/linker/R classification is auditable, not opaque.
+    ap.add_argument("--max-linker-telo", type=float, default=MAX_LINKER_TELO,
+                    help="max telomeric fraction (1-mismatch) of a gap to call it a real linker")
+    ap.add_argument("--min-linker", type=int, default=MIN_LINKER,
+                    help="min gap length (bp) to call a linker")
     args = ap.parse_args()
+    MAX_LINKER_TELO = args.max_linker_telo
+    MIN_LINKER = args.min_linker
 
     df = pd.read_csv(args.final, sep="\t")
     # Use a dict keyed by original row index to avoid misalignment when
     # groupby reorders interleaved rows from different genomes.
     results = {}
 
-    def _store(idx, arch, d6, a6, lseq, llen, l6l, l6r):
+    def _store(idx, arch, d6, a6, lseq, llen, l6l, l6r, ltf=0.0):
         results[idx] = dict(architecture=arch, donor_6mer=d6, acceptor_6mer=a6,
                             linker_seq=lseq, linker_len=llen,
-                            linker_left_6mer=l6l, linker_right_6mer=l6r)
+                            linker_left_6mer=l6l, linker_right_6mer=l6r,
+                            linker_telomeric_frac=ltf)
 
     for gid, sub in df.groupby("genome_id", sort=False):
         try:
@@ -163,14 +174,17 @@ def main():
                 _store(idx, "Unknown", "", "", "", 0, "", "")
                 continue
             arch, lseq, llen, lstart, lend = classify(spliced, motif)
+            ltf = (telo_coverage_with_mm(lseq, rotations(motif) + rotations(rc(motif)), max_mm=1)
+                   if lseq else 0.0)
             left6 = right6 = ""
             if lstart >= 2 and lend + 2 <= len(spliced) and llen >= 4:
                 left6 = spliced[lstart - 2:lstart + 4]
                 right6 = spliced[lend - 4:lend + 2]
-            _store(idx, arch, spliced[:6], spliced[-6:], lseq, llen, left6, right6)
+            _store(idx, arch, spliced[:6], spliced[-6:], lseq, llen, left6, right6, ltf)
 
     for col in ["architecture", "donor_6mer", "acceptor_6mer",
-                "linker_seq", "linker_len", "linker_left_6mer", "linker_right_6mer"]:
+                "linker_seq", "linker_len", "linker_left_6mer", "linker_right_6mer",
+                "linker_telomeric_frac"]:
         df[col] = [results[i][col] for i in df.index]
     df.to_csv(args.out_loci, sep="\t", index=False)
 
