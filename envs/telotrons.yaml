@@ -1,0 +1,21 @@
+name: telotrons
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - python=3.12
+  - genometools-genometools=1.6.5
+  - seqkit>=2.1
+  - bedtools>=2.30
+  - samtools>=1.17
+  - miniprot>=0.13
+  - hmmer>=3.3
+  - mafft>=7.5
+  - pandas>=2
+  - scipy>=1.10
+  - matplotlib>=3.7
+  - tqdm>=4.65
+  - logomaker>=0.8
+  - blast>=2.13
+  - biopython>=1.85

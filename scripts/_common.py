@@ -1,0 +1,241 @@
+"""Shared helpers for the telotron pipeline scripts.
+
+These were previously copy-pasted (in near-identical form) across ~16 scripts:
+sequence/motif utilities, FASTA readers, genome-file location, gz decompression,
+a tqdm fallback, and the figure palette. Each script is run as
+`python scripts/<x>.py`, so `scripts/` is on sys.path[0] and `from _common
+import ...` resolves with no package install.
+
+The genome-FASTA finder is the one place callers historically diverged (some
+raised FileNotFoundError, some returned None; some filtered .fai/.gzi sidecars,
+some did not). The unified version filters sidecars always (strictly safer) and
+takes a `required` flag to select raise-vs-None.
+"""
+import glob
+import gzip
+import os
+import re
+import shutil
+import subprocess
+
+# --------------------------------------------------------------------------- #
+# Sequence / motif utilities
+# --------------------------------------------------------------------------- #
+_RC_TABLE = str.maketrans("ACGTNacgtn", "TGCANtgcan")
+
+
+def rc(s):
+    """Reverse complement (case-preserving; N maps to N)."""
+    return s.translate(_RC_TABLE)[::-1]
+
+
+# scan_telotrons.py historically force-uppercased; its inputs are already upper,
+# so the case-preserving rc is equivalent. Kept as an alias for clarity.
+revcomp = rc
+reverse_complement = rc
+
+
+def rotations(seq):
+    """All cyclic rotations of an (upper-cased) motif."""
+    m = seq.upper()
+    return [m[i:] + m[:i] for i in range(len(m))]
+
+
+def expand_motifs(motifs):
+    """Every rotation and reverse complement of each motif, deduped + sorted."""
+    out = set()
+    for m in motifs:
+        for r in rotations(m):
+            out.add(r)
+            out.add(rc(r))
+    return sorted(out)
+
+
+def all_variants(motif):
+    """All rotations of a single motif and of its reverse complement, as a set."""
+    return set(expand_motifs([motif]))
+
+
+def slug(s):
+    """Filesystem-safe slug: non-alphanumerics -> underscore."""
+    return re.sub(r"[^A-Za-z0-9_]", "_", str(s))
+
+
+_slug = slug  # legacy name used across plot scripts
+
+
+# --------------------------------------------------------------------------- #
+# FASTA I/O
+# --------------------------------------------------------------------------- #
+def open_maybe_gz(path):
+    """Text-mode handle, transparently decompressing .gz."""
+    return gzip.open(path, "rt") if path.endswith(".gz") else open(path)
+
+
+def read_fasta(path):
+    """Read a (optionally gzipped) FASTA into {id: upper_seq}. IDs are split on
+    whitespace (first token)."""
+    seqs, sid, buf = {}, None, []
+    with open_maybe_gz(path) as fh:
+        for line in fh:
+            line = line.rstrip()
+            if line.startswith(">"):
+                if sid is not None:
+                    seqs[sid] = "".join(buf).upper()
+                sid = line[1:].split()[0]
+                buf = []
+            else:
+                buf.append(line)
+        if sid is not None:
+            seqs[sid] = "".join(buf).upper()
+    return seqs
+
+
+load_fasta = read_fasta  # legacy name
+
+
+def read_fasta_desc(path):
+    """Like read_fasta but also returns descriptions: ({id: seq}, {id: description}).
+    The description is the header text after the first whitespace token."""
+    seqs, descs, sid, buf = {}, {}, None, []
+    with open_maybe_gz(path) as fh:
+        for line in fh:
+            line = line.rstrip()
+            if line.startswith(">"):
+                if sid is not None:
+                    seqs[sid] = "".join(buf).upper()
+                head = line[1:]
+                sid = head.split()[0]
+                descs[sid] = head[len(sid):].strip()
+                buf = []
+            else:
+                buf.append(line)
+        if sid is not None:
+            seqs[sid] = "".join(buf).upper()
+    return seqs, descs
+
+
+# --------------------------------------------------------------------------- #
+# Genome file location (RefSeq tree + Tara Contigs/Annot layout)
+# --------------------------------------------------------------------------- #
+def find_genome_fasta(gid, refseq_dir, tara_dir, required=True):
+    """Locate a genome's nucleotide FASTA.
+
+    RefSeq:  {refseq_dir}/{gid}/**/*_genomic.fna[.gz]
+    Tara:    {tara_dir}/Contigs/{gid}.fa[.gz]
+    Index/aux sidecars are excluded and a plain FASTA is preferred over a .gz
+    (miniprot etc. want the uncompressed file). Returns the first such match;
+    if none, raises FileNotFoundError when required else returns None.
+    """
+    if gid.startswith("TARA"):
+        hits = glob.glob(f"{tara_dir}/Contigs/{gid}.fa*")
+    else:
+        hits = glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.fna*", recursive=True)
+    hits = [p for p in hits if not p.endswith((".fai", ".gzi", ".bai", ".ndx"))]
+    plain = [p for p in hits if p.endswith((".fna", ".fa", ".fasta"))]
+    gz = [p for p in hits if p.endswith(".gz")]
+    pick = plain or gz or hits
+    if pick:
+        return pick[0]
+    if required:
+        raise FileNotFoundError(f"no genome FASTA for {gid}")
+    return None
+
+
+def find_genome_files(gid, refseq_dir, tara_dir):
+    """Locate (fasta, gff) for a genome; either element may be None."""
+    if gid.startswith("TARA"):
+        fa = glob.glob(f"{tara_dir}/Contigs/{gid}.fa*")
+        gff = (glob.glob(f"{tara_dir}/Annot/{gid}.gff*")
+               or glob.glob(f"{tara_dir}/**/{gid}.gff*", recursive=True))
+    else:
+        fa = glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.fna*", recursive=True)
+        gff = glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.gff*", recursive=True)
+    fa = [p for p in fa if not p.endswith((".fai", ".gzi", ".bai", ".ndx"))]
+    fa = [p for p in fa if p.endswith((".fna", ".fa", ".fasta"))] or fa
+    return (fa[0] if fa else None), (gff[0] if gff else None)
+
+
+# --------------------------------------------------------------------------- #
+# Decompression / indexing
+# --------------------------------------------------------------------------- #
+def maybe_decompress(src, tmpdir):
+    """Return a plain path; if src is .gz, stream-decompress it into tmpdir."""
+    if src.endswith(".gz"):
+        out = os.path.join(tmpdir, os.path.basename(src)[:-3])
+        with gzip.open(src, "rb") as fin, open(out, "wb") as fout:
+            shutil.copyfileobj(fin, fout)
+        return out
+    return src
+
+
+def ensure_tool_on_path(*tools, envs_glob="~/.snakemake-envs/*/bin"):
+    """Make CLI tools discoverable when a script is run as a bare `python
+    scripts/X.py` outside `snakemake --use-conda`. For each tool not already on
+    PATH, search the local snakemake conda envs and prepend the bin dir that
+    actually contains it. No-ops when the tool already resolves. Replaces the
+    brittle hardcoded env-hash PATH hacks that broke on every env rebuild.
+    """
+    base = os.path.expanduser(envs_glob)
+    for t in tools:
+        if shutil.which(t):
+            continue
+        for cand in glob.glob(f"{base}/{t}"):
+            d = os.path.dirname(cand)
+            os.environ["PATH"] = d + os.pathsep + os.environ.get("PATH", "")
+            break
+
+
+def ensure_uncompressed_faidx(fa_path, work_dir):
+    """Return path to an uncompressed, samtools-faidx'd FASTA (decompressing into
+    work_dir if needed)."""
+    if fa_path.endswith(".gz"):
+        local = os.path.join(work_dir, os.path.basename(fa_path)[:-3])
+        if not os.path.exists(local):
+            with gzip.open(fa_path, "rb") as ih, open(local, "wb") as oh:
+                shutil.copyfileobj(ih, oh)
+        fa_path = local
+    if not os.path.exists(fa_path + ".fai"):
+        subprocess.run(["samtools", "faidx", fa_path], check=True)
+    return fa_path
+
+
+# --------------------------------------------------------------------------- #
+# Progress bar (no hard tqdm dependency)
+# --------------------------------------------------------------------------- #
+try:
+    from tqdm import tqdm
+except ImportError:  # pragma: no cover - fallback when tqdm absent
+    def tqdm(it=None, **kw):
+        return it if it is not None else iter(())
+    tqdm.write = print  # type: ignore[attr-defined]
+
+
+# --------------------------------------------------------------------------- #
+# Figure palette + architecture labels (single source of truth)
+# --------------------------------------------------------------------------- #
+TEAL = "#20808D"
+RUST = "#A84B2F"
+GOLD = "#FFC553"
+GREY = "#AAAAAA"
+
+ORIENT_COLORS = {
+    "Fwd/G-rich": TEAL,
+    "Rev/C-rich": RUST,
+    "Bidirectional": GOLD,
+    "Unknown": GREY,
+}
+
+# Splice-architecture categories emitted by classify_telotron_architecture.py.
+ARCH_ORDER = [
+    "GT-F-AG", "GT-R-AG", "GT-F-R-AG",
+    "GT-F-linker-R-AG", "GT-R-linker-F-AG", "Other",
+]
+ARCH_COLORS = {
+    "GT-F-AG":          TEAL,
+    "GT-R-AG":          RUST,
+    "GT-F-R-AG":        "#6A8D5A",
+    "GT-F-linker-R-AG": GOLD,
+    "GT-R-linker-F-AG": "#8B5A99",
+    "Other":            "#BBBBBB",
+}

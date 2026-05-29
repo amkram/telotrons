@@ -1,70 +1,71 @@
-# Raw data (too large for git)
-tara_oceans_euk_mags/
-human_telotron_survey/genomes/
-human_telotron_survey/1kg_ont_vienna/final-vcf*
-human_telotron_survey/1kg_ont_vienna/HG*
-pan_euk_telotrons/genomes/
-pan_euk_telotrons/telotrons_multirepeat/
-pan_euk_telotrons/ultra_all_tr/
+# =============================================================================
+# .gitignore — telotrons Snakemake pipeline
+#
+# Tracked:  Snakefile, config.yaml, scripts/, envs/, profiles/, CLAUDE.md,
+#           data/ placeholders (.gitkeep), .gitignore
+# Ignored:  everything large, downloaded, generated, or machine-local (below).
+# =============================================================================
 
-# Binaries
-pan_euk_telotrons/bin/
-pan_euk_telotrons_datasets
-pan_euk_telotrons_dataformat
+# --- Downloaded raw data: NCBI RefSeq + Tara SMAGs + telomerase.us (~700 GB) ---
+/raw/
 
-# Temp files
-*.tmp
+# --- Generated manifests: downloaded summaries + derived TSVs (~23 GB) ---
+/manifests/
+
+# --- Pipeline outputs (~300 GB, incl. multi-GB all_introns_scanned.tsv) ---
+/results/
+# stale / ad-hoc output-dir variants
+/results_*/
+/results.test_*/
+/manifests.test_*/
+
+# --- Downstream analysis: AlphaFold3 bundles, TERT/TR search (~1 GB) ---
+/analysis/
+
+# --- Run logs ---
+/logs/
+
+# --- Prior-generation reference archive (do not commit; treat as cold storage) ---
+/old/
+
+# --- Snakemake working state (metadata, locks, conda envs, shadow, iocache) ---
+.snakemake/
+
+# --- Local tool binaries ---
+/tools/
+
+# --- AlphaFold3 / fold result bundles ---
+*.zip
+
+# --- Stray one-off data files at repo root ---
+/o
+/mitis_all.fa
+
+# --- Temp / editor / tool leftovers ---
+*.seed
+hat?.seed
+pre
 ~$*
-__pycache__/
-*.pyc
-.DS_Store
-
-# Lock files
+*.tmp
+*.swp
 .~lock.*
 
-# Claude config
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+
+# --- Editor / OS ---
+.DS_Store
+.idea/
+.vscode/
+
+# --- Claude Code local config ---
 .claude/
 
-# Large image files we don't need in git (keep key figures only)
-cascade_proof*.html
-terc_report.html
-tert_*.html
-variant_phase_report.html
-fig_pif1_ku70_proof.png
-fig_reviewer_experiments.png
-
-# Large pan-euk checkpoint (can be regenerated)
-pan_euk_telotrons/checkpoint.json
-pan_euk_telotrons/ultra_checkpoint.json
-pan_euk_telotrons/ultra_checkpoint_v2b.json
-pan_euk_telotrons/ultra_tara_checkpoint.json
-
-# Extra genomes (NCBI downloads, regenerable)
-pan_euk_telotrons/genomes_extra/
-
-# Downstream analysis tree (32 GB; contains many large TSVs/genomes)
-pan_euk_telotrons/downstream/
-
-# BLAST artifacts (concatenated FASTAs and indices, regenerable from genomes/)
-pan_euk_telotrons/real_telotrons/eimeria_linker_blast/apicomplexa_genomes.fa
-pan_euk_telotrons/real_telotrons/eimeria_linker_blast/apicomplexa_db.*
-pan_euk_telotrons/real_telotrons/eimeria_linker_blast/eimeria_linkers_vs_apicomplexa.blastn.tsv
-pan_euk_telotrons/real_telotrons/terc_blast/terc_db.fa
-pan_euk_telotrons/real_telotrons/terc_blast/terc_db.*
-
-# Human survey raw data
-human_telotron_survey/1kg_ont_vienna/results/telo_sv_hits_vcf.json
-
-# Large ULTRA result TSVs (mostly noise, regenerable)
-pan_euk_telotrons/ultra_results/
-
-# Large PDFs/presentations (keep manuscript drafts only)
-telotrons_report.pdf
-telotrons_advisor_deck.pptx
-strict_telotron_sequences.png
-telotron_evidence_report.pdf
-
-# Large figure files
-_overview.png
-_seq_zoom*.png
-_zoom*.png
+# =============================================================================
+# data/ holds small input-sequence dirs (TERT-seqs/, TR-seqs/, Other-seqs/)
+# kept via .gitkeep. If large FASTAs land there, ignore them specifically, e.g.:
+#   data/**/*.fna
+#   data/**/*.faa
+# =============================================================================

@@ -1,0 +1,115 @@
+threads: 32
+
+env: envs/telotrons.yaml
+
+tara_base: https://www.genoscope.cns.fr/tara/localdata/data/SMAGs-v1
+refseq_url: https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_refseq.txt
+
+# RefSeq taxonomic groups to include
+refseq_groups:
+  - vertebrate_mammalian
+  - vertebrate_other
+  - plant
+  - fungi
+  - invertebrate
+  - protozoa
+
+# Optional whitelist. If non-empty, manifests/all_genomes.tsv is filtered to ONLY these
+# genome_id values (NCBI GCF accessions and/or TARA MAG IDs). Empty list = no restriction
+# (full pan-eukaryotic survey).
+accessions: []
+
+# Canonical G-rich telomere motifs across eukaryotes. Rotations and
+# reverse complements are expanded downstream.
+# Sources: TeloBase (Lyčka 2024 NAR), Sýkorová 2022 GBE, Kuznetsova 2022 LSA
+telomere_motifs:
+  # 5 bp
+  - TTAGG          # insects (ancestral arthropod)
+  - TCAGG          # some beetles
+  - TTGGG          # some beetles, Nineta flava (Neuroptera)
+  # 6 bp
+  - TTAGGG         # vertebrates, fungi, kinetoplastids, basal metazoans (ancestral eukaryotic)
+  - TTAGGC         # Ascaris nematodes
+  - TTGGGG         # ciliates (Tetrahymena)
+  # 7 bp
+  - TTTAGGG        # plants, Apicomplexa, dinoflagellates, xanthophytes
+  # 8 bp
+  - TTTTAGGG       # Chlamydomonas, klebsormidiophytes, Theileria (Apicomplexa)
+  - TTTTGGGG       # some ciliates
+  - TATTAGGG       # Aspergillus taichungensis
+  - TTATTGGG       # Chalcid wasps
+  # 9 bp
+  - TTATTAGGG      # fig wasps, parasitoid wasps, A. transcarpathicus
+  - TTACTTGGG      # miniature wasps
+  - TTATTGGGG      # fig wasps
+  # 10 bp
+  - TTTTTTAGGG     # Cestrum elegans (Solanales)
+  - TTTATTAGGG     # Galdieria (Rhodophyta), Chrysobalanaceae plants
+  # 11 bp
+  - TTAGGTTGGGG    # bumblebees (Bombus)
+  # 12 bp
+  - CTCGGTTATGGG   # Allium (Asparagales)
+
+# Canonical species telomere motifs from published literature. When set for a given
+# genome_id, this OVERRIDES the contig-end scan in terminal_motif_inference.
+# Empty string (or missing entry) = fall back to direct scanning.
+# Group-level defaults apply when no genome_id-specific entry exists.
+# Sources: TeloBase (Lyčka 2024 NAR), Sýkorová 2022 GBE, Kuznetsova 2022 LSA,
+#          Riha 2002 Nucleic Acids Res (plant telomeres), Wicky 1996 (C. elegans).
+canonical_telomere_motifs:
+  by_genome:
+    # ── Apicomplexa: TTTAGGG (Cano 1999, Foth 2014)
+    GCF_000499385.1: TTTAGGG   # Eimeria necatrix
+    GCF_000499425.1: TTTAGGG   # Eimeria acervulina
+    GCF_000499545.2: TTTAGGG   # Eimeria tenella
+    GCF_000499605.1: TTTAGGG   # Eimeria maxima
+    GCF_000499745.2: TTTAGGG   # Eimeria mitis
+    GCF_000006565.2: TTTAGGG   # Toxoplasma gondii ME49
+    # ── Plants: TTTAGGG (Arabidopsis-type; Richards 1988)
+    GCF_000001735.4: TTTAGGG   # Arabidopsis thaliana
+    # ── Nematodes: TTAGGC (Wicky 1996)
+    GCF_000002985.6: TTAGGC    # Caenorhabditis elegans
+    # ── Vertebrate-type TTAGGG (Moyzis 1988)
+    GCF_013076305.1: TTAGGG    # Rhopilema esculentum (Cnidaria)
+    GCF_018327825.1: TTAGGG    # Ciona intestinalis (Tunicate)
+    # ── Cryptophyte algae (Plumb 2017)
+    GCF_000315625.1: TTAGGG    # Guillardia theta
+    # ── Heterolobosea / Metamonad: TTAGGG (Fulnečková 2013)
+    GCF_001643675.1: TTAGGG    # Monocercomonoides exilis
+    # ── Arthropods: ancestral TTAGG (Sahara 1999); ants are derived
+    GCF_000239435.1: TTAGG     # Tetranychus urticae (mite/Chelicerata; Garrido-Ramos 2015)
+    GCF_021464435.1: TTAGGG    # Cataglyphis hispanica (Formicinae lost TTAGG, uses TTAGGG)
+    GCF_030449975.1: TTAGGG    # Polyergus mexicanus (Formicinae)
+    GCF_040581485.1: TTAGGG    # Linepithema humile (Dolichoderinae — TTAGGG per Kuznetsova 2022)
+    GCF_048541705.1: TTAGGG    # Temnothorax americanus (Myrmicinae)
+    # ── Telomerase-loss / non-canonical (leave blank → scan)
+    GCF_000001215.4: ""        # Drosophila melanogaster (HeT-A/TART retrotransposons, no canonical TR)
+    GCF_000146045.2: ""        # Saccharomyces cerevisiae (irregular TG1-3 repeats; not in our motif set)
+  # Group-level defaults applied when no per-genome entry above. Empty string = scan.
+  by_group:
+    vertebrate_mammalian: TTAGGG
+    vertebrate_other:     TTAGGG
+    plant:                TTTAGGG
+    protozoa:             ""     # too variable, scan per genome
+    fungi:                ""     # too variable, scan per genome
+    invertebrate:         ""     # too variable, scan per genome
+    tara:                 ""     # unknown lineage, scan
+
+# Scan stage: broad sieve.
+scan:
+  min_repeat_frac: 0.30
+  max_flank_repeat_frac: 0.50    # rejects misannotated telomere arrays at flanking exons
+
+# Filter stage: stricter cutoffs that produce final_telotron_set.tsv.
+# Two pathways admit a locus:
+#   1. single-array: telomeric_frac >= min_repeat_frac
+#   2. bidirectional: telomeric_frac >= bidir_min_repeat_frac AND both fwd_hits and
+#      rev_hits >= bidir_min_hits  (catches DIVERGING+LINKER and CONVERGING with linker)
+filter:
+  min_repeat_frac: 0.85
+  bidir_min_repeat_frac: 0.40
+  bidir_min_hits: 3
+  collapse_unique_loci: true
+  require_terminal_motif_match: true   # intronic motif must match the genome's terminal motif
+  require_canonical_splice: false      # set true to keep only GT-AG introns
+
