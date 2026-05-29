@@ -3,9 +3,9 @@
 # Results: $OUTDIR/{genome_dir}/{arch}.raw.tsv  and  {arch}.filtered.tsv
 set -euo pipefail
 
-FASTA_DIR="${1:-results/telotron_fasta}"
-DB_DIR="${2:-results/blast_linkers/dbs}"
-OUTDIR="${3:-results/blast_telotrons_by_arch}"
+FASTA_DIR="${1:-work/results/telotron_fasta}"
+DB_DIR="${2:-work/results/blast_linkers/dbs}"
+OUTDIR="${3:-work/results/blast_telotrons_by_arch}"
 THREADS="${4:-16}"
 RUNNER="scripts/blast_with_alignment.py"
 

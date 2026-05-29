@@ -64,7 +64,7 @@ def main():
     ap.add_argument("--interstitial", required=True)
     ap.add_argument("--telotrons", required=True)
     ap.add_argument("--non-telotrons", required=True,
-                    help="results/non_telotron_controls.tsv")
+                    help="work/results/non_telotron_controls.tsv")
     ap.add_argument("--out", required=True)
     ap.add_argument("--min-len", type=int, default=0,
                     help="drop arrays/telotrons shorter than this (bp)")

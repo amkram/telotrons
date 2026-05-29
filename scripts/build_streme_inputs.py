@@ -8,11 +8,11 @@
   3. linkers.fa          — copy of blast_linkers/linker_queries/_all_linkers.fa
 
 Inputs:
-  --telotron-fasta-dir   results/telotron_fasta/
-  --introns-tsv          results/all_introns_scanned.tsv  (streamed)
-  --linkers-fa           results/blast_linkers/linker_queries/_all_linkers.fa
+  --telotron-fasta-dir   work/results/telotron_fasta/
+  --introns-tsv          work/results/all_introns_scanned.tsv  (streamed)
+  --linkers-fa           work/results/blast_linkers/linker_queries/_all_linkers.fa
   --refseq-dir, --tara-dir
-  --outdir               results/streme_inputs/
+  --outdir               work/results/streme_inputs/
 """
 import argparse
 import glob

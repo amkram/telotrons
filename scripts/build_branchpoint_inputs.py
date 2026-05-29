@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build branchpoint-search inputs from results/all_introns_scanned.tsv.
+"""Build branchpoint-search inputs from work/results/all_introns_scanned.tsv.
 
 For every canonical GT-AG intron with telomeric_frac < threshold and length
 ≥ min_intron_len, extract two 80-bp windows in splicing orientation:
@@ -141,7 +141,7 @@ def build_one_species(gid, recs, outdir, work_dir,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--introns", required=True,
-                    help="results/all_introns_scanned.tsv")
+                    help="work/results/all_introns_scanned.tsv")
     ap.add_argument("--refseq-dir", required=True)
     ap.add_argument("--tara-dir", required=True)
     ap.add_argument("--outdir", required=True)

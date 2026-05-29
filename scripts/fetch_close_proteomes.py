@@ -8,16 +8,16 @@ For each genome_id in --manifest we:
      'reference genome' / 'representative genome' / 'Complete Genome' first;
      fall back to any annotated assembly. Cap at --max-siblings.
   3. Download each sibling's `_protein.faa.gz` from its FTP path.
-  4. Concatenate the downloaded fastas into `manifests/close_proteomes/{gid}.faa.gz`.
+  4. Concatenate the downloaded fastas into `work/manifests/close_proteomes/{gid}.faa.gz`.
 
 For TARA MAGs (no taxonomy here) we write an empty file so downstream tools
 don't have to special-case missing entries — they'll just fall back to the
 base proteome.
 
 Cached files:
-  manifests/assembly_summary_refseq.txt           (full RefSeq assembly summary)
-  manifests/close_proteomes/_cache/{accession}_protein.faa.gz   (per-sibling)
-  manifests/close_proteomes/{gid}.faa.gz                        (per-target union)
+  work/manifests/assembly_summary_refseq.txt           (full RefSeq assembly summary)
+  work/manifests/close_proteomes/_cache/{accession}_protein.faa.gz   (per-sibling)
+  work/manifests/close_proteomes/{gid}.faa.gz                        (per-target union)
 
 The per-sibling cache means multiple targets that share a sibling
 (e.g. five Eimeria spp. all pulling Toxoplasma) only download it once.
@@ -166,10 +166,10 @@ def concat_gz(paths, out_path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--manifest", required=True, help="results/all_species_raw_summary.tsv or any TSV with genome_id")
+    ap.add_argument("--manifest", required=True, help="work/results/all_species_raw_summary.tsv or any TSV with genome_id")
     ap.add_argument("--outdir", required=True)
     ap.add_argument("--summary-cache",
-                    default="manifests/assembly_summary_refseq.txt")
+                    default="work/manifests/assembly_summary_refseq.txt")
     ap.add_argument("--max-siblings", type=int, default=5)
     args = ap.parse_args()
 

@@ -121,7 +121,7 @@ def plot_one(label, sub, outdir, flank_len=10, out_name=None):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--arrays", required=True, help="results/interstitial_arrays.tsv")
+    ap.add_argument("--arrays", required=True, help="work/results/interstitial_arrays.tsv")
     ap.add_argument("--outdir", required=True)
     ap.add_argument("--flank-len", type=int, default=10)
     ap.add_argument("--min-arrays", type=int, default=5,

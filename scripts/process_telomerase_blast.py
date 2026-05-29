@@ -331,9 +331,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--genome-id", required=True)
     ap.add_argument("--blast-dir", required=True,
-                    help="results/blast_telomerase_vs_genomes/{gid}/")
+                    help="work/results/blast_telomerase_vs_genomes/{gid}/")
     ap.add_argument("--db-dir", required=True,
-                    help="results/telomerase_db/")
+                    help="work/results/telomerase_db/")
     ap.add_argument("--refseq-dir", required=True)
     ap.add_argument("--tara-dir", required=True)
     ap.add_argument("--merge-gap", type=int, default=200,

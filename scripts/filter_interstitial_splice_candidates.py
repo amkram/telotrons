@@ -44,7 +44,7 @@ def plus_strand_2bp(row):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--arrays", required=True,
-                    help="results/interstitial_arrays.tsv")
+                    help="work/results/interstitial_arrays.tsv")
     ap.add_argument("--out", required=True,
                     help="filtered TSV (same schema + 3 derived columns)")
     args = ap.parse_args()

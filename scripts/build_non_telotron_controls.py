@@ -14,9 +14,9 @@ import pandas as pd
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--introns", required=True, help="results/all_introns_scanned.tsv")
+    ap.add_argument("--introns", required=True, help="work/results/all_introns_scanned.tsv")
     ap.add_argument("--final", required=True,
-                    help="results/final_telotron_set.tsv (defines positive species)")
+                    help="work/results/final_telotron_set.tsv (defines positive species)")
     ap.add_argument("--out", required=True)
     ap.add_argument("--max-frac", type=float, default=0.10,
                     help="upper bound on telomeric_frac for control introns")

@@ -12,10 +12,17 @@ SMAGs) for telomeric-repeat arrays inside annotated introns, then runs downstrea
 analyses (architecture, motif discovery, telomerase/TERT homology,
 interstitial-array comparison, MSA) and emits figures.
 
-Everything from the prior generation of the project lives in [old/](old/) — a
-read-only reference archive (genomes, manuscript drafts, ED figures, audit
-notes, `pan_euk_telotrons/`, `tara_oceans_euk_mags/`, `AGENT_HANDOFF.md`). Treat
-`old/` as archaeology, not as a place to import from or add code.
+Everything from the prior generation of the project lives in
+[work/old/](work/old/) — a read-only reference archive (genomes, manuscript
+drafts, ED figures, audit notes, `pan_euk_telotrons/`, `tara_oceans_euk_mags/`,
+`AGENT_HANDOFF.md`). Treat `work/old/` as archaeology, not as a place to import
+from or add code.
+
+**Layout.** Tracked source lives at top level (`Snakefile`, `config.yaml`,
+`scripts/`, `envs/`, `profiles/`, `data/`). All large generated/downloaded data
+is gitignored: `raw/` (downloads), `work/` (pipeline outputs `work/results/`,
+manifests `work/manifests/`, and the `work/old/` archive), `analysis/`
+(downstream), `logs/`, `.snakemake/`.
 
 ## Pipeline (Snakefile + scripts/ + config.yaml)
 
@@ -28,7 +35,7 @@ args the rule uses.
 
 ### Core survey path
 1. `manifests` / `refseq_urls` / `tara_archives` / `download_refseq` — build
-   `manifests/all_genomes.tsv` (`genome_id, organism, group, source`) and
+   `work/manifests/all_genomes.tsv` (`genome_id, organism, group, source`) and
    download FASTAs+GFFs (RefSeq via `xargs -P`).
 2. `canonical_motifs` — emit the curated per-genome/per-group telomere-motif
    table from config (overrides contig-end motif inference where set).
@@ -108,11 +115,11 @@ also exist in `scripts/` (`run_full_survey.sh` for the production survey,
 - **UniProt Swiss-Prot** FASTA for the telomerase DB — hard-coded in the
   `fetch_telomerase_db` rule.
 
-## old/
-Reference archive only; don't import from it. Notable: `old/AGENT_HANDOFF.md`,
-`old/MANUSCRIPT_AUDIT_REPORT.md`, `old/pan_euk_telotrons/` (v1/v2 surveys,
-ULTRA-based scanner, validated `real_telotrons/`), `old/tara_oceans_euk_mags/`
+## work/old/
+Reference archive only; don't import from it. Notable: `work/old/AGENT_HANDOFF.md`,
+`work/old/MANUSCRIPT_AUDIT_REPORT.md`, `work/old/pan_euk_telotrons/` (v1/v2 surveys,
+ULTRA-based scanner, validated `real_telotrons/`), `work/old/tara_oceans_euk_mags/`
 (606-MAG discovery pipeline), many ED figures and draft `.docx`. Also
-`old/_deslop_2026-05-29/` — items pulled out of the live tree during the
+`work/old/_deslop_2026-05-29/` — items pulled out of the live tree during the
 2026-05-29 cleanup (a source backup, redundant AF3 zips, two superseded one-off
 scripts, a stray `pangraph` binary).

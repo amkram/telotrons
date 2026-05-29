@@ -9,24 +9,25 @@
 # --- Downloaded raw data: NCBI RefSeq + Tara SMAGs + telomerase.us (~700 GB) ---
 /raw/
 
-# --- Generated manifests: downloaded summaries + derived TSVs (~23 GB) ---
-/manifests/
-
-# --- Pipeline outputs (~300 GB, incl. multi-GB all_introns_scanned.tsv) ---
-/results/
-# stale / ad-hoc output-dir variants
-/results_*/
-/results.test_*/
-/manifests.test_*/
+# --- Pipeline working tree: results/ (~300 GB), manifests/ (~23 GB), and the
+#     old/ reference archive — all consolidated under work/ ---
+/work/
+# stale / ad-hoc top-level output-dir variants (pre-consolidation)
+/results*/
+/manifests*/
 
 # --- Downstream analysis: AlphaFold3 bundles, TERT/TR search (~1 GB) ---
 /analysis/
 
+# --- Other downstream-analysis side-trees + scratch (large, regenerable) ---
+/good_set/
+/*_relatives/
+/_tmpwork/
+/.artifact/
+/.tmp_scratch/
+
 # --- Run logs ---
 /logs/
-
-# --- Prior-generation reference archive (do not commit; treat as cold storage) ---
-/old/
 
 # --- Snakemake working state (metadata, locks, conda envs, shadow, iocache) ---
 .snakemake/

@@ -37,36 +37,36 @@ FILTER_FLAGS = " ".join(
 )
 
 FIGURES = [
-    "results/figures/telotron_counts.png",
+    "work/results/figures/telotron_counts.png",
 ]
-TERMINAL_DENSITY_SENTINEL = "results/figures/terminal_motif/.done"
-ARCH_KMER_SENTINEL = "results/figures/boundary_kmers_by_arch/.done"
-INTERSTITIAL_KMER_SENTINEL = "results/figures/interstitial_boundary_kmers/.done"
-INTERSTITIAL_SPLICE_KMER_SENTINEL = "results/figures/interstitial_boundary_kmers_c_rich_splice_candidates/.done"
-INTERSTITIAL_LOGO_SENTINEL = "results/figures/interstitial_boundary_logos/.done"
-ARRAY_LEN_DIST_PNG = "results/figures/array_length_distribution.png"
-ARRAY_LEN_DIST_MIN40_PNG = "results/figures/array_length_distribution_min40.png"
-PIPELINE_STAGES_SENTINEL = "results/figures/pipeline_stages/.done"
-EXTRACT_FASTA_SENTINEL = "results/telotron_fasta/.done"
-MSA_SENTINEL = "results/msa_regions/.done"
-STREME_TELO_SENTINEL = "results/streme/telotrons/streme.xml"
-STREME_NONTELO_SENTINEL = "results/streme/non_telo_introns/streme.xml"
-STREME_LINKER_SENTINEL = "results/streme/linkers/streme.xml"
-STREME_BRANCHPOINT_SENTINEL = "results/streme/branchpoint/.done"
-FIMO_BRANCHPOINT_SENTINEL   = "results/fimo/branchpoint/.done"
+TERMINAL_DENSITY_SENTINEL = "work/results/figures/terminal_motif/.done"
+ARCH_KMER_SENTINEL = "work/results/figures/boundary_kmers_by_arch/.done"
+INTERSTITIAL_KMER_SENTINEL = "work/results/figures/interstitial_boundary_kmers/.done"
+INTERSTITIAL_SPLICE_KMER_SENTINEL = "work/results/figures/interstitial_boundary_kmers_c_rich_splice_candidates/.done"
+INTERSTITIAL_LOGO_SENTINEL = "work/results/figures/interstitial_boundary_logos/.done"
+ARRAY_LEN_DIST_PNG = "work/results/figures/array_length_distribution.png"
+ARRAY_LEN_DIST_MIN40_PNG = "work/results/figures/array_length_distribution_min40.png"
+PIPELINE_STAGES_SENTINEL = "work/results/figures/pipeline_stages/.done"
+EXTRACT_FASTA_SENTINEL = "work/results/telotron_fasta/.done"
+MSA_SENTINEL = "work/results/msa_regions/.done"
+STREME_TELO_SENTINEL = "work/results/streme/telotrons/streme.xml"
+STREME_NONTELO_SENTINEL = "work/results/streme/non_telo_introns/streme.xml"
+STREME_LINKER_SENTINEL = "work/results/streme/linkers/streme.xml"
+STREME_BRANCHPOINT_SENTINEL = "work/results/streme/branchpoint/.done"
+FIMO_BRANCHPOINT_SENTINEL   = "work/results/fimo/branchpoint/.done"
 MEME_ENV = "envs/meme.yaml"
-TELOMERASE_DB_SENTINEL = "results/telomerase_db/.blastdb.done"
-TELOMERASE_BLAST_SENTINEL = "results/blast_telomerase_vs_genomes/.done"
-TELOMERASE_BLAST_REPORT_SENTINEL = "results/blast_telomerase_vs_genomes/.report.done"
-TERT_DEEP_HOMOLOGY_TSV = "results/tert_deep_homology/confirmed_tert.tsv"
+TELOMERASE_DB_SENTINEL = "work/results/telomerase_db/.blastdb.done"
+TELOMERASE_BLAST_SENTINEL = "work/results/blast_telomerase_vs_genomes/.done"
+TELOMERASE_BLAST_REPORT_SENTINEL = "work/results/blast_telomerase_vs_genomes/.report.done"
+TERT_DEEP_HOMOLOGY_TSV = "work/results/tert_deep_homology/confirmed_tert.tsv"
 
-TELOTRON_SPLICE_LOGO_SENTINEL = "results/figures/telotron_splice_logos/.done"
-CTRL_SPLICE_LOGO_SENTINEL    = "results/figures/non_telotron_splice_logos/.done"
-CTRL_BOUNDARY_KMER_SENTINEL  = "results/figures/non_telotron_boundary_kmers/.done"
-CTRL_FLANKED_SENTINEL        = "results/non_telotron_fasta/.done"
-TELOTRON_BOUNDARY_KMER_SENTINEL = "results/figures/telotron_boundary_kmers/.done"
-COMPOSITE_KMER_SENTINEL  = "results/figures/composite_boundary_kmers/.done"
-COMPOSITE_LOGO_SENTINEL  = "results/figures/composite_boundary_logos/.done"
+TELOTRON_SPLICE_LOGO_SENTINEL = "work/results/figures/telotron_splice_logos/.done"
+CTRL_SPLICE_LOGO_SENTINEL    = "work/results/figures/non_telotron_splice_logos/.done"
+CTRL_BOUNDARY_KMER_SENTINEL  = "work/results/figures/non_telotron_boundary_kmers/.done"
+CTRL_FLANKED_SENTINEL        = "work/results/non_telotron_fasta/.done"
+TELOTRON_BOUNDARY_KMER_SENTINEL = "work/results/figures/telotron_boundary_kmers/.done"
+COMPOSITE_KMER_SENTINEL  = "work/results/figures/composite_boundary_kmers/.done"
+COMPOSITE_LOGO_SENTINEL  = "work/results/figures/composite_boundary_logos/.done"
 
 # Per-locus 5'/3' end orientation categories (GG / GC / CG / CC). Hybrid
 # telotrons (GC, CG) arise when a single intron contains a G-rich array on one
@@ -85,8 +85,8 @@ INTERSTITIAL_CAT = {
     "CG": ("cat5_3", "CG"),
     "CC": ("cat5_3", "CC"),
 }
-COMPOSITE_5P3P_KMER_SENTINEL = "results/figures/composite_boundary_kmers_5p3p/.done"
-COMPOSITE_5P3P_LOGO_SENTINEL = "results/figures/composite_boundary_logos_5p3p/.done"
+COMPOSITE_5P3P_KMER_SENTINEL = "work/results/figures/composite_boundary_kmers_5p3p/.done"
+COMPOSITE_5P3P_LOGO_SENTINEL = "work/results/figures/composite_boundary_logos_5p3p/.done"
 
 
 # Default target: the core survey through the packaged zip. `package` already
@@ -101,7 +101,7 @@ COMPOSITE_5P3P_LOGO_SENTINEL = "results/figures/composite_boundary_logos_5p3p/.d
 #   snakemake everything       # core + every branch above (the old default)
 rule all:
     input:
-        "results/telotron_pipeline_outputs.zip",
+        "work/results/telotron_pipeline_outputs.zip",
 
 
 rule sequences:
@@ -162,9 +162,9 @@ rule everything:
 # If config["accessions"] is non-empty, subset to just those genome_ids.
 rule manifests:
     output:
-        refseq="manifests/refseq_euk.tsv",
-        tara="manifests/tara_mags.tsv",
-        all="manifests/all_genomes.tsv",
+        refseq="work/manifests/refseq_euk.tsv",
+        tara="work/manifests/tara_mags.tsv",
+        all="work/manifests/all_genomes.tsv",
     params:
         accessions=ACCESSIONS,
     shell:
@@ -190,25 +190,25 @@ rule manifests:
 
         # (subset is applied below; canonical_motifs rule consumes the final {output.all})
         if [ -n "{params.accessions}" ]; then
-            printf '%s\n' {params.accessions} > manifests/.accessions.txt
+            printf '%s\n' {params.accessions} > work/manifests/.accessions.txt
             awk 'NR==FNR{{keep[$1];next}} FNR==1 || $1 in keep' \
-                manifests/.accessions.txt {output.all} > {output.all}.subset
+                work/manifests/.accessions.txt {output.all} > {output.all}.subset
             mv {output.all}.subset {output.all}
             awk 'NR==FNR{{keep[$1];next}} $1 in keep' \
-                manifests/.accessions.txt {output.refseq} > {output.refseq}.subset
+                work/manifests/.accessions.txt {output.refseq} > {output.refseq}.subset
             mv {output.refseq}.subset {output.refseq}
             awk 'NR==FNR{{keep[$1];next}} $1 in keep' \
-                manifests/.accessions.txt {output.tara} > {output.tara}.subset
+                work/manifests/.accessions.txt {output.tara} > {output.tara}.subset
             mv {output.tara}.subset {output.tara}
         fi
         """
 
 
 # Tara SMAGs ship as two monolithic ~50 GB tarballs (contigs + GFF). Stream-extract only
-# the MAGs listed in manifests/tara_mags.tsv so the test set doesn't blow up disk.
+# the MAGs listed in work/manifests/tara_mags.tsv so the test set doesn't blow up disk.
 rule tara_archives:
     input:
-        "manifests/tara_mags.tsv",
+        "work/manifests/tara_mags.tsv",
     output:
         fna="raw/tara/.fna.done",
         gff="raw/tara/.gff.done",
@@ -237,9 +237,9 @@ rule tara_archives:
 # Derive per-genome FNA and GFF URLs from the RefSeq FTP path.
 rule refseq_urls:
     input:
-        "manifests/refseq_euk.tsv",
+        "work/manifests/refseq_euk.tsv",
     output:
-        "manifests/refseq_urls.tsv",
+        "work/manifests/refseq_urls.tsv",
     shell:
         r"""
         awk -F'\t' 'BEGIN{{OFS="\t"}} {{
@@ -255,7 +255,7 @@ rule refseq_urls:
 # `exit 255` aborts xargs on a persistent failure after retries.
 rule download_refseq:
     input:
-        "manifests/refseq_urls.tsv",
+        "work/manifests/refseq_urls.tsv",
     output:
         touch("raw/refseq/.done"),
     threads: 8
@@ -273,9 +273,9 @@ rule download_refseq:
 # Scan stage uses this in preference to contig-end scanning.
 rule canonical_motifs:
     input:
-        manifest="manifests/all_genomes.tsv",
+        manifest="work/manifests/all_genomes.tsv",
     output:
-        "manifests/canonical_motifs.tsv",
+        "work/manifests/canonical_motifs.tsv",
     params:
         by_genome=CANONICAL_BY_GENOME,
         by_group=CANONICAL_BY_GROUP,
@@ -301,14 +301,14 @@ rule canonical_motifs:
 # sometimes split a long telomere into fake exon/intron structure).
 rule scan_all:
     input:
-        manifest="manifests/all_genomes.tsv",
-        canonical="manifests/canonical_motifs.tsv",
+        manifest="work/manifests/all_genomes.tsv",
+        canonical="work/manifests/canonical_motifs.tsv",
         tara=["raw/tara/.fna.done", "raw/tara/.gff.done"],
         refseq="raw/refseq/.done",
     output:
-        loci="results/all_telotron_loci.tsv",
-        introns="results/all_introns_scanned.tsv",
-        summary="results/all_species_raw_summary.tsv",
+        loci="work/results/all_telotron_loci.tsv",
+        introns="work/results/all_introns_scanned.tsv",
+        summary="work/results/all_species_raw_summary.tsv",
     threads: THREADS
     conda:
         ENV
@@ -330,13 +330,13 @@ rule scan_all:
 # the intronic motif matches the genome's actual telomere motif (kills cross-motif noise).
 rule filter_final:
     input:
-        loci="results/all_telotron_loci.tsv",
-        introns="results/all_introns_scanned.tsv",
-        summary="results/all_species_raw_summary.tsv",
+        loci="work/results/all_telotron_loci.tsv",
+        introns="work/results/all_introns_scanned.tsv",
+        summary="work/results/all_species_raw_summary.tsv",
     output:
-        final="results/final_telotron_set.tsv",
-        species="results/final_species_summary.tsv",
-        neg="results/final_negative_controls.tsv",
+        final="work/results/final_telotron_set.tsv",
+        species="work/results/final_species_summary.tsv",
+        neg="work/results/final_negative_controls.tsv",
     conda:
         ENV
     shell:
@@ -357,12 +357,12 @@ rule filter_final:
 # identity; the longest-intron member of each component is kept.
 rule dedup_telotrons:
     input:
-        final="results/final_telotron_set.tsv",
+        final="work/results/final_telotron_set.tsv",
         tara=["raw/tara/.fna.done"],
         refseq="raw/refseq/.done",
     output:
-        final="results/final_telotron_set_dedup.tsv",
-        log="results/dedup_log.tsv",
+        final="work/results/final_telotron_set_dedup.tsv",
+        log="work/results/dedup_log.tsv",
     threads: THREADS
     conda:
         ENV
@@ -382,12 +382,12 @@ rule dedup_telotrons:
 # figures (donor / acceptor / linker_left / linker_right 6-mers).
 rule classify_architecture:
     input:
-        final="results/final_telotron_set_dedup.tsv",
+        final="work/results/final_telotron_set_dedup.tsv",
         tara=["raw/tara/.fna.done"],
         refseq="raw/refseq/.done",
     output:
-        loci="results/final_telotron_set_architecture.tsv",
-        kmers="results/boundary_kmers_by_architecture.tsv",
+        loci="work/results/final_telotron_set_architecture.tsv",
+        kmers="work/results/boundary_kmers_by_architecture.tsv",
     conda:
         ENV
     shell:
@@ -402,14 +402,14 @@ rule classify_architecture:
 # Boundary k-mer enrichment, length-matched distance-to-end test, architecture summary.
 rule analyze:
     input:
-        final="results/final_telotron_set_dedup.tsv",
-        introns="results/all_introns_scanned.tsv",
-        species="results/final_species_summary.tsv",
-        neg="results/final_negative_controls.tsv",
+        final="work/results/final_telotron_set_dedup.tsv",
+        introns="work/results/all_introns_scanned.tsv",
+        species="work/results/final_species_summary.tsv",
+        neg="work/results/final_negative_controls.tsv",
     output:
-        kmers="results/boundary_kmer_enrichment.tsv",
-        dist="results/distance_to_end.tsv",
-        arch="results/architecture_summary.tsv",
+        kmers="work/results/boundary_kmer_enrichment.tsv",
+        dist="work/results/distance_to_end.tsv",
+        arch="work/results/architecture_summary.tsv",
     threads: THREADS
     conda:
         ENV
@@ -425,22 +425,22 @@ rule analyze:
 # Four headline figures (counts, orientation, boundary k-mers, distance scatter).
 rule figures:
     input:
-        species="results/final_species_summary.tsv",
-        final="results/final_telotron_set.tsv",
-        kmers="results/boundary_kmer_enrichment.tsv",
-        dist="results/distance_to_end.tsv",
-        arch="results/architecture_summary.tsv",
+        species="work/results/final_species_summary.tsv",
+        final="work/results/final_telotron_set.tsv",
+        kmers="work/results/boundary_kmer_enrichment.tsv",
+        dist="work/results/distance_to_end.tsv",
+        arch="work/results/architecture_summary.tsv",
     output:
         FIGURES,
     conda:
         ENV
     shell:
         r"""
-        mkdir -p results/figures
+        mkdir -p work/results/figures
         python scripts/plot_telotrons.py \
             --species {input.species} --final {input.final} \
             --kmers {input.kmers} --distance {input.dist} --architecture {input.arch} \
-            --outdir results/figures
+            --outdir work/results/figures
         """
 
 
@@ -449,8 +449,8 @@ rule figures:
 # species's identified terminal motif. Telotron candidate loci overlaid as ticks.
 rule terminal_motif_figures:
     input:
-        summary="results/all_species_raw_summary.tsv",
-        loci="results/all_telotron_loci.tsv",
+        summary="work/results/all_species_raw_summary.tsv",
+        loci="work/results/all_telotron_loci.tsv",
         tara=["raw/tara/.fna.done"],
         refseq="raw/refseq/.done",
     output:
@@ -460,12 +460,12 @@ rule terminal_motif_figures:
         ENV
     shell:
         r"""
-        mkdir -p results/figures/terminal_motif
+        mkdir -p work/results/figures/terminal_motif
         python scripts/plot_terminal_motif_density.py \
             --summary {input.summary} --loci {input.loci} \
             --refseq-dir raw/refseq --tara-dir raw/tara \
             --motifs {TELOMERE_MOTIFS} \
-            --outdir results/figures/terminal_motif \
+            --outdir work/results/figures/terminal_motif \
             --threads {threads}
         """
 
@@ -476,7 +476,7 @@ rule terminal_motif_figures:
 # one file per architecture.
 rule extract_telotron_fasta:
     input:
-        arch="results/final_telotron_set_architecture.tsv",
+        arch="work/results/final_telotron_set_architecture.tsv",
         tara=["raw/tara/.fna.done"],
         refseq="raw/refseq/.done",
     output:
@@ -485,12 +485,12 @@ rule extract_telotron_fasta:
         ENV
     shell:
         r"""
-        mkdir -p results/telotron_fasta results/telotron_flanked
+        mkdir -p work/results/telotron_fasta work/results/telotron_flanked
         python scripts/extract_telotron_fasta.py \
             --final {input.arch} \
             --refseq-dir raw/refseq --tara-dir raw/tara \
-            --fasta-dir results/telotron_fasta \
-            --flanked-dir results/telotron_flanked
+            --fasta-dir work/results/telotron_fasta \
+            --flanked-dir work/results/telotron_flanked
         touch {output}
         """
 
@@ -500,22 +500,22 @@ rule extract_telotron_fasta:
 # annotated with the query genome_id so cross-species recurrences are findable.
 rule blast_linkers:
     input:
-        arch="results/final_telotron_set_architecture.tsv",
+        arch="work/results/final_telotron_set_architecture.tsv",
         tara=["raw/tara/.fna.done"],
         refseq="raw/refseq/.done",
     output:
-        own="results/linker_blast_hits_own_genome.tsv",
-        all="results/linker_blast_hits_all_genomes.tsv",
+        own="work/results/linker_blast_hits_own_genome.tsv",
+        all="work/results/linker_blast_hits_all_genomes.tsv",
     threads: THREADS
     conda:
         ENV
     shell:
         r"""
-        mkdir -p results/blast_linkers
+        mkdir -p work/results/blast_linkers
         python scripts/blast_linkers.py \
             --arch-tsv {input.arch} \
             --refseq-dir raw/refseq --tara-dir raw/tara \
-            --workdir results/blast_linkers \
+            --workdir work/results/blast_linkers \
             --out-own {output.own} --out-all {output.all} \
             --threads {threads}
         """
@@ -527,7 +527,7 @@ rule blast_linkers:
 # everything into one fixed-width view with spaces at region boundaries.
 rule msa_telotron_regions:
     input:
-        arch="results/final_telotron_set_architecture.tsv",
+        arch="work/results/final_telotron_set_architecture.tsv",
         tara=["raw/tara/.fna.done"],
         refseq="raw/refseq/.done",
     output:
@@ -537,11 +537,11 @@ rule msa_telotron_regions:
         ENV
     shell:
         r"""
-        mkdir -p results/msa_regions
+        mkdir -p work/results/msa_regions
         python scripts/msa_telotron_regions.py \
             --arch-tsv {input.arch} \
             --refseq-dir raw/refseq --tara-dir raw/tara \
-            --outdir results/msa_regions --threads {threads}
+            --outdir work/results/msa_regions --threads {threads}
         touch {output}
         """
 
@@ -549,11 +549,11 @@ rule msa_telotron_regions:
 # UniProt SwissProt eukaryote-rich proteome (~90 MB) — used by miniprot to
 # mask homology-detectable CDS in genomes whose published GFF misses things
 # (including pseudogenes, which miniprot keeps as Frameshift=/StopCodon= hits).
-# To override, place your own proteome at manifests/proteome.faa.gz before
+# To override, place your own proteome at work/manifests/proteome.faa.gz before
 # running and Snakemake will skip the download.
 rule download_proteome:
     output:
-        "manifests/proteome.faa.gz",
+        "work/manifests/proteome.faa.gz",
     shell:
         r"""
         mkdir -p manifests
@@ -566,14 +566,14 @@ rule download_proteome:
 # 5 each). Layered on top of the SwissProt base for miniprot homology mapping
 # so divergent lineage-specific genes still register. TARA MAGs and genomes
 # with no same-genus annotated relative get empty placeholders (→ SwissProt
-# alone). Per-sibling cache lives under manifests/close_proteomes/_cache/.
+# alone). Per-sibling cache lives under work/manifests/close_proteomes/_cache/.
 rule fetch_close_proteomes:
     input:
-        manifest="results/all_species_raw_summary.tsv",
+        manifest="work/results/all_species_raw_summary.tsv",
     output:
-        touch("manifests/close_proteomes/.done"),
+        touch("work/manifests/close_proteomes/.done"),
     params:
-        outdir="manifests/close_proteomes",
+        outdir="work/manifests/close_proteomes",
     shell:
         r"""
         python scripts/fetch_close_proteomes.py \
@@ -583,19 +583,19 @@ rule fetch_close_proteomes:
 
 
 # Per-genome ORF mask: six-frame ATG→stop scan, ORFs >= min_orf_nt.
-# Output is a sorted+merged BED per genome under results/masks/. Used by
+# Output is a sorted+merged BED per genome under work/results/masks/. Used by
 # find_interstitial_arrays to subtract on top of the annotated gene/intron mask.
 # Cutoff rationale: on a shuffled E. necatrix genome ORFs >= 300 nt cover 10.6%
 # of bp (noise), ORFs >= 450 nt cover 1.9% (noise floor), so 450 is the default.
 rule make_unannotated_masks:
     input:
-        manifest="results/all_species_raw_summary.tsv",
+        manifest="work/results/all_species_raw_summary.tsv",
         tara=["raw/tara/.fna.done"],
         refseq="raw/refseq/.done",
     output:
-        touch("results/masks/.done"),
+        touch("work/results/masks/.done"),
     params:
-        outdir="results/masks",
+        outdir="work/results/masks",
         min_orf=450,
     threads: THREADS
     conda:
@@ -614,19 +614,19 @@ rule make_unannotated_masks:
 # All interstitial telomeric repeat arrays — i.e. arrays that are
 # non-terminal (>=5 kb from contig end), non-genic, and non-intronic.
 # Exclusion set = (annotated genes ∪ gt-derived introns) ∪ ORF mask
-# (results/masks/{gid}.bed: six-frame ORFs >= 450 nt).
+# (work/results/masks/{gid}.bed: six-frame ORFs >= 450 nt).
 # seqkit locate → bedtools merge → bedtools intersect -v vs that exclusion BED.
 # Emits 5'/3' boundary 6- and 12-mers.
 rule find_interstitial_arrays:
     input:
-        manifest="results/all_species_raw_summary.tsv",
+        manifest="work/results/all_species_raw_summary.tsv",
         tara=["raw/tara/.fna.done"],
         refseq="raw/refseq/.done",
-        masks="results/masks/.done",
+        masks="work/results/masks/.done",
     output:
-        "results/interstitial_arrays.tsv",
+        "work/results/interstitial_arrays.tsv",
     params:
-        mask_dir="results/masks",
+        mask_dir="work/results/masks",
     threads: THREADS
     conda:
         ENV
@@ -645,18 +645,18 @@ rule find_interstitial_arrays:
 # and 4+2 linker-edge 6-mers) split by architecture.
 rule plot_boundary_kmers_by_arch:
     input:
-        kmers="results/boundary_kmers_by_architecture.tsv",
-        species="results/final_species_summary.tsv",
+        kmers="work/results/boundary_kmers_by_architecture.tsv",
+        species="work/results/final_species_summary.tsv",
     output:
         touch(ARCH_KMER_SENTINEL),
     conda:
         ENV
     shell:
         r"""
-        mkdir -p results/figures/boundary_kmers_by_arch
+        mkdir -p work/results/figures/boundary_kmers_by_arch
         python scripts/plot_boundary_kmers_by_arch.py \
             --kmers {input.kmers} --species {input.species} \
-            --outdir results/figures/boundary_kmers_by_arch
+            --outdir work/results/figures/boundary_kmers_by_arch
         touch {output}
         """
 
@@ -667,9 +667,9 @@ rule plot_boundary_kmers_by_arch:
 # (mRNA-CCCTAA) telotron inside a plus-strand gene.
 rule filter_interstitial_splice_candidates:
     input:
-        arrays="results/interstitial_arrays.tsv",
+        arrays="work/results/interstitial_arrays.tsv",
     output:
-        tsv="results/interstitial_arrays_c_rich_splice_candidates.tsv",
+        tsv="work/results/interstitial_arrays_c_rich_splice_candidates.tsv",
     conda: ENV
     shell:
         r"""
@@ -680,16 +680,16 @@ rule filter_interstitial_splice_candidates:
 
 rule plot_interstitial_splice_candidate_kmers:
     input:
-        arrays="results/interstitial_arrays_c_rich_splice_candidates.tsv",
+        arrays="work/results/interstitial_arrays_c_rich_splice_candidates.tsv",
     output:
         touch(INTERSTITIAL_SPLICE_KMER_SENTINEL),
     conda: ENV
     shell:
         r"""
-        mkdir -p results/figures/interstitial_boundary_kmers_c_rich_splice_candidates
+        mkdir -p work/results/figures/interstitial_boundary_kmers_c_rich_splice_candidates
         python scripts/plot_interstitial_boundary_kmers.py \
             --arrays {input.arrays} \
-            --outdir results/figures/interstitial_boundary_kmers_c_rich_splice_candidates
+            --outdir work/results/figures/interstitial_boundary_kmers_c_rich_splice_candidates
         """
 
 
@@ -697,17 +697,17 @@ rule plot_interstitial_splice_candidate_kmers:
 # (non-genic, non-intronic, non-terminal) telomeric repeat arrays.
 rule plot_interstitial_boundary_kmers:
     input:
-        arrays="results/interstitial_arrays.tsv",
+        arrays="work/results/interstitial_arrays.tsv",
     output:
         touch(INTERSTITIAL_KMER_SENTINEL),
     conda:
         ENV
     shell:
         r"""
-        mkdir -p results/figures/interstitial_boundary_kmers
+        mkdir -p work/results/figures/interstitial_boundary_kmers
         python scripts/plot_interstitial_boundary_kmers.py \
             --arrays {input.arrays} \
-            --outdir results/figures/interstitial_boundary_kmers
+            --outdir work/results/figures/interstitial_boundary_kmers
         touch {output}
         """
 
@@ -716,17 +716,17 @@ rule plot_interstitial_boundary_kmers:
 # + first repeat unit and last repeat unit + 3'-flank for interstitial arrays.
 rule plot_interstitial_boundary_logos:
     input:
-        arrays="results/interstitial_arrays.tsv",
+        arrays="work/results/interstitial_arrays.tsv",
     output:
         touch(INTERSTITIAL_LOGO_SENTINEL),
     conda:
         ENV
     shell:
         r"""
-        mkdir -p results/figures/interstitial_boundary_logos
+        mkdir -p work/results/figures/interstitial_boundary_logos
         python scripts/plot_interstitial_boundary_logos.py \
             --arrays {input.arrays} \
-            --outdir results/figures/interstitial_boundary_logos \
+            --outdir work/results/figures/interstitial_boundary_logos \
             --flank-len 10
         touch {output}
         """
@@ -736,9 +736,9 @@ rule plot_array_length_distribution:
     """Per-species histograms: ITS array_len | telotron telomeric_bases |
     non-telotron intron_len. Eimeria + MAGs only."""
     input:
-        interstitial="results/interstitial_arrays.tsv",
-        telotrons="results/final_telotron_set.tsv",
-        non_telotrons="results/non_telotron_controls.tsv",
+        interstitial="work/results/interstitial_arrays.tsv",
+        telotrons="work/results/final_telotron_set.tsv",
+        non_telotrons="work/results/non_telotron_controls.tsv",
     output:
         ARRAY_LEN_DIST_PNG,
     conda:
@@ -756,9 +756,9 @@ rule plot_array_length_distribution:
 rule plot_array_length_distribution_min40:
     """Same but drops arrays/telotrons/introns < 40 bp."""
     input:
-        interstitial="results/interstitial_arrays.tsv",
-        telotrons="results/final_telotron_set.tsv",
-        non_telotrons="results/non_telotron_controls.tsv",
+        interstitial="work/results/interstitial_arrays.tsv",
+        telotrons="work/results/final_telotron_set.tsv",
+        non_telotrons="work/results/non_telotron_controls.tsv",
     output:
         ARRAY_LEN_DIST_MIN40_PNG,
     conda:
@@ -778,20 +778,20 @@ rule plot_array_length_distribution_min40:
 # boundary panel on the left, interstitial array boundary panel on the right.
 rule plot_combined_boundary_kmers:
     input:
-        species="results/final_species_summary.tsv",
+        species="work/results/final_species_summary.tsv",
         intron_dir=ARCH_KMER_SENTINEL,
         interst_dir=INTERSTITIAL_KMER_SENTINEL,
     output:
-        pdf="results/figures/boundary_kmers_combined.pdf",
-        png="results/figures/boundary_kmers_combined.png",
+        pdf="work/results/figures/boundary_kmers_combined.pdf",
+        png="work/results/figures/boundary_kmers_combined.png",
     conda:
         ENV
     shell:
         r"""
         python scripts/plot_combined_boundary_kmers.py \
             --species {input.species} \
-            --intron-dir results/figures/boundary_kmers_by_arch \
-            --interstitial-dir results/figures/interstitial_boundary_kmers \
+            --intron-dir work/results/figures/boundary_kmers_by_arch \
+            --interstitial-dir work/results/figures/interstitial_boundary_kmers \
             --out-pdf {output.pdf} --out-png {output.png}
         """
 
@@ -800,25 +800,25 @@ rule plot_combined_boundary_kmers:
 # architecture).
 rule plot_pipeline_stages:
     input:
-        manifest="manifests/all_genomes.tsv",
-        raw="results/all_species_raw_summary.tsv",
-        sp="results/final_species_summary.tsv",
-        dist="results/distance_to_end.tsv",
-        arch="results/final_telotron_set_architecture.tsv",
+        manifest="work/manifests/all_genomes.tsv",
+        raw="work/results/all_species_raw_summary.tsv",
+        sp="work/results/final_species_summary.tsv",
+        dist="work/results/distance_to_end.tsv",
+        arch="work/results/final_telotron_set_architecture.tsv",
     output:
         touch(PIPELINE_STAGES_SENTINEL),
     conda:
         ENV
     shell:
         r"""
-        mkdir -p results/figures/pipeline_stages
+        mkdir -p work/results/figures/pipeline_stages
         python scripts/plot_pipeline_stages.py \
             --manifests {input.manifest} \
             --raw-summary {input.raw} \
             --species-final {input.sp} \
             --distance {input.dist} \
             --architecture-loci {input.arch} \
-            --outdir results/figures/pipeline_stages
+            --outdir work/results/figures/pipeline_stages
         touch {output}
         """
 
@@ -833,12 +833,12 @@ rule plot_pipeline_stages:
 rule build_streme_inputs:
     input:
         telotrons_done=EXTRACT_FASTA_SENTINEL,
-        introns="results/all_introns_scanned.tsv",
-        linkers="results/blast_linkers/linker_queries/_all_linkers.fa",
+        introns="work/results/all_introns_scanned.tsv",
+        linkers="work/results/blast_linkers/linker_queries/_all_linkers.fa",
     output:
-        telo="results/streme_inputs/telotrons.fa",
-        non_telo="results/streme_inputs/non_telo_introns.fa",
-        linkers="results/streme_inputs/linkers.fa",
+        telo="work/results/streme_inputs/telotrons.fa",
+        non_telo="work/results/streme_inputs/non_telo_introns.fa",
+        linkers="work/results/streme_inputs/linkers.fa",
     params:
         n_non_telo=5000,
         non_telo_max_frac=0.10,
@@ -846,11 +846,11 @@ rule build_streme_inputs:
     shell:
         r"""
         python scripts/build_streme_inputs.py \
-            --telotron-fasta-dir results/telotron_fasta \
+            --telotron-fasta-dir work/results/telotron_fasta \
             --introns-tsv {input.introns} \
             --linkers-fa {input.linkers} \
             --refseq-dir raw/refseq --tara-dir raw/tara \
-            --outdir results/streme_inputs \
+            --outdir work/results/streme_inputs \
             --n-non-telo {params.n_non_telo} \
             --non-telo-max-frac {params.non_telo_max_frac}
         """
@@ -861,30 +861,30 @@ rule build_streme_inputs:
 STREME_ARGS = "--dna --minw 4 --maxw 12 --nmotifs 10 --thresh 0.05"
 
 rule streme_telotrons:
-    input: "results/streme_inputs/telotrons.fa"
+    input: "work/results/streme_inputs/telotrons.fa"
     output: STREME_TELO_SENTINEL
     conda: MEME_ENV
     shell:
         r"""
-        streme {STREME_ARGS} --p {input} --oc results/streme/telotrons
+        streme {STREME_ARGS} --p {input} --oc work/results/streme/telotrons
         """
 
 rule streme_non_telo_introns:
-    input: "results/streme_inputs/non_telo_introns.fa"
+    input: "work/results/streme_inputs/non_telo_introns.fa"
     output: STREME_NONTELO_SENTINEL
     conda: MEME_ENV
     shell:
         r"""
-        streme {STREME_ARGS} --p {input} --oc results/streme/non_telo_introns
+        streme {STREME_ARGS} --p {input} --oc work/results/streme/non_telo_introns
         """
 
 rule streme_linkers:
-    input: "results/streme_inputs/linkers.fa"
+    input: "work/results/streme_inputs/linkers.fa"
     output: STREME_LINKER_SENTINEL
     conda: MEME_ENV
     shell:
         r"""
-        streme {STREME_ARGS} --p {input} --oc results/streme/linkers
+        streme {STREME_ARGS} --p {input} --oc work/results/streme/linkers
         """
 
 
@@ -897,7 +897,7 @@ rule streme_linkers:
 # else "loose" expecting YNYTRAY) keep distinct consensuses from blurring.
 def _branchpoint_genome_ids(min_introns=50):
     """Genomes with >= min_introns qualifying GT-AG introns in all_introns_scanned.tsv."""
-    path = "results/all_introns_scanned.tsv"
+    path = "work/results/all_introns_scanned.tsv"
     if not os.path.exists(path):
         return []
     counts = {}
@@ -926,19 +926,19 @@ rule build_branchpoint_inputs_one:
     """Extract 3'-end branchpoint windows (pos) and mid-intron controls (neg)
     for a single genome, then dustmask."""
     input:
-        introns="results/all_introns_scanned.tsv",
+        introns="work/results/all_introns_scanned.tsv",
         tara="raw/tara/.fna.done",
         refseq="raw/refseq/.done",
     output:
-        pos="results/streme_inputs/branchpoint_{gid}_pos.fa",
-        neg="results/streme_inputs/branchpoint_{gid}_neg.fa",
+        pos="work/results/streme_inputs/branchpoint_{gid}_pos.fa",
+        neg="work/results/streme_inputs/branchpoint_{gid}_neg.fa",
     conda: ENV
     shell:
         r"""
         python scripts/build_branchpoint_inputs.py \
             --introns {input.introns} \
             --refseq-dir raw/refseq --tara-dir raw/tara \
-            --outdir results/streme_inputs \
+            --outdir work/results/streme_inputs \
             --genome-id {wildcards.gid} \
             --pos-window 200 --min-intron-len 400 \
             --n-per-species 3000
@@ -950,22 +950,22 @@ STREME_BP_ARGS = "--dna --minw 6 --maxw 9 --nmotifs 5 --thresh 0.05 --objfun de"
 
 rule streme_branchpoint_one:
     input:
-        pos="results/streme_inputs/branchpoint_{gid}_pos.fa",
-        neg="results/streme_inputs/branchpoint_{gid}_neg.fa",
+        pos="work/results/streme_inputs/branchpoint_{gid}_pos.fa",
+        neg="work/results/streme_inputs/branchpoint_{gid}_neg.fa",
     output:
-        "results/streme/branchpoint/{gid}/streme.xml",
+        "work/results/streme/branchpoint/{gid}/streme.xml",
     conda: MEME_ENV
     shell:
         r"""
         streme {STREME_BP_ARGS} --p {input.pos} --n {input.neg} \
-            --oc results/streme/branchpoint/{wildcards.gid}
+            --oc work/results/streme/branchpoint/{wildcards.gid}
         """
 
 
 rule streme_branchpoint:
     input:
         lambda wc: expand(
-            "results/streme/branchpoint/{gid}/streme.xml",
+            "work/results/streme/branchpoint/{gid}/streme.xml",
             gid=_branchpoint_genome_ids(),
         ),
     output:
@@ -974,14 +974,14 @@ rule streme_branchpoint:
 
 rule fimo_branchpoint_one:
     input:
-        pos="results/streme_inputs/branchpoint_{gid}_pos.fa",
+        pos="work/results/streme_inputs/branchpoint_{gid}_pos.fa",
         pwms="scripts/branchpoint_pwms.meme",
     output:
-        "results/fimo/branchpoint/{gid}/fimo.tsv",
+        "work/results/fimo/branchpoint/{gid}/fimo.tsv",
     conda: MEME_ENV
     shell:
         r"""
-        fimo --thresh 1e-3 --oc results/fimo/branchpoint/{wildcards.gid} \
+        fimo --thresh 1e-3 --oc work/results/fimo/branchpoint/{wildcards.gid} \
             {input.pwms} {input.pos}
         """
 
@@ -989,7 +989,7 @@ rule fimo_branchpoint_one:
 rule fimo_branchpoint:
     input:
         lambda wc: expand(
-            "results/fimo/branchpoint/{gid}/fimo.tsv",
+            "work/results/fimo/branchpoint/{gid}/fimo.tsv",
             gid=_branchpoint_genome_ids(),
         ),
     output:
@@ -1004,17 +1004,17 @@ rule fimo_branchpoint:
 # re-hit the site. Set NCBI_API_KEY in your shell to bump the E-utils rate.
 rule fetch_telomerase_db:
     output:
-        tr_nucl="results/telomerase_db/tr.nucl.fa",
-        tert_nucl="results/telomerase_db/tert.nucl.fa",
-        tert_prot="results/telomerase_db/tert.prot.fa",
-        other_nucl="results/telomerase_db/other.nucl.fa",
-        other_prot="results/telomerase_db/other.prot.fa",
+        tr_nucl="work/results/telomerase_db/tr.nucl.fa",
+        tert_nucl="work/results/telomerase_db/tert.nucl.fa",
+        tert_prot="work/results/telomerase_db/tert.prot.fa",
+        other_nucl="work/results/telomerase_db/other.nucl.fa",
+        other_prot="work/results/telomerase_db/other.prot.fa",
     shell:
         r"""
-        mkdir -p raw/telomerase.us results/telomerase_db
+        mkdir -p raw/telomerase.us work/results/telomerase_db
         python scripts/fetch_telomerase_db.py \
             --cache-dir raw/telomerase.us \
-            --outdir results/telomerase_db
+            --outdir work/results/telomerase_db
         """
 
 
@@ -1024,7 +1024,7 @@ rule fetch_telomerase_db:
 # the standard outfmt 6 12-column tabular row followed by an ASCII pairwise
 # alignment (qseq / match line / sseq).
 #
-# Output: results/blast_telomerase_vs_genomes/{genome_id}/{tr_nucl,tert_nucl,
+# Output: work/results/blast_telomerase_vs_genomes/{genome_id}/{tr_nucl,tert_nucl,
 # tert_prot,other_nucl,other_prot}.tsv
 # Telomerase-ortholog blast targets (config: blast_genome_ids): the 5 Eimeria
 # spp. + 3 telotron-positive Tara MAGs. An explicit list rather than a prefix
@@ -1047,24 +1047,24 @@ _BLAST_GENOME_IDS = config.get("blast_genome_ids") or [
 # nucleotide BLAST db for its genome and runs all 5 query sets against it.
 rule blast_telomerase_vs_one_genome:
     input:
-        tr_nucl="results/telomerase_db/tr.nucl.fa",
-        tert_nucl="results/telomerase_db/tert.nucl.fa",
-        tert_prot="results/telomerase_db/tert.prot.fa",
-        other_nucl="results/telomerase_db/other.nucl.fa",
-        other_prot="results/telomerase_db/other.prot.fa",
+        tr_nucl="work/results/telomerase_db/tr.nucl.fa",
+        tert_nucl="work/results/telomerase_db/tert.nucl.fa",
+        tert_prot="work/results/telomerase_db/tert.prot.fa",
+        other_nucl="work/results/telomerase_db/other.nucl.fa",
+        other_prot="work/results/telomerase_db/other.prot.fa",
         refseq="raw/refseq/.done",
         tara="raw/tara/.fna.done",
     output:
-        touch("results/blast_telomerase_vs_genomes/{gid}/.done"),
+        touch("work/results/blast_telomerase_vs_genomes/{gid}/.done"),
     threads: 4
     shell:
         r"""
-        mkdir -p results/blast_telomerase_vs_genomes/{wildcards.gid}
+        mkdir -p work/results/blast_telomerase_vs_genomes/{wildcards.gid}
         python scripts/blast_telomerase_vs_genomes.py \
             --genome-id {wildcards.gid} \
-            --db-dir results/telomerase_db \
+            --db-dir work/results/telomerase_db \
             --refseq-dir raw/refseq --tara-dir raw/tara \
-            --outdir results/blast_telomerase_vs_genomes/{wildcards.gid} \
+            --outdir work/results/blast_telomerase_vs_genomes/{wildcards.gid} \
             --threads {threads}
         """
 
@@ -1073,7 +1073,7 @@ rule blast_telomerase_vs_one_genome:
 rule blast_telomerase_vs_genomes:
     input:
         lambda wc: expand(
-            "results/blast_telomerase_vs_genomes/{gid}/.done",
+            "work/results/blast_telomerase_vs_genomes/{gid}/.done",
             gid=_BLAST_GENOME_IDS,
         ),
     output:
@@ -1088,23 +1088,23 @@ rule blast_telomerase_vs_genomes:
 # pretty-printed report per query set plus a deduplicated summary TSV.
 rule process_telomerase_blast_one_genome:
     input:
-        blast_done="results/blast_telomerase_vs_genomes/{gid}/.done",
-        tr_nucl="results/telomerase_db/tr.nucl.fa",
-        tert_nucl="results/telomerase_db/tert.nucl.fa",
-        tert_prot="results/telomerase_db/tert.prot.fa",
-        other_nucl="results/telomerase_db/other.nucl.fa",
-        other_prot="results/telomerase_db/other.prot.fa",
+        blast_done="work/results/blast_telomerase_vs_genomes/{gid}/.done",
+        tr_nucl="work/results/telomerase_db/tr.nucl.fa",
+        tert_nucl="work/results/telomerase_db/tert.nucl.fa",
+        tert_prot="work/results/telomerase_db/tert.prot.fa",
+        other_nucl="work/results/telomerase_db/other.nucl.fa",
+        other_prot="work/results/telomerase_db/other.prot.fa",
         refseq="raw/refseq/.done",
         tara="raw/tara/.fna.done",
     output:
-        touch("results/blast_telomerase_vs_genomes/{gid}/.report.done"),
+        touch("work/results/blast_telomerase_vs_genomes/{gid}/.report.done"),
     conda: ENV
     shell:
         r"""
         python scripts/process_telomerase_blast.py \
             --genome-id {wildcards.gid} \
-            --blast-dir results/blast_telomerase_vs_genomes/{wildcards.gid} \
-            --db-dir results/telomerase_db \
+            --blast-dir work/results/blast_telomerase_vs_genomes/{wildcards.gid} \
+            --db-dir work/results/telomerase_db \
             --refseq-dir raw/refseq --tara-dir raw/tara
         """
 
@@ -1112,7 +1112,7 @@ rule process_telomerase_blast_one_genome:
 rule process_telomerase_blast:
     input:
         lambda wc: expand(
-            "results/blast_telomerase_vs_genomes/{gid}/.report.done",
+            "work/results/blast_telomerase_vs_genomes/{gid}/.report.done",
             gid=_BLAST_GENOME_IDS,
         ),
     output:
@@ -1143,26 +1143,26 @@ TERT_GENOME_IDS = config.get("tert_genome_ids") or [
 
 rule fetch_tert_seeds_hmms:
     output:
-        seeds="results/tert_deep_homology/refs/tert_seeds.faa",
-        trbd="results/tert_deep_homology/refs/PF12009.hmm",
-        rt="results/tert_deep_homology/refs/PF00078.hmm",
+        seeds="work/results/tert_deep_homology/refs/tert_seeds.faa",
+        trbd="work/results/tert_deep_homology/refs/PF12009.hmm",
+        rt="work/results/tert_deep_homology/refs/PF00078.hmm",
     shell:
         r"""
         python scripts/fetch_tert_seeds_hmms.py \
-            --outdir results/tert_deep_homology/refs
+            --outdir work/results/tert_deep_homology/refs
         """
 
 
 rule find_tert:
     input:
-        seeds="results/tert_deep_homology/refs/tert_seeds.faa",
-        trbd="results/tert_deep_homology/refs/PF12009.hmm",
-        rt="results/tert_deep_homology/refs/PF00078.hmm",
+        seeds="work/results/tert_deep_homology/refs/tert_seeds.faa",
+        trbd="work/results/tert_deep_homology/refs/PF12009.hmm",
+        rt="work/results/tert_deep_homology/refs/PF00078.hmm",
         refseq="raw/refseq/.done",
         tara="raw/tara/.fna.done",
     output:
         tsv=TERT_DEEP_HOMOLOGY_TSV,
-        faa="results/tert_deep_homology/all_confirmed.faa",
+        faa="work/results/tert_deep_homology/all_confirmed.faa",
     params:
         gids=",".join(TERT_GENOME_IDS),
     threads: THREADS
@@ -1174,23 +1174,23 @@ rule find_tert:
             --genome-ids {params.gids} \
             --seeds {input.seeds} --trbd-hmm {input.trbd} --rt-hmm {input.rt} \
             --refseq-dir raw/refseq --tara-dir raw/tara \
-            --outdir results/tert_deep_homology \
+            --outdir work/results/tert_deep_homology \
             --iterate 3 --threads {threads}
         """
 
 
 rule telomerase_db_blastdbs:
     input:
-        tr_nucl="results/telomerase_db/tr.nucl.fa",
-        tert_nucl="results/telomerase_db/tert.nucl.fa",
-        tert_prot="results/telomerase_db/tert.prot.fa",
-        other_nucl="results/telomerase_db/other.nucl.fa",
-        other_prot="results/telomerase_db/other.prot.fa",
+        tr_nucl="work/results/telomerase_db/tr.nucl.fa",
+        tert_nucl="work/results/telomerase_db/tert.nucl.fa",
+        tert_prot="work/results/telomerase_db/tert.prot.fa",
+        other_nucl="work/results/telomerase_db/other.nucl.fa",
+        other_prot="work/results/telomerase_db/other.prot.fa",
     output:
         touch(TELOMERASE_DB_SENTINEL),
     shell:
         r"""
-        cd results/telomerase_db
+        cd work/results/telomerase_db
         for f in tr.nucl.fa tert.nucl.fa other.nucl.fa; do
             [ -s "$f" ] && makeblastdb -in "$f" -dbtype nucl -parse_seqids -out "${{f%.fa}}" || echo "skip empty $f"
         done
@@ -1211,10 +1211,10 @@ rule plot_telotron_splice_logos:
     conda: ENV
     shell:
         r"""
-        mkdir -p results/figures/telotron_splice_logos
+        mkdir -p work/results/figures/telotron_splice_logos
         python scripts/plot_splice_signal_logos.py \
-            --flanked-dir results/telotron_flanked \
-            --outdir results/figures/telotron_splice_logos
+            --flanked-dir work/results/telotron_flanked \
+            --outdir work/results/figures/telotron_splice_logos
         touch {output}
         """
 
@@ -1224,10 +1224,10 @@ rule plot_telotron_splice_logos:
 # architecture-table schema so extract_telotron_fasta.py can ingest it.
 rule build_non_telotron_controls:
     input:
-        introns="results/all_introns_scanned.tsv",
-        final="results/final_telotron_set.tsv",
+        introns="work/results/all_introns_scanned.tsv",
+        final="work/results/final_telotron_set.tsv",
     output:
-        tsv="results/non_telotron_controls.tsv",
+        tsv="work/results/non_telotron_controls.tsv",
     conda: ENV
     shell:
         r"""
@@ -1238,11 +1238,11 @@ rule build_non_telotron_controls:
 
 
 # Per-species and per-architecture FASTAs + flanked .txt for the control set,
-# under results/non_telotron_fasta and results/non_telotron_flanked (architecture
+# under work/results/non_telotron_fasta and work/results/non_telotron_flanked (architecture
 # is always "control"). Reuses the telotron extractor.
 rule extract_non_telotron_fasta:
     input:
-        controls="results/non_telotron_controls.tsv",
+        controls="work/results/non_telotron_controls.tsv",
         tara=["raw/tara/.fna.done"],
         refseq="raw/refseq/.done",
     output:
@@ -1250,12 +1250,12 @@ rule extract_non_telotron_fasta:
     conda: ENV
     shell:
         r"""
-        mkdir -p results/non_telotron_fasta results/non_telotron_flanked
+        mkdir -p work/results/non_telotron_fasta work/results/non_telotron_flanked
         python scripts/extract_telotron_fasta.py \
             --final {input.controls} \
             --refseq-dir raw/refseq --tara-dir raw/tara \
-            --fasta-dir results/non_telotron_fasta \
-            --flanked-dir results/non_telotron_flanked
+            --fasta-dir work/results/non_telotron_fasta \
+            --flanked-dir work/results/non_telotron_flanked
         """
 
 
@@ -1268,10 +1268,10 @@ rule plot_non_telotron_splice_logos:
     conda: ENV
     shell:
         r"""
-        mkdir -p results/figures/non_telotron_splice_logos
+        mkdir -p work/results/figures/non_telotron_splice_logos
         python scripts/plot_splice_signal_logos.py \
-            --flanked-dir results/non_telotron_flanked \
-            --outdir results/figures/non_telotron_splice_logos
+            --flanked-dir work/results/non_telotron_flanked \
+            --outdir work/results/figures/non_telotron_splice_logos
         touch {output}
         """
 
@@ -1280,16 +1280,16 @@ rule plot_non_telotron_splice_logos:
 # interstitial boundary k-mer figures. Uses first40/last40 already in the TSV.
 rule plot_non_telotron_boundary_kmers:
     input:
-        controls="results/non_telotron_controls.tsv",
+        controls="work/results/non_telotron_controls.tsv",
     output:
         touch(CTRL_BOUNDARY_KMER_SENTINEL),
     conda: ENV
     shell:
         r"""
-        mkdir -p results/figures/non_telotron_boundary_kmers
+        mkdir -p work/results/figures/non_telotron_boundary_kmers
         python scripts/plot_intron_boundary_kmers.py \
             --introns {input.controls} \
-            --outdir results/figures/non_telotron_boundary_kmers \
+            --outdir work/results/figures/non_telotron_boundary_kmers \
             --label "non-telotron control (telomeric_frac<0.10)"
         """
 
@@ -1300,16 +1300,16 @@ rule plot_non_telotron_boundary_kmers:
 # and interstitial figure dirs for compositing.
 rule plot_telotron_boundary_kmers:
     input:
-        final="results/final_telotron_set.tsv",
+        final="work/results/final_telotron_set.tsv",
     output:
         touch(TELOTRON_BOUNDARY_KMER_SENTINEL),
     conda: ENV
     shell:
         r"""
-        mkdir -p results/figures/telotron_boundary_kmers
+        mkdir -p work/results/figures/telotron_boundary_kmers
         python scripts/plot_intron_boundary_kmers.py \
             --introns {input.final} \
-            --outdir results/figures/telotron_boundary_kmers \
+            --outdir work/results/figures/telotron_boundary_kmers \
             --label "telotrons"
         """
 
@@ -1326,12 +1326,12 @@ rule plot_composite_boundary_kmers:
     conda: ENV
     shell:
         r"""
-        mkdir -p results/figures/composite_boundary_kmers
+        mkdir -p work/results/figures/composite_boundary_kmers
         python scripts/plot_composite_per_species.py \
-            --outdir results/figures/composite_boundary_kmers \
-            --panel "results/figures/interstitial_boundary_kmers:interstitial arrays" \
-            --panel "results/figures/non_telotron_boundary_kmers:non-telotron control introns" \
-            --panel "results/figures/telotron_boundary_kmers:telotrons"
+            --outdir work/results/figures/composite_boundary_kmers \
+            --panel "work/results/figures/interstitial_boundary_kmers:interstitial arrays" \
+            --panel "work/results/figures/non_telotron_boundary_kmers:non-telotron control introns" \
+            --panel "work/results/figures/telotron_boundary_kmers:telotrons"
         """
 
 
@@ -1345,12 +1345,12 @@ rule plot_composite_boundary_logos:
     conda: ENV
     shell:
         r"""
-        mkdir -p results/figures/composite_boundary_logos
+        mkdir -p work/results/figures/composite_boundary_logos
         python scripts/plot_composite_per_species.py \
-            --outdir results/figures/composite_boundary_logos \
-            --panel "results/figures/interstitial_boundary_logos:interstitial array boundary" \
-            --panel "results/figures/non_telotron_splice_logos:non-telotron intron splice signal" \
-            --panel "results/figures/telotron_splice_logos:telotron splice signal"
+            --outdir work/results/figures/composite_boundary_logos \
+            --panel "work/results/figures/interstitial_boundary_logos:interstitial array boundary" \
+            --panel "work/results/figures/non_telotron_splice_logos:non-telotron intron splice signal" \
+            --panel "work/results/figures/telotron_splice_logos:telotron splice signal"
         """
 
 
@@ -1361,9 +1361,9 @@ rule plot_composite_boundary_logos:
 
 rule plot_interstitial_boundary_kmers_by_cat:
     input:
-        arrays="results/interstitial_arrays.tsv",
+        arrays="work/results/interstitial_arrays.tsv",
     output:
-        touch("results/figures/interstitial_boundary_kmers_{cat}/.done"),
+        touch("work/results/figures/interstitial_boundary_kmers_{cat}/.done"),
     conda: ENV
     wildcard_constraints:
         cat="GG|GC|CG|CC",
@@ -1372,19 +1372,19 @@ rule plot_interstitial_boundary_kmers_by_cat:
         val=lambda w: INTERSTITIAL_CAT[w.cat][1],
     shell:
         r"""
-        mkdir -p results/figures/interstitial_boundary_kmers_{wildcards.cat}
+        mkdir -p work/results/figures/interstitial_boundary_kmers_{wildcards.cat}
         python scripts/plot_interstitial_boundary_kmers.py \
             --arrays {input.arrays} \
-            --outdir results/figures/interstitial_boundary_kmers_{wildcards.cat} \
+            --outdir work/results/figures/interstitial_boundary_kmers_{wildcards.cat} \
             --filter-col {params.col} --filter-value "{params.val}"
         """
 
 
 rule plot_interstitial_boundary_logos_by_cat:
     input:
-        arrays="results/interstitial_arrays.tsv",
+        arrays="work/results/interstitial_arrays.tsv",
     output:
-        touch("results/figures/interstitial_boundary_logos_{cat}/.done"),
+        touch("work/results/figures/interstitial_boundary_logos_{cat}/.done"),
     conda: ENV
     wildcard_constraints:
         cat="GG|GC|CG|CC",
@@ -1393,10 +1393,10 @@ rule plot_interstitial_boundary_logos_by_cat:
         val=lambda w: INTERSTITIAL_CAT[w.cat][1],
     shell:
         r"""
-        mkdir -p results/figures/interstitial_boundary_logos_{wildcards.cat}
+        mkdir -p work/results/figures/interstitial_boundary_logos_{wildcards.cat}
         python scripts/plot_interstitial_boundary_logos.py \
             --arrays {input.arrays} \
-            --outdir results/figures/interstitial_boundary_logos_{wildcards.cat} \
+            --outdir work/results/figures/interstitial_boundary_logos_{wildcards.cat} \
             --flank-len 10 \
             --filter-col {params.col} --filter-value "{params.val}"
         """
@@ -1404,9 +1404,9 @@ rule plot_interstitial_boundary_logos_by_cat:
 
 rule plot_telotron_boundary_kmers_by_cat:
     input:
-        final="results/final_telotron_set_architecture.tsv",
+        final="work/results/final_telotron_set_architecture.tsv",
     output:
-        touch("results/figures/telotron_boundary_kmers_{cat}/.done"),
+        touch("work/results/figures/telotron_boundary_kmers_{cat}/.done"),
     conda: ENV
     wildcard_constraints:
         cat="GG|GC|CG|CC",
@@ -1415,10 +1415,10 @@ rule plot_telotron_boundary_kmers_by_cat:
         val=lambda w: TELOTRON_CAT[w.cat][1],
     shell:
         r"""
-        mkdir -p results/figures/telotron_boundary_kmers_{wildcards.cat}
+        mkdir -p work/results/figures/telotron_boundary_kmers_{wildcards.cat}
         python scripts/plot_intron_boundary_kmers.py \
             --introns {input.final} \
-            --outdir results/figures/telotron_boundary_kmers_{wildcards.cat} \
+            --outdir work/results/figures/telotron_boundary_kmers_{wildcards.cat} \
             --label "telotrons 5'/3' = {wildcards.cat}" \
             --filter-col {params.col} --filter-value "{params.val}"
         """
@@ -1427,9 +1427,9 @@ rule plot_telotron_boundary_kmers_by_cat:
 rule plot_telotron_splice_logos_by_cat:
     input:
         sentinel=EXTRACT_FASTA_SENTINEL,
-        ann="results/final_telotron_set_architecture.tsv",
+        ann="work/results/final_telotron_set_architecture.tsv",
     output:
-        touch("results/figures/telotron_splice_logos_{cat}/.done"),
+        touch("work/results/figures/telotron_splice_logos_{cat}/.done"),
     conda: ENV
     wildcard_constraints:
         cat="GG|GC|CG|CC",
@@ -1438,10 +1438,10 @@ rule plot_telotron_splice_logos_by_cat:
         val=lambda w: TELOTRON_CAT[w.cat][1],
     shell:
         r"""
-        mkdir -p results/figures/telotron_splice_logos_{wildcards.cat}
+        mkdir -p work/results/figures/telotron_splice_logos_{wildcards.cat}
         python scripts/plot_splice_signal_logos.py \
-            --flanked-dir results/telotron_flanked \
-            --outdir results/figures/telotron_splice_logos_{wildcards.cat} \
+            --flanked-dir work/results/telotron_flanked \
+            --outdir work/results/figures/telotron_splice_logos_{wildcards.cat} \
             --annotation-tsv {input.ann} \
             --filter-col {params.col} --filter-value "{params.val}"
         """
@@ -1453,86 +1453,86 @@ rule plot_telotron_splice_logos_by_cat:
 #   telotron GG │ telotron GC │ telotron CG │ telotron CC
 rule plot_composite_5p3p_boundary_kmers:
     input:
-        i_gg="results/figures/interstitial_boundary_kmers_GG/.done",
-        i_gc="results/figures/interstitial_boundary_kmers_GC/.done",
-        i_cg="results/figures/interstitial_boundary_kmers_CG/.done",
-        i_cc="results/figures/interstitial_boundary_kmers_CC/.done",
+        i_gg="work/results/figures/interstitial_boundary_kmers_GG/.done",
+        i_gc="work/results/figures/interstitial_boundary_kmers_GC/.done",
+        i_cg="work/results/figures/interstitial_boundary_kmers_CG/.done",
+        i_cc="work/results/figures/interstitial_boundary_kmers_CC/.done",
         ctrl=CTRL_BOUNDARY_KMER_SENTINEL,
-        t_gg="results/figures/telotron_boundary_kmers_GG/.done",
-        t_gc="results/figures/telotron_boundary_kmers_GC/.done",
-        t_cg="results/figures/telotron_boundary_kmers_CG/.done",
-        t_cc="results/figures/telotron_boundary_kmers_CC/.done",
+        t_gg="work/results/figures/telotron_boundary_kmers_GG/.done",
+        t_gc="work/results/figures/telotron_boundary_kmers_GC/.done",
+        t_cg="work/results/figures/telotron_boundary_kmers_CG/.done",
+        t_cc="work/results/figures/telotron_boundary_kmers_CC/.done",
     output:
         touch(COMPOSITE_5P3P_KMER_SENTINEL),
     conda: ENV
     shell:
         r"""
-        mkdir -p results/figures/composite_boundary_kmers_5p3p
+        mkdir -p work/results/figures/composite_boundary_kmers_5p3p
         python scripts/plot_composite_per_species.py \
-            --outdir results/figures/composite_boundary_kmers_5p3p \
-            --panel "results/figures/interstitial_boundary_kmers_GG:interstitial 5'=G 3'=G" \
-            --panel "results/figures/interstitial_boundary_kmers_GC:interstitial 5'=G 3'=C (hybrid)" \
-            --panel "results/figures/interstitial_boundary_kmers_CG:interstitial 5'=C 3'=G (hybrid)" \
-            --panel "results/figures/interstitial_boundary_kmers_CC:interstitial 5'=C 3'=C" \
-            --panel "results/figures/non_telotron_boundary_kmers:non-telotron control" \
-            --panel "results/figures/telotron_boundary_kmers_GG:telotron 5'=G 3'=G" \
-            --panel "results/figures/telotron_boundary_kmers_GC:telotron 5'=G 3'=C (hybrid)" \
-            --panel "results/figures/telotron_boundary_kmers_CG:telotron 5'=C 3'=G (hybrid)" \
-            --panel "results/figures/telotron_boundary_kmers_CC:telotron 5'=C 3'=C"
+            --outdir work/results/figures/composite_boundary_kmers_5p3p \
+            --panel "work/results/figures/interstitial_boundary_kmers_GG:interstitial 5'=G 3'=G" \
+            --panel "work/results/figures/interstitial_boundary_kmers_GC:interstitial 5'=G 3'=C (hybrid)" \
+            --panel "work/results/figures/interstitial_boundary_kmers_CG:interstitial 5'=C 3'=G (hybrid)" \
+            --panel "work/results/figures/interstitial_boundary_kmers_CC:interstitial 5'=C 3'=C" \
+            --panel "work/results/figures/non_telotron_boundary_kmers:non-telotron control" \
+            --panel "work/results/figures/telotron_boundary_kmers_GG:telotron 5'=G 3'=G" \
+            --panel "work/results/figures/telotron_boundary_kmers_GC:telotron 5'=G 3'=C (hybrid)" \
+            --panel "work/results/figures/telotron_boundary_kmers_CG:telotron 5'=C 3'=G (hybrid)" \
+            --panel "work/results/figures/telotron_boundary_kmers_CC:telotron 5'=C 3'=C"
         """
 
 
 rule plot_composite_5p3p_boundary_logos:
     input:
-        i_gg="results/figures/interstitial_boundary_logos_GG/.done",
-        i_gc="results/figures/interstitial_boundary_logos_GC/.done",
-        i_cg="results/figures/interstitial_boundary_logos_CG/.done",
-        i_cc="results/figures/interstitial_boundary_logos_CC/.done",
+        i_gg="work/results/figures/interstitial_boundary_logos_GG/.done",
+        i_gc="work/results/figures/interstitial_boundary_logos_GC/.done",
+        i_cg="work/results/figures/interstitial_boundary_logos_CG/.done",
+        i_cc="work/results/figures/interstitial_boundary_logos_CC/.done",
         ctrl=CTRL_SPLICE_LOGO_SENTINEL,
-        t_gg="results/figures/telotron_splice_logos_GG/.done",
-        t_gc="results/figures/telotron_splice_logos_GC/.done",
-        t_cg="results/figures/telotron_splice_logos_CG/.done",
-        t_cc="results/figures/telotron_splice_logos_CC/.done",
+        t_gg="work/results/figures/telotron_splice_logos_GG/.done",
+        t_gc="work/results/figures/telotron_splice_logos_GC/.done",
+        t_cg="work/results/figures/telotron_splice_logos_CG/.done",
+        t_cc="work/results/figures/telotron_splice_logos_CC/.done",
     output:
         touch(COMPOSITE_5P3P_LOGO_SENTINEL),
     conda: ENV
     shell:
         r"""
-        mkdir -p results/figures/composite_boundary_logos_5p3p
+        mkdir -p work/results/figures/composite_boundary_logos_5p3p
         python scripts/plot_composite_per_species.py \
-            --outdir results/figures/composite_boundary_logos_5p3p \
-            --panel "results/figures/interstitial_boundary_logos_GG:interstitial 5'=G 3'=G" \
-            --panel "results/figures/interstitial_boundary_logos_GC:interstitial 5'=G 3'=C (hybrid)" \
-            --panel "results/figures/interstitial_boundary_logos_CG:interstitial 5'=C 3'=G (hybrid)" \
-            --panel "results/figures/interstitial_boundary_logos_CC:interstitial 5'=C 3'=C" \
-            --panel "results/figures/non_telotron_splice_logos:non-telotron control splice signal" \
-            --panel "results/figures/telotron_splice_logos_GG:telotron 5'=G 3'=G" \
-            --panel "results/figures/telotron_splice_logos_GC:telotron 5'=G 3'=C (hybrid)" \
-            --panel "results/figures/telotron_splice_logos_CG:telotron 5'=C 3'=G (hybrid)" \
-            --panel "results/figures/telotron_splice_logos_CC:telotron 5'=C 3'=C"
+            --outdir work/results/figures/composite_boundary_logos_5p3p \
+            --panel "work/results/figures/interstitial_boundary_logos_GG:interstitial 5'=G 3'=G" \
+            --panel "work/results/figures/interstitial_boundary_logos_GC:interstitial 5'=G 3'=C (hybrid)" \
+            --panel "work/results/figures/interstitial_boundary_logos_CG:interstitial 5'=C 3'=G (hybrid)" \
+            --panel "work/results/figures/interstitial_boundary_logos_CC:interstitial 5'=C 3'=C" \
+            --panel "work/results/figures/non_telotron_splice_logos:non-telotron control splice signal" \
+            --panel "work/results/figures/telotron_splice_logos_GG:telotron 5'=G 3'=G" \
+            --panel "work/results/figures/telotron_splice_logos_GC:telotron 5'=G 3'=C (hybrid)" \
+            --panel "work/results/figures/telotron_splice_logos_CG:telotron 5'=C 3'=G (hybrid)" \
+            --panel "work/results/figures/telotron_splice_logos_CC:telotron 5'=C 3'=C"
         """
 
 
 # Bundle all final TSVs + figures + manifest into a single zip for sharing.
 rule package:
     input:
-        "results/final_telotron_set.tsv",
-        "results/final_telotron_set_dedup.tsv",
-        "results/final_telotron_set_architecture.tsv",
-        "results/final_species_summary.tsv",
-        "results/final_negative_controls.tsv",
-        "results/boundary_kmer_enrichment.tsv",
-        "results/boundary_kmers_by_architecture.tsv",
-        "results/distance_to_end.tsv",
-        "results/architecture_summary.tsv",
-        "results/dedup_log.tsv",
-        "results/interstitial_arrays.tsv",
-        "results/linker_blast_hits_own_genome.tsv",
-        "results/linker_blast_hits_all_genomes.tsv",
-        "results/figures/boundary_kmers_combined.pdf",
+        "work/results/final_telotron_set.tsv",
+        "work/results/final_telotron_set_dedup.tsv",
+        "work/results/final_telotron_set_architecture.tsv",
+        "work/results/final_species_summary.tsv",
+        "work/results/final_negative_controls.tsv",
+        "work/results/boundary_kmer_enrichment.tsv",
+        "work/results/boundary_kmers_by_architecture.tsv",
+        "work/results/distance_to_end.tsv",
+        "work/results/architecture_summary.tsv",
+        "work/results/dedup_log.tsv",
+        "work/results/interstitial_arrays.tsv",
+        "work/results/linker_blast_hits_own_genome.tsv",
+        "work/results/linker_blast_hits_all_genomes.tsv",
+        "work/results/figures/boundary_kmers_combined.pdf",
         *FIGURES,
-        "manifests/all_genomes.tsv",
+        "work/manifests/all_genomes.tsv",
     output:
-        "results/telotron_pipeline_outputs.zip",
+        "work/results/telotron_pipeline_outputs.zip",
     shell:
         "zip -qj {output} {input}"

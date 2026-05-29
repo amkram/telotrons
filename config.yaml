@@ -14,7 +14,7 @@ refseq_groups:
   - invertebrate
   - protozoa
 
-# Optional whitelist. If non-empty, manifests/all_genomes.tsv is filtered to ONLY these
+# Optional whitelist. If non-empty, work/manifests/all_genomes.tsv is filtered to ONLY these
 # genome_id values (NCBI GCF accessions and/or TARA MAG IDs). Empty list = no restriction
 # (full pan-eukaryotic survey).
 accessions: []
