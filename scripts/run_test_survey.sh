@@ -7,19 +7,12 @@ set -euo pipefail
 
 cd /scratch1/alex/telotrons
 
-ENV_BIN=/home/alex/.snakemake-envs/telotrons/7aa0f2645427a08bdf054e56b1233123_/bin
-export PATH="$ENV_BIN:$PATH"
-PYTHON="$ENV_BIN/python"
-MOTIFS=TTAGG,TCAGG,TTGGG,TTAGGG,TTAGGC,TTGGGG,TTTAGGG,TTTTAGGG,TTTTGGGG,TATTAGGG,TTATTGGG,TTATTAGGG,TTACTTGGG,TTATTGGGG,TTTTTTAGGG,TTTATTAGGG,TTAGGTTGGGG,CTCGGTTATGGG
-SCAN_THREADS=32
-DOWNLOAD_PARALLEL=8
+source scripts/_survey_env.sh   # PATH/PYTHON, MOTIFS, SCAN_THREADS, DOWNLOAD_PARALLEL, log()
 
 MANIFEST_DIR=manifests.test_20260522_0450
 OUTDIR=results_test
 LOGDIR=logs/$(date +%Y%m%d_%H%M%S)_test_survey
 mkdir -p "$LOGDIR" "$OUTDIR" raw/refseq raw/tara
-
-log() { echo "[$(date '+%F %T')] $*" | tee -a "$LOGDIR/run.log"; }
 
 log "=== Test survey: 22-species set ==="
 log "manifest: $MANIFEST_DIR/all_genomes.tsv"

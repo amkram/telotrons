@@ -2,6 +2,7 @@
 """Filter candidate loci to the final telotron set; build species-level summary and negative controls."""
 import argparse
 
+import numpy as np
 import pandas as pd
 
 
@@ -37,6 +38,13 @@ def main():
         & (loci.fwd_hits >= args.bidir_min_hits)
         & (loci.rev_hits >= args.bidir_min_hits)
     )
+    # Record which admission rule each locus passed, so downstream analyses can
+    # stratify the strict single-array set (telomeric_frac >= min_repeat_frac)
+    # from the looser bidirectional set (frac >= bidir_min_repeat_frac with
+    # >= bidir_min_hits on both strands). Most loci enter via the looser rule.
+    loci = loci.assign(admission_pathway=np.where(
+        single_pass & bidir_pass, "both",
+        np.where(single_pass, "single_array", "bidirectional")))
     final = loci[single_pass | bidir_pass].copy()
     if args.require_terminal_motif_match and len(final):
         final = final[final.terminal_motif.notna() & (final.terminal_motif != "")

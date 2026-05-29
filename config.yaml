@@ -113,3 +113,24 @@ filter:
   require_terminal_motif_match: true   # intronic motif must match the genome's terminal motif
   require_canonical_splice: false      # set true to keep only GT-AG introns
 
+# Focal genomes for the telomerase / TERT homology searches. Centralized here
+# (single source of truth) instead of hardcoded in the Snakefile.
+# blast_genome_ids: telomerase-ortholog BLAST targets (5 Eimeria + 3 Tara MAGs).
+blast_genome_ids:
+  - GCF_000499385.1          # Eimeria necatrix
+  - GCF_000499425.1          # Eimeria acervulina
+  - GCF_000499545.2          # Eimeria tenella
+  - GCF_000499605.1          # Eimeria maxima
+  - GCF_000499745.2          # Eimeria mitis
+  - TARA_AON_82_MAG_00313
+  - TARA_MED_95_MAG_00464
+  - TARA_PSW_86_MAG_00284
+# tert_genome_ids: TERT deep-homology targets (5 Eimeria + Toxoplasma control).
+tert_genome_ids:
+  - GCF_000499385.1          # Eimeria necatrix
+  - GCF_000499425.1          # Eimeria acervulina
+  - GCF_000499545.2          # Eimeria tenella
+  - GCF_000499605.1          # Eimeria maxima
+  - GCF_000499745.2          # Eimeria mitis
+  - GCF_000006565.2          # Toxoplasma gondii (sister-taxon positive control)
+

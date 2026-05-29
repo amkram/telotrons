@@ -16,18 +16,12 @@ set -euo pipefail
 
 cd /scratch1/alex/telotrons
 
-ENV_BIN=/home/alex/.snakemake-envs/telotrons/7aa0f2645427a08bdf054e56b1233123_/bin
-export PATH="$ENV_BIN:$PATH"
-PYTHON="$ENV_BIN/python"
-MOTIFS=TTAGG,TCAGG,TTGGG,TTAGGG,TTAGGC,TTGGGG,TTTAGGG,TTTTAGGG,TTTTGGGG,TATTAGGG,TTATTGGG,TTATTAGGG,TTACTTGGG,TTATTGGGG,TTTTTTAGGG,TTTATTAGGG,TTAGGTTGGGG,CTCGGTTATGGG
-SCAN_THREADS=32
-DOWNLOAD_PARALLEL=8
+source scripts/_survey_env.sh   # PATH/PYTHON, MOTIFS, SCAN_THREADS, DOWNLOAD_PARALLEL, log()
+
 CHUNK_SIZE=32
 MIN_FREE_GB=150
 LOGDIR=logs/$(date +%Y%m%d_%H%M%S)_full_survey
 mkdir -p "$LOGDIR" results/_chunks raw/refseq raw/tara
-
-log() { echo "[$(date '+%F %T')] $*" | tee -a "$LOGDIR/run.log"; }
 
 free_gb() { df -BG /scratch1 | tail -1 | awk '{gsub("G","",$4); print $4+0}'; }
 

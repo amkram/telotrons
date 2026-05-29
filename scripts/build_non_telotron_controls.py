@@ -23,6 +23,11 @@ def main():
     ap.add_argument("--n-per-species", type=int, default=5000,
                     help="random sample size per species (cap)")
     ap.add_argument("--seed", type=int, default=0xC047F0)
+    ap.add_argument("--allow-noncanonical", action="store_true",
+                    help="keep non-GT-AG control introns too. Default: GT-AG only, "
+                         "so controls share the obligate splice termini with telotrons "
+                         "and boundary-k-mer comparisons are not confounded by the "
+                         "GT-AG inclusion filter applied to telotrons.")
     args = ap.parse_args()
 
     pos_species = set(pd.read_csv(args.final, sep="\t", usecols=["genome_id"]).genome_id)
@@ -30,6 +35,8 @@ def main():
 
     sub = introns[introns.genome_id.isin(pos_species)
                   & (introns.telomeric_frac.astype(float) < args.max_frac)]
+    if not args.allow_noncanonical and "splice_class" in sub.columns:
+        sub = sub[sub.splice_class == "GT-AG"]
     pieces = [g.sample(min(len(g), args.n_per_species), random_state=args.seed)
               for _, g in sub.groupby("genome_id", sort=False)]
     sampled = pd.concat(pieces, ignore_index=True) if pieces else sub.head(0).copy()

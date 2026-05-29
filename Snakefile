@@ -1026,11 +1026,11 @@ rule fetch_telomerase_db:
 #
 # Output: results/blast_telomerase_vs_genomes/{genome_id}/{tr_nucl,tert_nucl,
 # tert_prot,other_nucl,other_prot}.tsv
-# Telomerase-ortholog blast targets: the 5 Eimeria spp. + 3 telotron-positive
-# Tara MAGs. Explicit list — a prefix filter on the (regenerated) full survey
-# summary wrongly caught GCF_000499845.2 (Phaseolus vulgaris) and the Tara MAGs
-# are not always present in that summary.
-_BLAST_GENOME_IDS = [
+# Telomerase-ortholog blast targets (config: blast_genome_ids): the 5 Eimeria
+# spp. + 3 telotron-positive Tara MAGs. An explicit list rather than a prefix
+# filter on the survey summary (which wrongly caught GCF_000499845.2 /
+# Phaseolus vulgaris and may omit the Tara MAGs).
+_BLAST_GENOME_IDS = config.get("blast_genome_ids") or [
     "GCF_000499385.1",   # Eimeria necatrix
     "GCF_000499425.1",   # Eimeria acervulina
     "GCF_000499545.2",   # Eimeria tenella

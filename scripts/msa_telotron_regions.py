@@ -208,8 +208,7 @@ def write_region_aln(arch_dir, region, suffix=""):
 
 def write_combined_view_inner(arch_dir, arch, suffix=""):
     """Internal: build combined.aln.fa or combined.hpc.aln.fa from per-region MSAs."""
-    REGION_ORDER_LOCAL = REGION_ORDER  # noqa: F824
-    regions = REGION_ORDER_LOCAL.get(arch, ["upstream_50", "downstream_50"])
+    regions = REGION_ORDER.get(arch, ["upstream_50", "downstream_50"])
     region_data, region_widths = {}, {}
     for region in regions:
         msa_path = f"{arch_dir}/{region}{suffix}.msa.fa"
@@ -271,52 +270,11 @@ REGION_ORDER = {
 }
 
 
-def write_combined_view(arch_dir, arch, n_loci_expected):
-    """Write both raw and homopolymer-compressed combined views.
-
-    Concatenate per-region MSAs into one fixed-width block per (gid, arch).
-
-    Format:
-        # header comments (architecture, region order, region widths, locus index)
-        L0001  <upstream-aln> <region2-aln> ... <downstream-aln>
-        L0002  ...
-    Each region keeps its own alignment columns; regions are joined with a single
-    space which serves as the visible boundary (exon | donor | arm | linker | arm |
-    acceptor | exon, depending on arch).
-    """
-    regions = REGION_ORDER.get(arch, ["upstream_50", "downstream_50"])
-
-    # Load each region MSA into dict: header -> aligned seq
-    region_data = {}
-    region_widths = {}
-    for region in regions:
-        msa_path = f"{arch_dir}/{region}.msa.fa"
-        raw_path = f"{arch_dir}/{region}.fa"
-        # Prefer aligned; if only 1 seq exists fall back to raw (already "aligned" trivially)
-        recs = read_msa(msa_path) if os.path.exists(msa_path) else read_msa(raw_path)
-        if not recs:
-            region_data[region] = {}
-            region_widths[region] = 0
-            continue
-        width = len(recs[0][1])
-        region_data[region] = {h: s for h, s in recs}
-        region_widths[region] = width
-
-    # Union of headers across regions; preserve order from upstream_50 if present
-    seed_region = next((r for r in regions if region_data[r]), None)
-    if seed_region is None:
-        return
-    headers = list(region_data[seed_region].keys())
-    seen = set(headers)
-    for r in regions:
-        for h in region_data[r]:
-            if h not in seen:
-                headers.append(h); seen.add(h)
-
-    # Locus IDs: L0001, L0002, ...
-    id_for = {h: f"L{i+1:04d}" for i, h in enumerate(headers)}
-    id_w = max((len(v) for v in id_for.values()), default=5)
-
+def write_combined_view(arch_dir, arch):
+    """Write both the raw and homopolymer-compressed combined views: one
+    fixed-width alignment block per locus, per-region MSAs joined by a single
+    space (exon | donor | arm | linker | arm | acceptor | exon, per arch).
+    Each view is built independently by write_combined_view_inner."""
     write_combined_view_inner(arch_dir, arch, suffix="")
     write_combined_view_inner(arch_dir, arch, suffix=".hpc")
     return f"{arch_dir}/combined.aln.fa"
@@ -392,7 +350,7 @@ def main():
         # combined per-arch view, after all per-region MSAs are written
         for arch in arches_built:
             arch_dir = f"{args.outdir}/{slug}/{arch}"
-            write_combined_view(arch_dir, arch, n_loci_expected=None)
+            write_combined_view(arch_dir, arch)
 
     pd.DataFrame(summary).to_csv(f"{args.outdir}/_msa_summary.tsv",
                                   sep="\t", index=False)

@@ -27,6 +27,7 @@ LOCI_HEADER = [
     "contig_len", "distance_to_end",
     "motif", "telomeric_bases", "telomeric_frac", "flank_telomeric_frac",
     "donor", "acceptor", "splice_class",
+    "canonical_strand", "splice_canonical",
     "orientation", "fwd_hits", "rev_hits",
     "first40", "last40",
     "terminal_motif", "terminal_motif_bases",
@@ -418,6 +419,17 @@ def scan_one(args):
         introns["donor"] = donors
         introns["acceptor"] = acceptors
         introns["splice_class"] = [f"{d}-{a}" for d, a in zip(donors, acceptors)]
+        # Which strand carries a canonical GT..AG (independent of the host-gene
+        # strand). Loci canonical only on the opposite strand surface here as
+        # CT-AC etc.; this column makes that explicit instead of silent.
+        canon_strand, canon_ok = [], []
+        for d, a in zip(donors, acceptors):
+            fwd = (d == "GT" and a == "AG")
+            rev = (d == "CT" and a == "AC")  # revcomp of GT..AG
+            canon_strand.append("+" if fwd else "-" if rev else ".")
+            canon_ok.append(fwd or rev)
+        introns["canonical_strand"] = canon_strand
+        introns["splice_canonical"] = canon_ok
         introns["first40"] = first40s
         introns["last40"] = last40s
         introns["contig_len"] = contig_lens_col

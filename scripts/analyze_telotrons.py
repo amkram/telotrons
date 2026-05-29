@@ -9,12 +9,29 @@ import pandas as pd
 from _common import tqdm
 
 try:
-    from scipy.stats import mannwhitneyu
+    from scipy.stats import mannwhitneyu, fisher_exact
 except Exception:
     mannwhitneyu = None
+    fisher_exact = None
 
 
 LOCUS_KEY = ["genome_id", "seqid", "start", "end", "strand"]
+
+
+def bh_fdr(pvals):
+    """Benjamini-Hochberg q-values for a list of p-values (None-safe)."""
+    idx = [i for i, p in enumerate(pvals) if p is not None]
+    m = len(idx)
+    q = [None] * len(pvals)
+    if not m:
+        return q
+    order = sorted(idx, key=lambda i: pvals[i])
+    prev = 1.0
+    for rank, i in enumerate(reversed(order), start=1):
+        k = m - rank + 1
+        val = min(prev, pvals[i] * m / k)
+        q[i] = prev = val
+    return q
 
 
 def split_controls(final, introns):
@@ -42,7 +59,14 @@ def _boundary_one(args):
             tf = n / telo_total
             cfq = cf / ctrl_total if ctrl_total else 0
             fold = (tf / cfq) if cfq else "inf"
-            rows.append([genome_id, motif, name, mer, n, tf, cf, cfq, fold])
+            # 2x2 Fisher's exact: this k-mer vs all others, telotron vs control.
+            p = ""
+            if fisher_exact and ctrl_total:
+                p = fisher_exact(
+                    [[n, telo_total - n], [cf, ctrl_total - cf]],
+                    alternative="greater",
+                ).pvalue
+            rows.append([genome_id, motif, name, mer, n, tf, cf, cfq, fold, p])
     return rows
 
 
@@ -63,10 +87,17 @@ def boundary_kmers(final, introns, out_path, threads=1):
         results = [_boundary_one(t) for t in tqdm(tasks, desc="boundary k-mers", unit="grp")]
     rows = [r for sub in results for r in sub]
 
+    # Benjamini-Hochberg FDR across every k-mer tested (the raw fold-enrichment
+    # alone has no significance; thousands of k-mers are compared).
+    qvals = bh_fdr([r[9] if r[9] != "" else None for r in rows])
+    for r, q in zip(rows, qvals):
+        r.append(q if q is not None else "")
+
     pd.DataFrame(rows, columns=[
         "genome_id", "motif", "boundary", "kmer",
         "telotron_count", "telotron_freq",
         "control_count", "control_freq", "fold_enrichment",
+        "fisher_p", "bh_q",
     ]).to_csv(out_path, sep="\t", index=False)
 
 
@@ -84,7 +115,10 @@ def _distance_one(args):
         if len(candidates):
             picks.append(candidates.sample(min(10, len(candidates)),
                                            random_state=int(r.start) % 1000003))
-    ctrl = pd.concat(picks) if picks else pool.head(0)
+    # De-duplicate: the same control intron can be length-matched to several
+    # telotrons; counting it once keeps the Mann-Whitney sample independent.
+    ctrl = (pd.concat(picks).drop_duplicates(subset=["seqid", "start", "end"])
+            if picks else pool.head(0))
     telo_dist = group.distance_to_end.astype(float)
     ctrl_dist = ctrl.distance_to_end.astype(float) if len(ctrl) else pd.Series(dtype=float)
     pval = (mannwhitneyu(telo_dist, ctrl_dist, alternative="two-sided").pvalue
