@@ -30,7 +30,7 @@ LOCI_HEADER = [
     "canonical_strand", "splice_canonical",
     "orientation", "fwd_hits", "rev_hits",
     "first40", "last40",
-    "terminal_motif", "terminal_motif_bases",
+    "terminal_motif", "terminal_motif_bases", "contig_both_ends_capped",
 ]
 SUMMARY_HEADER = [
     "genome_id", "organism", "group", "source",
@@ -452,6 +452,19 @@ def scan_one(args):
             term_motif, term_bases = terminal_motif(hits, contig_lens)
         introns["terminal_motif"] = term_motif
         introns["terminal_motif_bases"] = term_bases
+
+        # Per-contig: does the genome's terminal motif appear within 500 bp of
+        # BOTH ends? The subtelomeric distance test must restrict to such
+        # fully-capped contigs — fragmented contigs lack a real "chromosome end"
+        # and inflate distance-to-end (manuscript Section 3 / review).
+        capped = set()
+        if term_motif and not hits.empty:
+            hm = hits[hits.name == term_motif]
+            for seqid, g in hm.groupby("seqid"):
+                clen = contig_lens.get(seqid, 0)
+                if clen and (g.start < 500).any() and (g.end > clen - 500).any():
+                    capped.add(seqid)
+        introns["contig_both_ends_capped"] = introns.seqid.isin(capped)
 
         # Manifest fields.
         introns["genome_id"] = gid

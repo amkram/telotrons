@@ -4,15 +4,16 @@ import argparse
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 
+import numpy as np
 import pandas as pd
 
 from _common import tqdm
 
 try:
-    from scipy.stats import mannwhitneyu, fisher_exact
+    from scipy.stats import fisher_exact, binomtest
 except Exception:
-    mannwhitneyu = None
     fisher_exact = None
+    binomtest = None
 
 
 LOCUS_KEY = ["genome_id", "seqid", "start", "end", "strand"]
@@ -71,7 +72,14 @@ def _boundary_one(args):
 
 
 def boundary_kmers(final, introns, out_path, threads=1):
-    """Per (genome, motif), top 10 k-mers at the donor/acceptor edges vs non-telotron introns."""
+    """Per (genome, motif), top 10 k-mers at the donor/acceptor edges vs non-telotron introns.
+
+    Fisher's exact p + BH q are reported, but note the comparison is partly
+    DEFINITIONAL: telotron boundary k-mers are rotations of the telomere repeat
+    that defines a telotron, so enrichment over non-telomeric introns is
+    expected. The non-circular question (is the observed repeat-rotation register
+    biased beyond what splice-signal selection requires?) is a within-array null,
+    handled separately (see splice_site_gate.py)."""
     controls = split_controls(final, introns)
     # Pre-slice control set per genome so each worker only gets the data it needs.
     ctrl_by_genome = {gid: g for gid, g in controls.groupby("genome_id")}
@@ -102,43 +110,49 @@ def boundary_kmers(final, introns, out_path, threads=1):
 
 
 def _distance_one(args):
-    """Per-genome distance-to-end stats. Runs in a worker process."""
-    genome_id, group, pool = args
-    picks = []
-    for r in group.itertuples(index=False):
-        lo = max(1, 0.8 * float(r.intron_len))
-        hi = 1.25 * float(r.intron_len)
-        same_contig = pool[(pool.seqid == r.seqid)
-                           & (pool.intron_len >= lo) & (pool.intron_len <= hi)]
-        candidates = same_contig if len(same_contig) >= 5 else \
-            pool[(pool.intron_len >= lo) & (pool.intron_len <= hi)]
-        if len(candidates):
-            picks.append(candidates.sample(min(10, len(candidates)),
-                                           random_state=int(r.start) % 1000003))
-    # De-duplicate: the same control intron can be length-matched to several
-    # telotrons; counting it once keeps the Mann-Whitney sample independent.
-    ctrl = (pd.concat(picks).drop_duplicates(subset=["seqid", "start", "end"])
-            if picks else pool.head(0))
-    telo_dist = group.distance_to_end.astype(float)
-    ctrl_dist = ctrl.distance_to_end.astype(float) if len(ctrl) else pd.Series(dtype=float)
-    pval = (mannwhitneyu(telo_dist, ctrl_dist, alternative="two-sided").pvalue
-            if mannwhitneyu and len(telo_dist) and len(ctrl_dist) else "")
-    return [
-        genome_id, len(group), len(ctrl_dist),
-        telo_dist.median() if len(telo_dist) else "",
-        ctrl_dist.median() if len(ctrl_dist) else "",
-        pval,
-    ]
+    """Per-genome subtelomeric-distance test against a WITHIN-CONTIG null.
+
+    The previous pooled Mann-Whitney treated co-contig loci as independent
+    (pseudoreplication) and compared against a duplicated, sampled control set.
+    Instead, each telotron is judged against the distance-to-end expected if an
+    intron of the same length were placed uniformly at random on ITS OWN contig:
+    distance = min(U, free-U), U ~ Unif(0, free), free = contig_len - intron_len.
+    This removes cross-locus dependence and control duplication, and conditions
+    on contig length (short contigs mechanically force small distances).
+    """
+    genome_id, group, capped_only, n_perm, seed = args
+    if capped_only and "contig_both_ends_capped" in group.columns:
+        keep = group["contig_both_ends_capped"].astype(str).str.lower().isin(["true", "1"])
+        group = group[keep]
+    n = len(group)
+    if not n:
+        return [genome_id, 0, 0, "", "", "", "", ""]
+    obs = group.distance_to_end.astype(float).to_numpy()
+    free = (group.contig_len.astype(float)
+            - group.intron_len.astype(float)).clip(lower=1.0).to_numpy()
+    obs_med = float(np.median(obs))
+    # Sign test: is each telotron closer to its contig end than that contig's
+    # null median (free/4)?  Binomial vs 0.5, one-sided (closer than chance).
+    closer = int(np.count_nonzero(obs < free / 4.0))
+    sign_p = (binomtest(closer, n, 0.5, alternative="greater").pvalue
+              if binomtest else "")
+    # Monte-Carlo: null distribution of the median distance under random placement.
+    rng = np.random.default_rng(seed)
+    null_meds = np.empty(n_perm)
+    for i in range(n_perm):
+        u = rng.uniform(0.0, free)
+        null_meds[i] = np.median(np.minimum(u, free - u))
+    mc_p = (np.count_nonzero(null_meds <= obs_med) + 1) / (n_perm + 1)
+    return [genome_id, n, int(group.seqid.nunique()), obs_med,
+            float(np.median(null_meds)), closer / n, sign_p, mc_p]
 
 
-def distance_to_end(final, introns, out_path, threads=1):
-    """Compare telotron distance-to-contig-end against length-matched non-telotron introns."""
-    controls = split_controls(final, introns)
-    ctrl_by_genome = {gid: g for gid, g in controls.groupby("genome_id")}
-    tasks = [
-        (gid, group, ctrl_by_genome.get(gid, controls.iloc[0:0]))
-        for gid, group in final.groupby("genome_id")
-    ]
+def distance_to_end(final, out_path, threads=1, capped_only=True, n_perm=2000, seed=1):
+    """Per-genome subtelomeric-clustering test vs a within-contig random-placement
+    null. Restricts to fully telomere-capped contigs (both ends) unless
+    capped_only=False, because fragmented contigs have no real chromosome end."""
+    tasks = [(gid, group, capped_only, n_perm, seed)
+             for gid, group in final.groupby("genome_id")]
     if threads > 1 and len(tasks) > 1:
         with ProcessPoolExecutor(max_workers=threads) as ex:
             rows = list(tqdm(ex.map(_distance_one, tasks), total=len(tasks),
@@ -147,9 +161,9 @@ def distance_to_end(final, introns, out_path, threads=1):
         rows = [_distance_one(t) for t in tqdm(tasks, desc="distance-to-end", unit="genome")]
 
     pd.DataFrame(rows, columns=[
-        "genome_id", "telotron_n", "length_matched_control_n",
-        "median_telotron_distance_to_end", "median_control_distance_to_end",
-        "mannwhitney_p",
+        "genome_id", "telotron_n", "n_capped_contigs",
+        "median_telotron_distance_to_end", "median_null_distance_to_end",
+        "frac_closer_than_contig_null", "sign_test_p", "mc_permutation_p",
     ]).to_csv(out_path, sep="\t", index=False)
 
 
@@ -162,13 +176,17 @@ def main():
     ap.add_argument("--distance", required=True)
     ap.add_argument("--architecture", required=True)
     ap.add_argument("--threads", type=int, default=1)
+    ap.add_argument("--all-contigs", action="store_true",
+                    help="distance test: use all contigs, not just fully "
+                         "telomere-capped ones (default: capped contigs only).")
     args = ap.parse_args()
 
     final = pd.read_csv(args.final, sep="\t")
     introns = pd.read_csv(args.introns, sep="\t", low_memory=False)
 
     boundary_kmers(final, introns, args.boundary_kmers, threads=args.threads)
-    distance_to_end(final, introns, args.distance, threads=args.threads)
+    distance_to_end(final, args.distance, threads=args.threads,
+                    capped_only=not args.all_contigs)
     (final.groupby(["genome_id", "orientation", "splice_class"])
           .size().reset_index(name="n")
           .to_csv(args.architecture, sep="\t", index=False))
