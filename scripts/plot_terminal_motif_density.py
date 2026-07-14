@@ -21,6 +21,7 @@ except ImportError:
     tqdm.write = print  # type: ignore[attr-defined]
 
 from _common import rotations, all_variants, find_genome_fasta
+from telomere_mask import mask_telomere_fragments
 
 
 def infer_terminal_motif(fasta_path, candidate_motifs, end_window=1000):
@@ -99,11 +100,49 @@ def infer_terminal_motif(fasta_path, candidate_motifs, end_window=1000):
                     if cand:
                         cand_hits[cand] += 1
 
-    # Normalise: fold-enrichment = observed fraction / expected random fraction.
-    # Expected random fraction for candidate of length k with N distinct variants = N / 4^k.
-    # This makes 5-mer and 6-mer candidates directly comparable.
+    # ---- 1st-order Markov background from telomere-MASKED terminal sequences ----
+    # Uniform 4^k background overweights long T-rich motifs on AT-rich (e.g. 80% AT
+    # Eimeria) genomes; per MEMORY eimeria_subtelomere_rlfs_2026-05-15, any AT-context
+    # composition test on telomere-bearing sequence must mask telomere rotations + revcomp
+    # + 1-mm variants first. Build mono- and di-nucleotide frequencies from the masked
+    # terminal windows; expected fraction for a k-mer is P(b0) * prod P(b_i | b_{i-1}).
+    mono = Counter()
+    di = Counter()
+    for seq in terminal_seqs:
+        masked = mask_telomere_fragments(seq)
+        prev = None
+        for c in masked:
+            if c not in "ACGT":
+                prev = None
+                continue
+            mono[c] += 1
+            if prev is not None:
+                di[(prev, c)] += 1
+            prev = c
+    mono_total = sum(mono.values())
+    if mono_total == 0:
+        # Fallback to uniform if masking erased everything (pure-telomere terminus).
+        p_mono = {c: 0.25 for c in "ACGT"}
+        p_cond = {(a, b): 0.25 for a in "ACGT" for b in "ACGT"}
+    else:
+        # Laplace pseudocount so absent bases / dinucleotides don't zero-out P.
+        p_mono = {c: (mono.get(c, 0) + 1) / (mono_total + 4) for c in "ACGT"}
+        p_cond = {}
+        for a in "ACGT":
+            row_total = sum(di.get((a, b), 0) for b in "ACGT")
+            for b in "ACGT":
+                p_cond[(a, b)] = (di.get((a, b), 0) + 1) / (row_total + 4)
+
+    def _markov_prob(kmer):
+        p = p_mono[kmer[0]]
+        for i in range(1, len(kmer)):
+            p *= p_cond[(kmer[i - 1], kmer[i])]
+        return p
+
+    # Normalise: fold-enrichment = observed fraction / expected Markov fraction
+    # (summed over all rotation + revcomp variants of the candidate motif).
     # Score each candidate by: enrichment × hits_per_window.
-    # - enrichment = observed_fraction / expected_random_fraction (normalises across k-lengths)
+    # - enrichment = observed_fraction / expected_markov_fraction (k-length + AT-context aware)
     # - hits_per_window = hits / n_terminal_windows (rewards consistent signal across contigs
     #   vs. isolated spurious matches of rare long k-mers)
     # Both filters must pass: enrichment ≥ MIN_ENRICHMENT and hits ≥ MIN_HITS.
@@ -116,8 +155,7 @@ def infer_terminal_motif(fasta_path, candidate_motifs, end_window=1000):
         if hits < MIN_HITS:
             continue
         k = len(cand)
-        n_variants = len(all_variants(cand))
-        expected_frac = n_variants / (4 ** k)
+        expected_frac = sum(_markov_prob(v) for v in all_variants(cand))
         observed_frac = hits / max(1, total_at_k[k])
         enrich = observed_frac / expected_frac if expected_frac else 0.0
         if enrich < MIN_ENRICHMENT:

@@ -31,11 +31,13 @@ LOCI_HEADER = [
     "orientation", "fwd_hits", "rev_hits",
     "first40", "last40",
     "terminal_motif", "terminal_motif_bases", "contig_both_ends_capped",
+    "terminal_motif_method", "terminal_motif_max_end_frac", "exon_source",
 ]
 SUMMARY_HEADER = [
     "genome_id", "organism", "group", "source",
     "introns_scanned", "telotron_candidates", "contigs",
     "terminal_motif", "terminal_motif_bases", "status",
+    "terminal_motif_method", "terminal_motif_max_end_frac", "exon_source",
 ]
 
 
@@ -51,7 +53,14 @@ def write_pattern_file(path, motifs):
 
 def run_gt_introns(gff_path, out_path):
     """Decompress if gz; synthesize exon rows from CDS when no exons (e.g. Tara gmove);
-    pipe to `gt gff3 -addintrons`. gt derives introns from exons only."""
+    pipe to `gt gff3 -addintrons`. gt derives introns from exons only.
+
+    Returns (gt_returncode, n_mrna_in_input, gt_stderr_tail, exon_source) so the
+    caller can distinguish a real zero-intron genome from a silent gt truncation.
+    `exon_source` ∈ {"exon", "cds_promoted"} records whether the input already had
+    exon rows or whether we promoted CDS rows (CDS-bounded introns will exclude
+    UTR introns from scanning — flag this for the per-species summary).
+    """
     with open_maybe_gz(gff_path) as f:
         body = f.read()
     has_exon = any(
@@ -59,6 +68,7 @@ def run_gt_introns(gff_path, out_path):
         for line in body.splitlines()
         if line and not line.startswith("#") and line.count("\t") >= 7
     )
+    exon_source = "exon" if has_exon else "cds_promoted"
     if not has_exon:
         extra = []
         for line in body.splitlines():
@@ -71,13 +81,30 @@ def run_gt_introns(gff_path, out_path):
         if extra:
             body = body + "\n" + "\n".join(extra) + "\n"
 
+    # Count mRNA/transcript rows in the (post-promotion) input so a downstream
+    # 0-intron result on a genome with ≥1 mRNA can be flagged as gt-truncated.
+    n_mrna = 0
+    for line in body.splitlines():
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split("\t")
+        if len(parts) >= 3 and parts[2] in ("mRNA", "transcript"):
+            n_mrna += 1
+
     # gt -tidy emits best-effort output then may bail with exit 1 on a late fatal
     # error (e.g. strand inconsistency between paralogs). Don't drop the genome
     # over it — keep whatever was written; load_introns will be empty if nothing did.
+    # Capture stderr (tail) so silent truncation is distinguishable from a real
+    # negative control downstream (filter_final puts zero-intron genomes into
+    # final_negative_controls.tsv).
     with open(out_path, "w") as out:
-        subprocess.run(["gt", "gff3", "-retainids", "-addintrons", "-tidy", "-"],
-                       check=False, input=body, text=True,
-                       stdout=out, stderr=subprocess.DEVNULL)
+        proc = subprocess.run(
+            ["gt", "gff3", "-retainids", "-addintrons", "-tidy", "-"],
+            check=False, input=body, text=True,
+            stdout=out, stderr=subprocess.PIPE,
+        )
+    stderr_tail = (proc.stderr or "")[-500:].replace("\n", " | ")
+    return proc.returncode, n_mrna, stderr_tail, exon_source
 
 
 def parse_gff_attrs(field):
@@ -170,11 +197,18 @@ def _sort_bed_inplace(path):
     subprocess.run(["sort", "-k1,1", "-k2,2n", "-o", path, path], check=True)
 
 
-def compute_intron_motif_metrics(introns_df, hits_bed_path, contig_lens, tmp_dir):
+def compute_intron_motif_metrics(introns_df, hits_bed_path, contig_lens, tmp_dir,
+                                 flank_bp=200):
     """Replace per-intron Python loops with one bedtools intersect + vectorized pandas.
 
     Returns (best_motif_df, flank_df, strand_df) keyed by `row`. ~30-100× faster than the
     previous per-intron pandas loop on multi-100k-intron genomes.
+
+    `flank_bp` (default 200) controls the ± window on each side of the intron
+    used to compute `flank_telomeric_frac`. The old default (50 bp) was short
+    relative to typical eukaryotic terminal exons (~150 bp) — a long terminal
+    exon adjacent to a long telomeric array could still pass the 0.50 misannot
+    cutoff because most of the 50-bp flank inside the exon was non-telomeric.
     """
     # Intron BED, 0-based half-open, with row id as the BED name field.
     introns_bed = os.path.join(tmp_dir, "introns.bed")
@@ -213,28 +247,35 @@ def compute_intron_motif_metrics(introns_df, hits_bed_path, contig_lens, tmp_dir
                              ["row", "motif", "merged_bp", "frac"]]
         best_motif.columns = ["row", "motif", "telomeric_bases", "telomeric_frac"]
 
-        # Strand-adjusted fwd/rev counts (no merging — raw hit counts).
-        fwd_mask = ((inter.istrand != "-") & (inter.hstrand == "+")) | \
-                   ((inter.istrand == "-") & (inter.hstrand == "-"))
-        strand = inter.assign(fwd=fwd_mask).groupby("row").agg(
-            fwd_hits=("fwd", "sum"), total_hits=("fwd", "size")
-        ).reset_index()
-        strand["rev_hits"] = strand.total_hits - strand.fwd_hits
-        strand = strand[["row", "fwd_hits", "rev_hits"]]
+        # Strand-adjusted fwd/rev counts: RESTRICT to the row's best motif so
+        # the bidirectional admission pathway in filter_final_set (fwd_hits>=3
+        # AND rev_hits>=3) is not double-counted across overlapping motif
+        # families (e.g. TTAGGG + TTAGGGG hits at the same locus).
+        inter_best = inter.merge(best_motif[["row", "motif"]], on=["row", "motif"], how="inner")
+        if inter_best.empty:
+            strand = pd.DataFrame(columns=["row", "fwd_hits", "rev_hits"])
+        else:
+            fwd_mask = ((inter_best.istrand != "-") & (inter_best.hstrand == "+")) | \
+                       ((inter_best.istrand == "-") & (inter_best.hstrand == "-"))
+            strand = inter_best.assign(fwd=fwd_mask).groupby("row").agg(
+                fwd_hits=("fwd", "sum"), total_hits=("fwd", "size")
+            ).reset_index()
+            strand["rev_hits"] = strand.total_hits - strand.fwd_hits
+            strand = strand[["row", "fwd_hits", "rev_hits"]]
 
-    # === Flank ±50 bp, excluding the intron itself ===
+    # === Flank ±flank_bp (default 200), excluding the intron itself ===
     clen = introns_df.seqid.map(contig_lens).fillna(0).astype(int)
     flanks = pd.concat([
         pd.DataFrame({  # left flank
             "seqid": introns_df.seqid,
-            "start0": (introns_df.start - 51).clip(lower=0).astype(int),
+            "start0": (introns_df.start - 1 - flank_bp).clip(lower=0).astype(int),
             "end": (introns_df.start - 1).clip(lower=0).astype(int),
             "row": introns_df.row.astype(int),
         }),
         pd.DataFrame({  # right flank
             "seqid": introns_df.seqid,
             "start0": introns_df.end.astype(int),
-            "end": (introns_df.end + 50).clip(upper=clen).astype(int),
+            "end": (introns_df.end + flank_bp).clip(upper=clen).astype(int),
             "row": introns_df.row.astype(int),
         }),
     ], ignore_index=True)
@@ -284,14 +325,20 @@ def terminal_motif(hits, contig_lens, window=500, min_frac=0.5):
     """Dominant motif that actually forms a telomeric ARRAY at a contig end.
     A contig end (first or last `window` bp) only votes if it is ≥`min_frac` covered
     by rotations of a single base motif. Fully vectorized — the previous per-contig
-    Python loop was 60%+ of total scan time on big genomes."""
+    Python loop was 60%+ of total scan time on big genomes.
+
+    Returns (motif, bases_at_qualifying_ends, max_end_frac) so callers can
+    distinguish scanned_high_conf (≥min_frac at some end) from scanned_low_conf
+    (positive max_end_frac but < min_frac, so silently dropped). Caller decides
+    method label based on canonical override + these values.
+    """
     if hits.empty:
-        return "", 0
+        return "", 0, 0.0
     h = hits.copy()
     h["clen"] = h.seqid.map(contig_lens)
     h = h.dropna(subset=["clen"])
     if h.empty:
-        return "", 0
+        return "", 0, 0.0
     h["clen"] = h["clen"].astype(int)
 
     # Left end: hit overlaps [0, window). Right end: hit overlaps [clen-window, clen).
@@ -307,7 +354,7 @@ def terminal_motif(hits, contig_lens, window=500, min_frac=0.5):
 
     near = pd.concat([left, right], ignore_index=True)
     if near.empty:
-        return "", 0
+        return "", 0, 0.0
 
     near["ov_start"] = near[["start", "end_lo"]].max(axis=1)
     near["ov_end"] = near[["end", "end_hi"]].min(axis=1)
@@ -323,20 +370,31 @@ def terminal_motif(hits, contig_lens, window=500, min_frac=0.5):
     merged = merged.merge(win_len[["end_id", "window_len"]], on="end_id")
     merged["frac"] = merged.merged_bp / merged.window_len
 
+    max_frac = float(merged["frac"].max()) if not merged.empty else 0.0
+
     qualifying = merged[merged.frac >= min_frac]
     if qualifying.empty:
-        return "", 0
+        return "", 0, max_frac
     summed = qualifying.groupby("motif")["merged_bp"].sum().sort_values(ascending=False)
-    return str(summed.index[0]), int(summed.iloc[0])
+    return str(summed.index[0]), int(summed.iloc[0]), max_frac
 
 
 def genome_paths(row, refseq_dir, tara_dir):
     gid, _org, group, source = row
     if source == "genoscope" or group == "tara":
-        fa_candidates = [p for p in glob.glob(f"{tara_dir}/Contigs/{gid}.fa*")
-                         if not p.endswith((".fai", ".gzi"))]
-        gff_candidates = [p for p in glob.glob(f"{tara_dir}/Genes/GFF/{gid}.gmove.gff*")
-                          if not p.endswith((".tbi", ".idx"))]
+        # Extension WHITELIST (not an index-suffix blacklist): a MAG used as a BLAST
+        # subject elsewhere accumulates .ndb/.nhr/.nin/.not/.nsq/.ntf/.nto (plus
+        # .fai/.gzi), and `{gid}.fa*` matches all of them. The old blacklist missed
+        # the BLAST suffixes, so glob order could hand read_fasta/seqkit a binary
+        # index -> scan_one's try/except silently dropped the genome (the bug that
+        # zeroed TARA_PSW_86_MAG_00284). Keep only real FASTA/GFF, preferring
+        # uncompressed.
+        fa_candidates = sorted((p for p in glob.glob(f"{tara_dir}/Contigs/{gid}.fa*")
+                                if p.endswith((".fa", ".fa.gz"))),
+                               key=lambda p: p.endswith(".gz"))
+        gff_candidates = sorted((p for p in glob.glob(f"{tara_dir}/Genes/GFF/{gid}.gmove.gff*")
+                                 if p.endswith((".gff", ".gff.gz"))),
+                                key=lambda p: p.endswith(".gz"))
         return fa_candidates[0], gff_candidates[0]
     fa_paths = (glob.glob(f"{refseq_dir}/{gid}/*/*/*_genomic.fna*")
                 + glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.fna*", recursive=True))
@@ -360,7 +418,7 @@ def scan_one(args):
             hits_bed = os.path.join(tmp, "hits.bed")
             patterns = os.path.join(tmp, "patterns.fa")
 
-            run_gt_introns(gff, gff_with_introns)
+            gt_rc, n_mrna_in, gt_stderr_tail, exon_source = run_gt_introns(gff, gff_with_introns)
             introns = load_introns(gff_with_introns)
 
             write_pattern_file(patterns, opts["motifs"])
@@ -372,7 +430,31 @@ def scan_one(args):
                 hits = pd.DataFrame(columns=["seqid", "start", "end", "name", "score", "strand"])
 
             if introns.empty:
-                return {"summary": [gid, org, group, source, 0, 0, len(seqs), "", 0, "OK"],
+                # Distinguish a silent gt truncation (exit≠0, or input had ≥1
+                # mRNA but no introns came out) from a real zero-intron genome
+                # — filter_final must exclude the former from the negative-
+                # control set.
+                if gt_rc != 0 or n_mrna_in > 0:
+                    status = f"gt_truncated:rc={gt_rc};n_mrna_in={n_mrna_in};{gt_stderr_tail}"
+                else:
+                    status = "OK"
+                # Compute terminal-motif fields for the summary even when there
+                # are no introns to scan — useful to know whether the genome
+                # has a recognisable telomere cap.
+                canonical_e = opts.get("canonical", {}).get(gid, "")
+                scan_motif_e, scan_bases_e, max_end_frac_e = terminal_motif(hits, contig_lens)
+                if canonical_e:
+                    term_motif_e, term_method_e = canonical_e, "canonical"
+                    term_bases_e = scan_bases_e if scan_motif_e == canonical_e else 0
+                elif scan_motif_e:
+                    term_motif_e, term_bases_e, term_method_e = scan_motif_e, scan_bases_e, "scanned_high_conf"
+                elif max_end_frac_e > 0.0:
+                    term_motif_e, term_bases_e, term_method_e = "", 0, "scanned_low_conf"
+                else:
+                    term_motif_e, term_bases_e, term_method_e = "", 0, "none"
+                return {"summary": [gid, org, group, source, 0, 0, len(seqs),
+                                    term_motif_e, term_bases_e, status,
+                                    term_method_e, max_end_frac_e, exon_source],
                         "introns": [], "loci": []}
 
             introns = introns.reset_index(drop=True)
@@ -382,6 +464,7 @@ def scan_one(args):
             # three per-intron Python loops; ~30-100× faster on big genomes.
             best_motif, flank_df, strand_df = compute_intron_motif_metrics(
                 introns, hits_bed, contig_lens, tmp,
+                flank_bp=opts.get("flank_bp", 200),
             )
 
         introns = introns.merge(best_motif, on="row", how="left")
@@ -437,21 +520,57 @@ def scan_one(args):
 
         # Genome-level terminal motif: prefer literature-curated assignment;
         # fall back to direct scan only when canonical mapping is unset.
+        # Always also compute the scanned values so we can record method ∈
+        # {canonical, scanned_high_conf, scanned_low_conf, none} and the maximum
+        # per-end coverage (review: do not silently drop low-coverage genomes).
         canonical = opts.get("canonical", {}).get(gid, "")
+        scan_motif, scan_bases, max_end_frac = terminal_motif(hits, contig_lens)
         if canonical:
             term_motif = canonical
-            # Bases = how many bp of this motif actually appear within 500 bp of any contig end.
+            # Bases = how many bp of this motif actually appear within 500 bp of
+            # any contig end (merged per-end-and-motif so overlapping hits are
+            # not double-counted; mirrors terminal_motif()'s coverage logic).
             if hits.empty:
                 term_bases = 0
             else:
-                h_motif = hits[hits.name == canonical]
-                clen_series = h_motif.seqid.map(contig_lens)
-                near = h_motif[(h_motif.start < 500) | (h_motif.end > clen_series - 500)]
-                term_bases = int((near.end - near.start).sum())
+                h_motif = hits[hits.name == canonical].copy()
+                h_motif["clen"] = h_motif.seqid.map(contig_lens)
+                h_motif = h_motif.dropna(subset=["clen"])
+                h_motif["clen"] = h_motif["clen"].astype(int)
+                left = h_motif[h_motif.start < 500].copy()
+                left["end_lo"] = 0; left["end_hi"] = 500
+                left["end_id"] = left.seqid.astype(str) + ":L"
+                right = h_motif[h_motif.end > (h_motif.clen - 500)].copy()
+                right["end_lo"] = (right.clen - 500).clip(lower=0).astype(int)
+                right["end_hi"] = right.clen
+                right["end_id"] = right.seqid.astype(str) + ":R"
+                near_c = pd.concat([left, right], ignore_index=True)
+                if near_c.empty:
+                    term_bases = 0
+                else:
+                    near_c["ov_start"] = near_c[["start", "end_lo"]].max(axis=1)
+                    near_c["ov_end"] = near_c[["end", "end_hi"]].min(axis=1)
+                    near_c = near_c.assign(motif=canonical).sort_values(
+                        ["end_id", "motif", "ov_start"]
+                    )
+                    merged_c = _merged_coverage_per_group(near_c, ["end_id", "motif"])
+                    term_bases = int(merged_c["merged_bp"].sum()) if not merged_c.empty else 0
+            term_method = "canonical"
         else:
-            term_motif, term_bases = terminal_motif(hits, contig_lens)
+            term_motif, term_bases = scan_motif, scan_bases
+            if term_motif:
+                term_method = "scanned_high_conf"
+            elif max_end_frac > 0.0:
+                # Some end coverage but below the 0.5 vote threshold — do not
+                # silently zero the genome; flag for downstream review.
+                term_method = "scanned_low_conf"
+            else:
+                term_method = "none"
         introns["terminal_motif"] = term_motif
         introns["terminal_motif_bases"] = term_bases
+        introns["terminal_motif_method"] = term_method
+        introns["terminal_motif_max_end_frac"] = max_end_frac
+        introns["exon_source"] = exon_source
 
         # Per-contig: does the genome's terminal motif appear within 500 bp of
         # BOTH ends? The subtelomeric distance test must restrict to such
@@ -476,20 +595,24 @@ def scan_one(args):
         loci = introns[
             (introns.telomeric_frac >= opts["min_repeat_frac"])
             & (introns.flank_telomeric_frac <= opts["max_flank_repeat_frac"])
+            & (introns.intron_len >= opts["min_intron_len"])
             & (introns.motif != "")
         ][LOCI_HEADER].values.tolist()
         return {
             "summary": [gid, org, group, source, len(introns), len(loci),
-                        len(seqs), term_motif, term_bases, "OK"],
+                        len(seqs), term_motif, term_bases, "OK",
+                        term_method, max_end_frac, exon_source],
             "introns": out,
             "loci": loci,
         }
 
     except subprocess.CalledProcessError as e:
-        return {"summary": [gid, org, group, source, 0, 0, 0, "", 0, f"ERROR:tool-{e.returncode}"],
+        return {"summary": [gid, org, group, source, 0, 0, 0, "", 0,
+                            f"ERROR:tool-{e.returncode}", "none", 0.0, ""],
                 "introns": [], "loci": []}
     except Exception as e:
-        return {"summary": [gid, org, group, source, 0, 0, 0, "", 0, f"ERROR:{e}"],
+        return {"summary": [gid, org, group, source, 0, 0, 0, "", 0,
+                            f"ERROR:{e}", "none", 0.0, ""],
                 "introns": [], "loci": []}
 
 
@@ -503,7 +626,16 @@ def main():
     ap.add_argument("--tara-dir", required=True)
     ap.add_argument("--motifs", required=True)
     ap.add_argument("--min-repeat-frac", type=float, default=0.85)
-    ap.add_argument("--max-flank-repeat-frac", type=float, default=0.50)
+    ap.add_argument("--max-flank-repeat-frac", type=float, default=0.25,
+                    help="Tightened from 0.50 → 0.25 alongside the flank-window "
+                         "extension from 50 → 200 bp (review #55 / verify_survey_core).")
+    ap.add_argument("--flank-bp", type=int, default=200,
+                    help="Per-side flank window (bp) for flank_telomeric_frac. "
+                         "Extended from 50 → 200 to span typical eukaryotic terminal exons.")
+    ap.add_argument("--min-intron-len", type=int, default=30,
+                    help="Reject GFF-annotated introns shorter than this. Default 30 bp "
+                         "rejects degenerate 1-bp annotations (Lucilia/Homarus/etc.) and "
+                         "is well below the spliceosomal minimum.")
     ap.add_argument("--threads", type=int, default=1)
     ap.add_argument("--loci", required=True)
     ap.add_argument("--introns", required=True)
@@ -533,6 +665,8 @@ def main():
         "motifs": motifs,
         "min_repeat_frac": args.min_repeat_frac,
         "max_flank_repeat_frac": args.max_flank_repeat_frac,
+        "flank_bp": args.flank_bp,
+        "min_intron_len": args.min_intron_len,
         "canonical": canonical,
     }
 
@@ -555,7 +689,8 @@ def main():
                 summary_w.writerow(res["summary"])
                 intron_w.writerows(res["introns"])
                 loci_w.writerows(res["loci"])
-                sf.flush(); inf.flush(); lf.flush()
+                # csv.writer is line-buffered by default; per-row flush() was
+                # fsync-dominated on small workloads (review #99).
 
 
 if __name__ == "__main__":

@@ -15,12 +15,26 @@ Output TSV columns (outfmt 6 + qcovs + qlen, plus query_genome_id parsed from qs
     qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs qlen query_genome_id
 
 Decisions:
-    - dustmasker is OFF (-dust no): linker is non-telomeric by definition but is short,
-      and the default dust low-complexity filter eats short repeats we want to see.
+    - Linker queries are PRE-MASKED for telomeric fragments via
+      `telomere_mask.mask_telomere_fragments` (rotations+RC of all canonical
+      motifs, min_units=2) before any blastn call. The architecture classifier
+      caps `linker_telo_coverage` at 30% upstream, but residual telomeric stubs
+      at the array seam still leaked hits against every ITS/subtelomere in the
+      combined db; per `linker_origin_synthesis_2026-06-03` this rotation trap
+      had fired four times. Masking is mandatory now, not optional.
+    - dustmasker via `-dust 20 64 1`: re-enabled with the standard short-window
+      settings; combined with telomere pre-masking this rejects pure low-complexity
+      hits without blanking the 11-30 bp informative linker.
     - word_size 11, e-value 1e-5: lenient enough to catch ~70% identity over 30 bp
       (typical interspersed-repeat fragment) but rejects random matches.
-    - max_target_seqs 50: for "is this linker a recurring genomic sequence?" we
-      want to see multiple hits if they exist.
+    - max_target_seqs 50 is a STREAMING cutoff applied during traversal, NOT a
+      post-sort top-N (Shah 2018, doi:10.1093/bioinformatics/bty833). Use the
+      output only for "is this linker recurrent at all" yes/no, not for ranking
+      strongest hits.
+    - NULL CONTROL: A length-and-composition-matched non-telotron-intron query
+      set is not yet wired here; raw cross-genome hit counts therefore lack a
+      permutation baseline. See FIXES_PRIORITIZED.md #13 / verify_linker_architecture
+      "no multiple-testing / null" — pending separate analysis rerun.
 """
 import argparse
 import gzip
@@ -32,6 +46,7 @@ import sys
 import pandas as pd
 
 from _common import slug as _slug, find_genome_fasta
+from telomere_mask import mask_telomere_fragments
 
 
 def decompress(src, dst):
@@ -66,13 +81,24 @@ def write_linker_fastas(arch_tsv, outdir, min_linker_len=15):
     out = {}
     for gid, sub in df.groupby("genome_id", sort=False):
         path = f"{outdir}/{_slug(gid)}.fa"
+        n_skipped_allN = 0
         with open(path, "w") as fh:
             for r in sub.itertuples(index=False):
+                # Pre-mask telomeric rotations+RC (>=2 tandem units) so residual
+                # array-seam stubs in the linker don't seed spurious cross-genome
+                # hits to every ITS/subtelomere — see module docstring.
+                masked = mask_telomere_fragments(str(r.linker_seq))
+                # Skip linkers that collapse to all-N after masking; they carry
+                # no non-telomeric signal to test for recurrence.
+                if masked.replace("N", "") == "":
+                    n_skipped_allN += 1
+                    continue
                 header = (f">{gid}|{r.seqid}|{r.start}-{r.end}|{r.strand}"
                           f"|{r.architecture}|llen={r.linker_len}")
-                fh.write(header + "\n" + r.linker_seq + "\n")
+                fh.write(header + "\n" + masked + "\n")
         out[gid] = path
-        print(f"  linker fasta: {gid}  ({len(sub)} linkers)")
+        print(f"  linker fasta: {gid}  ({len(sub)} linkers, "
+              f"{n_skipped_allN} dropped as all-telomere after masking)")
     return out
 
 
@@ -114,6 +140,10 @@ def build_combined_db(linker_gids, refseq_dir, tara_dir, combined_fa, db_prefix)
 
 
 def blastn(query_fa, db_prefix, out_tsv, threads):
+    # `-dust 20 64 1` = standard short-window DUST (Morgulis 2006); telomere
+    # pre-masking in write_linker_fastas already removed the dominant
+    # low-complexity content, so DUST here catches residual non-telomeric
+    # microsatellite stutter without erasing 11-30 bp linker informative content.
     cmd = ["blastn",
            "-query", query_fa,
            "-db", db_prefix,
@@ -121,7 +151,7 @@ def blastn(query_fa, db_prefix, out_tsv, threads):
            "-outfmt", f"6 {BLAST_FIELDS}",
            "-evalue", "1e-5",
            "-word_size", "11",
-           "-dust", "no",
+           "-dust", "20 64 1",
            "-max_target_seqs", "50",
            "-num_threads", str(threads)]
     run(cmd)

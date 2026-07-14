@@ -1,46 +1,31 @@
 # =============================================================================
 # .gitignore — telotrons Snakemake pipeline
 #
-# Tracked:  Snakefile, config.yaml, scripts/, envs/, profiles/, CLAUDE.md,
-#           data/ placeholders (.gitkeep), .gitignore
-# Ignored:  everything large, downloaded, generated, or machine-local (below).
+# Tracked at root: Snakefile, config.yaml, scripts/, envs/*.yaml,
+#                  CLAUDE.md, paper.md, .gitignore
+#
+# Four root subdirs (post-2026-06-05 deslop):
+#   scripts/   tracked
+#   envs/      *.yaml tracked, materialised envs gitignored
+#   data/      raw inputs (downloads) gitignored
+#   work/      pipeline outputs + logs + archive gitignored
 # =============================================================================
 
-# --- Downloaded raw data: NCBI RefSeq + Tara SMAGs + telomerase.us (~700 GB) ---
-/raw/
+# --- Downloaded raw data (RefSeq, Tara SMAGs, telomerase.us, long-read FASTQ) ---
+/data/raw/
 
-# --- Pipeline working tree: results/ (~300 GB), manifests/ (~23 GB), and the
-#     old/ reference archive — all consolidated under work/ ---
+# --- Pipeline work tree (outputs, manifests, logs, archive) ---
 /work/
-# stale / ad-hoc top-level output-dir variants (pre-consolidation)
-/results*/
-/manifests*/
 
-# --- Downstream analysis: AlphaFold3 bundles, TERT/TR search (~1 GB) ---
-/analysis/
-
-# --- Other downstream-analysis side-trees + scratch (large, regenerable) ---
-/good_set/
-/*_relatives/
-/_tmpwork/
-/.artifact/
-/.tmp_scratch/
-
-# --- Run logs ---
-/logs/
-
-# --- Snakemake working state (metadata, locks, conda envs, shadow, iocache) ---
+# --- Snakemake metadata, locks, conda env materialisations ---
 .snakemake/
+/envs/*/
+/.mmroot/
 
-# --- Local tool binaries ---
-/tools/
-
-# --- AlphaFold3 / fold result bundles ---
-*.zip
-
-# --- Stray one-off data files at repo root ---
-/o
-/mitis_all.fa
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
 
 # --- Temp / editor / tool leftovers ---
 *.seed
@@ -50,11 +35,8 @@ pre
 *.tmp
 *.swp
 .~lock.*
-
-# --- Python ---
-__pycache__/
-*.pyc
-*.pyo
+*.zip
+fasterq.tmp*
 
 # --- Editor / OS ---
 .DS_Store
@@ -63,10 +45,6 @@ __pycache__/
 
 # --- Claude Code local config ---
 .claude/
-
-# =============================================================================
-# data/ holds small input-sequence dirs (TERT-seqs/, TR-seqs/, Other-seqs/)
-# kept via .gitkeep. If large FASTAs land there, ignore them specifically, e.g.:
-#   data/**/*.fna
-#   data/**/*.faa
-# =============================================================================
+memory/
+analysis/
+logs

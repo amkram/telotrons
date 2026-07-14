@@ -18,6 +18,17 @@ def main():
                          "that satisfy --bidir-min-hits on both strands.")
     ap.add_argument("--bidir-min-hits", type=int, default=3,
                     help="Per-strand hit count required to qualify as bidirectional.")
+    ap.add_argument("--include-partial", action="store_true",
+                    help="Admit a flagged 'partial' tier (admission_pathway='partial'): a single-arm "
+                         "clean array (>= --partial-min-hits tandem units on the dominant strand) at "
+                         "moderate fraction (>= --partial-min-repeat-frac, below the strict single-array "
+                         "threshold and not bidirectional). Captures partial / intermediate-state "
+                         "telotrons the strict rules silently drop; flagged so downstream can stratify "
+                         "them out of the strict counts.")
+    ap.add_argument("--partial-min-repeat-frac", type=float, default=0.40)
+    ap.add_argument("--partial-min-hits", type=int, default=3,
+                    help="Min motif hits on the dominant strand for a partial array (excludes "
+                         "scattered-hit noise).")
     ap.add_argument("--require-canonical-splice", action="store_true")
     ap.add_argument("--collapse-unique-loci", action="store_true")
     ap.add_argument("--require-terminal-motif-match", action="store_true",
@@ -38,22 +49,52 @@ def main():
         & (loci.fwd_hits >= args.bidir_min_hits)
         & (loci.rev_hits >= args.bidir_min_hits)
     )
+    # Partial tier (opt-in via --include-partial): a single-arm clean array
+    # (>= partial_min_hits tandem units on one strand) at moderate fraction that meets
+    # NEITHER the strict single-array (frac>=min_repeat_frac) NOR the bidirectional rule.
+    # Captures partial/intermediate-state telotrons (a short array in a longer, partly-
+    # ancestral intron) that the strict rules drop; the hit-count gate excludes the
+    # scattered-telomeric-hit noise that dominates the 0.40-0.85 frac band.
+    if args.include_partial:
+        partial_pass = (
+            ~single_pass & ~bidir_pass
+            & (loci.telomeric_frac >= args.partial_min_repeat_frac)
+            & ((loci.fwd_hits >= args.partial_min_hits) | (loci.rev_hits >= args.partial_min_hits))
+        )
+    else:
+        partial_pass = pd.Series(False, index=loci.index)
     # Record which admission rule each locus passed, so downstream analyses can
-    # stratify the strict single-array set (telomeric_frac >= min_repeat_frac)
-    # from the looser bidirectional set (frac >= bidir_min_repeat_frac with
-    # >= bidir_min_hits on both strands). Most loci enter via the looser rule.
+    # stratify the strict single-array set (telomeric_frac >= min_repeat_frac), the
+    # looser bidirectional set, and the flagged partial tier. Most loci enter bidir.
     loci = loci.assign(admission_pathway=np.where(
         single_pass & bidir_pass, "both",
-        np.where(single_pass, "single_array", "bidirectional")))
-    final = loci[single_pass | bidir_pass].copy()
+        np.where(single_pass, "single_array",
+        np.where(bidir_pass, "bidirectional",
+        np.where(partial_pass, "partial", "none")))))
+    final = loci[single_pass | bidir_pass | partial_pass].copy()
     if args.require_terminal_motif_match and len(final):
         final = final[final.terminal_motif.notna() & (final.terminal_motif != "")
                       & (final.motif == final.terminal_motif)]
     if args.require_canonical_splice:
         final = final[final.splice_class == "GT-AG"]
     if args.collapse_unique_loci:
+        # Collapse alt-spliced paralogs sharing (genome_id, seqid, start, end, strand)
+        # into a single representative row, but PRESERVE tx_ids/gene_ids of the
+        # dropped paralogs as comma-joined columns so downstream host-gene analyses
+        # (telotron_ortholog_align, etc.) can recover alt-splice incidence.
+        # FIXES_PRIORITIZED.md #56 (review_survey_core.md MEDIUM, line 54).
+        dup_keys = ["genome_id", "seqid", "start", "end", "strand"]
+        if {"tx_id", "gene_id"}.issubset(final.columns):
+            agg_ids = (final.groupby(dup_keys, dropna=False)
+                            .agg(tx_ids=("tx_id", lambda s: ",".join(sorted(set(str(v) for v in s if pd.notna(v))))),
+                                 gene_ids=("gene_id", lambda s: ",".join(sorted(set(str(v) for v in s if pd.notna(v))))))
+                            .reset_index())
+        else:
+            agg_ids = None
         final = (final.sort_values("telomeric_frac", ascending=False)
-                      .drop_duplicates(["genome_id", "seqid", "start", "end", "strand"]))
+                      .drop_duplicates(dup_keys))
+        if agg_ids is not None:
+            final = final.merge(agg_ids, on=dup_keys, how="left")
 
     per_species = (final.groupby(["genome_id", "organism", "group", "source", "motif"], dropna=False)
                         .agg(telotrons=("seqid", "size"),
@@ -66,7 +107,18 @@ def main():
 
     species = summary.merge(per_species, on=["genome_id", "organism", "group", "source"], how="left")
     species["telotrons"] = species["telotrons"].fillna(0).astype(int)
-    negatives = species[species.telotrons == 0].copy()
+    # Disambiguate true negatives from species whose candidates were killed by
+    # require_terminal_motif_match / require_canonical_splice / collapse. The scan
+    # summary's `telotron_candidates` is the pre-filter candidate count.
+    # FIXES_PRIORITIZED.md unnumbered (review_survey_core.md MEDIUM, line 69).
+    if "telotron_candidates" in species.columns:
+        species["n_pre_filter_candidates"] = species["telotron_candidates"].fillna(0).astype(int)
+        # Only species with zero pre-filter candidates are genuine negatives;
+        # species with pre-filter candidates but zero post-filter telotrons were
+        # eliminated by filter cuts and are NOT comparable to true negatives.
+        negatives = species[(species.telotrons == 0) & (species.n_pre_filter_candidates == 0)].copy()
+    else:
+        negatives = species[species.telotrons == 0].copy()
 
     final.to_csv(args.final, sep="\t", index=False)
     species.to_csv(args.species, sep="\t", index=False)

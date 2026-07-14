@@ -7,6 +7,7 @@ Used by the find_tert rule (deep-homology TERT identification).
 """
 import argparse
 import gzip
+import hashlib
 import os
 import sys
 import time
@@ -14,7 +15,7 @@ import urllib.parse
 import urllib.request
 
 EUTILS = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
-INTERPRO = "https://www.ebi.ac.uk/interpro/wwwapi/entry/pfam"
+INTERPRO = "https://www.ebi.ac.uk/interpro/api/entry/pfam"
 PFAMS = {"PF12009": "Telomerase_RBD", "PF00078": "RVT_1"}
 
 
@@ -31,14 +32,14 @@ def _get(url, binary=False, tries=4):
     raise RuntimeError(f"failed GET {url}: {last}")
 
 
-def fetch_seeds(out_faa):
+def fetch_seeds(out_faa, retmax=60):
     if os.path.exists(out_faa) and os.path.getsize(out_faa) > 0:
         print(f"seeds cached: {out_faa}")
         return
     term = ('(telomerase reverse transcriptase[Protein Name]) '
             'AND Apicomplexa[Organism] NOT partial[All Fields]')
     q = urllib.parse.quote(term)
-    ids_xml = _get(f"{EUTILS}/esearch.fcgi?db=protein&term={q}&retmax=60")
+    ids_xml = _get(f"{EUTILS}/esearch.fcgi?db=protein&term={q}&retmax={retmax}")
     ids = []
     for chunk in ids_xml.split("<Id>")[1:]:
         ids.append(chunk.split("</Id>")[0])
@@ -47,9 +48,11 @@ def fetch_seeds(out_faa):
     print(f"esearch: {len(ids)} TERT protein IDs")
     fasta = _get(f"{EUTILS}/efetch.fcgi?db=protein&id={','.join(ids)}"
                  f"&rettype=fasta&retmode=text")
+    n = fasta.count(">")
+    if n < len(ids):
+        sys.exit(f"efetch returned {n} sequences but esearch returned {len(ids)} IDs")
     with open(out_faa, "w") as fh:
         fh.write(fasta)
-    n = fasta.count(">")
     print(f"wrote {out_faa} ({n} sequences)")
 
 
@@ -61,15 +64,18 @@ def fetch_hmm(pf, out_hmm):
     data = gzip.decompress(gz)
     with open(out_hmm, "wb") as fh:
         fh.write(data)
-    print(f"wrote {out_hmm} ({PFAMS[pf]})")
+    md5 = hashlib.md5(data).hexdigest()
+    print(f"wrote {out_hmm} ({PFAMS[pf]}) md5={md5}")
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--outdir", required=True)
+    ap.add_argument("--retmax", type=int, default=60,
+                    help="max NCBI protein IDs to fetch (default: 60)")
     args = ap.parse_args()
     os.makedirs(args.outdir, exist_ok=True)
-    fetch_seeds(os.path.join(args.outdir, "tert_seeds.faa"))
+    fetch_seeds(os.path.join(args.outdir, "tert_seeds.faa"), retmax=args.retmax)
     for pf in PFAMS:
         fetch_hmm(pf, os.path.join(args.outdir, f"{pf}.hmm"))
 

@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Per-species figures: top boundary 6-mers (GTXXXX and XXXXAG) split by architecture.
 
-Architectures plotted (rows, in this order):
-    GT-F-AG, GT-R-AG, GT-F-R-AG, GT-F-linker-R-AG, GT-R-linker-F-AG
-Sides plotted (cols): donor (GT-XXXX) | acceptor (XXXX-AG)
+Architectures plotted (rows): canonical set from `_common.ARCH_ORDER`
+(includes `Other` so loci with no canonical architecture are not silently dropped).
+Sides plotted (cols): donor (GT-XXXX) | linker_5' | linker_3' | acceptor (XXXX-AG).
+
+NB: ranking is by **raw count** within (genome, architecture, side) — the input
+`boundary_kmers_by_architecture.tsv` carries no enrichment statistic
+(`analyze_telotrons.py` emits enrichment to a separate `boundary_kmer_enrichment.tsv`).
+Plot is descriptive frequency only; titles reflect that.
 """
 import argparse
 import os
@@ -11,33 +16,20 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from _common import slug as _slug
-
-ARCH_ORDER = [
-    "GT-F-AG",
-    "GT-R-AG",
-    "GT-F-R-AG",
-    "GT-F-linker-R-AG",
-    "GT-R-linker-F-AG",
-]
-
-ARCH_COLORS = {
-    "GT-F-AG":          "#20808D",
-    "GT-R-AG":          "#A84B2F",
-    "GT-F-R-AG":        "#6A8D5A",
-    "GT-F-linker-R-AG": "#FFC553",
-    "GT-R-linker-F-AG": "#8B5A99",
-}
+from _common import ARCH_COLORS, ARCH_ORDER, slug as _slug
 
 TOP_N = 8
 
 
+# Per-architecture active side set. `Other` defaults to donor/acceptor only;
+# anything missing from this map also falls back to donor/acceptor.
 SIDES_BY_ARCH = {
     "GT-F-AG":          ["donor", "acceptor"],
     "GT-R-AG":          ["donor", "acceptor"],
     "GT-F-R-AG":        ["donor", "acceptor"],
     "GT-F-linker-R-AG": ["donor", "linker_left", "linker_right", "acceptor"],
     "GT-R-linker-F-AG": ["donor", "linker_left", "linker_right", "acceptor"],
+    "Other":            ["donor", "acceptor"],
 }
 
 
@@ -49,16 +41,18 @@ def plot_one(genome_id, organism, sub, outdir):
                              layout="constrained")
 
     total_loci = sub[sub.side.isin(["donor"])]["count"].sum()
-    fig.suptitle(f"{organism}  ({genome_id})   {total_loci} loci",
+    # Descriptive frequency only — see module docstring for why this is not an enrichment plot.
+    fig.suptitle(f"{organism}  ({genome_id})   {total_loci} loci   "
+                 f"— most frequent boundary 6-mers (descriptive)",
                  fontsize=11, fontweight="bold")
 
     col_titles = ["donor  GT-XXXX", "linker_5'  XX-XXXX", "linker_3'  XXXX-XX", "acceptor  XXXX-AG"]
     side_for_col = ["donor", "linker_left", "linker_right", "acceptor"]
 
     for i, arch in enumerate(ARCH_ORDER):
-        color = ARCH_COLORS[arch]
+        color = ARCH_COLORS.get(arch, "#BBBBBB")
         n_arch = sub[(sub.architecture == arch) & (sub.side == "donor")]["count"].sum()
-        active_sides = SIDES_BY_ARCH[arch]
+        active_sides = SIDES_BY_ARCH.get(arch, ["donor", "acceptor"])
         for j in range(n_cols):
             ax = axes[i, j]
             side = side_for_col[j]
@@ -88,7 +82,7 @@ def plot_one(genome_id, organism, sub, outdir):
                 ax.tick_params(axis="y", labelsize=7)
                 ax.tick_params(axis="x", labelsize=8)
                 ax.spines[["top", "right"]].set_visible(False)
-                ax.set_xlabel("count" if i == n_rows - 1 else "")
+                ax.set_xlabel("count (descriptive)" if i == n_rows - 1 else "")
             if j == 0:
                 ax.set_ylabel(f"{arch}\n(n={n_arch})", fontsize=9)
             if i == 0:

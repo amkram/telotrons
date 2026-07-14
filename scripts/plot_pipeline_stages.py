@@ -98,13 +98,13 @@ def plot_distance(dist, raw, outpath):
 
     fig, ax = plt.subplots(figsize=(10, max(3, 0.45 * len(d) + 1)), layout="constrained")
     ax.scatter(d.median_telotron_distance_to_end / 1e3, y, color=TEAL, label="telotron median", s=40)
-    ax.scatter(d.median_control_distance_to_end / 1e3, y, color=GREY, label="control median", s=40)
-    for yi, (t, c) in enumerate(zip(d.median_telotron_distance_to_end, d.median_control_distance_to_end)):
+    ax.scatter(d.median_null_distance_to_end / 1e3, y, color=GREY, label="within-contig null median", s=40)
+    for yi, (t, c) in enumerate(zip(d.median_telotron_distance_to_end, d.median_null_distance_to_end)):
         ax.plot([t / 1e3, c / 1e3], [yi, yi], color="#CCCCCC", linewidth=1, zorder=0)
     ax.set_yticks(y); ax.set_yticklabels(labels, fontsize=8)
     ax.set_xscale("log")
     ax.set_xlabel("distance to contig end (kb, log)")
-    ax.set_title("Stage 5 — analyze: telotron vs length-matched control distance-to-end")
+    ax.set_title("Stage 5 — analyze: telotron vs within-contig null distance-to-end")
     ax.legend(loc="lower right", fontsize=8)
     ax.spines[["top", "right"]].set_visible(False)
     fig.savefig(outpath, dpi=200)

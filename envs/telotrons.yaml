@@ -11,9 +11,13 @@ dependencies:
   - samtools>=1.17
   - miniprot>=0.13
   - hmmer>=3.3
+  - infernal>=1.1.4
   - mafft>=7.5
+  - minimap2>=2.26
+  - sra-tools>=3.0
   - pandas>=2
   - scipy>=1.10
+  - statsmodels>=0.14
   - matplotlib>=3.7
   - tqdm>=4.65
   - logomaker>=0.8

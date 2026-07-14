@@ -76,11 +76,21 @@ def run_miniprot_trans(miniprot, genome_fa, seeds_fa, threads, outc, outn):
                 continue
             protein = line.split("\t", 1)[1].strip() if "\t" in line else ""
             f = paf
+            # Preserve breakpoint positions: stops (`*`) and frameshifts (`!`/`$`)
+            # become `X` so hmmsearch alignment coordinates are not shifted at
+            # internal stops (FIXES_PRIORITIZED #117). Count for auditability.
+            n_internal_stops = protein.count("*")
+            n_frameshifts = protein.count("!") + protein.count("$")
+            clean = (protein.replace("*", "X")
+                            .replace("!", "X")
+                            .replace("$", "X"))
             cands.append({
                 "seed": f[0], "qlen": int(f[1]), "qstart": int(f[2]), "qend": int(f[3]),
                 "strand": f[4], "contig": f[5],
                 "start": min(int(f[7]), int(f[8])), "end": max(int(f[7]), int(f[8])),
-                "nres": int(f[9]), "protein": protein.replace("*", ""),
+                "nres": int(f[9]), "protein": clean,
+                "n_internal_stops": n_internal_stops,
+                "n_frameshifts": n_frameshifts,
             })
             paf = None
         elif not line.startswith("##"):
@@ -97,14 +107,27 @@ def run_miniprot_gff(miniprot, genome_fa, seeds_fa, threads, out_gff, outc, outn
 
 
 # ── hmmsearch ─────────────────────────────────────────────────────────────────
-def hmmsearch_best(hmmsearch, hmm, faa, tmpdir, tag):
-    """Return {target_name: (best_dom_evalue, ali_from, ali_to)} over all domains."""
+def hmmsearch_all(hmmsearch, hmm, faa, tmpdir, tag, use_cut_ga=False):
+    """Return {target_name: [(dom_evalue, ali_from, ali_to), ...]}.
+
+    Keeps ALL domain hits per protein (FIXES_PRIORITIZED #71): a co-located
+    retroelement RT can otherwise outscore a real TERT RT in the same ORF and
+    mask the architecture test downstream. Coords are alignment (ali) coords
+    on the target (HMMER 3 domtblout fields 18-19, 0-indexed f[17]-f[18]),
+    which is what the upstream/N-of architecture test uses.
+    """
     if os.path.getsize(faa) == 0:
         return {}
     domtbl = os.path.join(tmpdir, f"{tag}.domtbl")
-    sp.run([hmmsearch, "--max", "-E", "10", "--domtblout", domtbl, hmm, faa],
-           check=True, stdout=sp.DEVNULL, stderr=sp.DEVNULL)
-    best = {}
+    cmd = [hmmsearch, "--max"]
+    if use_cut_ga:
+        # Pfam gathering threshold (Eddy 2011); search-DB-size independent.
+        cmd += ["--cut_ga"]
+    else:
+        cmd += ["-E", "10"]
+    cmd += ["--domtblout", domtbl, hmm, faa]
+    sp.run(cmd, check=True, stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+    hits = {}
     with open(domtbl) as fh:
         for line in fh:
             if line.startswith("#"):
@@ -113,11 +136,21 @@ def hmmsearch_best(hmmsearch, hmm, faa, tmpdir, tag):
             if len(f) < 21:
                 continue
             name = f[0]
-            dom_e = float(f[12])          # i-Evalue (independent)
-            ali_from, ali_to = int(f[17]), int(f[18])   # env coords on target
-            if name not in best or dom_e < best[name][0]:
-                best[name] = (dom_e, ali_from, ali_to)
-    return best
+            dom_e = float(f[12])          # i-Evalue (independent, HMMER 3 domtbl col 13)
+            ali_from, ali_to = int(f[17]), int(f[18])   # ali coords on target
+            hits.setdefault(name, []).append((dom_e, ali_from, ali_to))
+    # Keep deterministic order by ali_from so architecture tests can scan
+    # N->C without re-sorting.
+    for name in hits:
+        hits[name].sort(key=lambda t: t[1])
+    return hits
+
+
+def best_of(hits_list):
+    """Lowest-E-value entry from a list of (dom_e, ali_from, ali_to)."""
+    if not hits_list:
+        return None
+    return min(hits_list, key=lambda t: t[0])
 
 
 def write_faa(records, path):
@@ -141,8 +174,18 @@ def main():
                     help="rounds; >1 augments seeds with confirmed proteins (within-clade rescue)")
     ap.add_argument("--trbd-evalue", type=float, default=1e-5)
     ap.add_argument("--rt-evalue", type=float, default=1e-2)
+    ap.add_argument("--cut-ga", action="store_true",
+                    help="use Pfam --cut_ga (Eddy 2011) for both HMMs instead of "
+                         "asymmetric -E cutoffs (FIXES_PRIORITIZED #73). Ignores "
+                         "--trbd-evalue/--rt-evalue thresholds for confirmation; "
+                         "any reported domain is GA-confirmed.")
     ap.add_argument("--outc", type=float, default=0.05)
     ap.add_argument("--outn", type=int, default=5)
+    ap.add_argument("--locus-merge-gap", type=int, default=10_000,
+                    help="merge candidate spans within this many bp on the same "
+                         "contig into one locus (FIXES_PRIORITIZED #116). Multi-"
+                         "exon TERT can otherwise split into two loci across a "
+                         "long intron.")
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--miniprot", default=None)
     ap.add_argument("--hmmsearch", default=None)
@@ -184,10 +227,24 @@ def main():
         round_confirmed_proteins = []
         for gid, fa in genome_fa.items():
             cands = run_miniprot_trans(miniprot, fa, seeds_path, args.threads, args.outc, args.outn)
-            if rnd == 1:
-                run_miniprot_gff(miniprot, fa, args.seeds, args.threads,
-                                 os.path.join(gff_dir, f"{gid}.miniprot.gff"),
-                                 args.outc, args.outn)
+            # Run miniprot --gff in every round (FIXES_PRIORITIZED #72) so
+            # round 2+ within-clade rescues get a gene model for
+            # `extract_full_tert.py`. Round 1 uses the input seeds; later
+            # rounds use the augmented (seeds + round-N confirmations) set
+            # so the GFF reflects the same query pool as the --trans pass.
+            gff_seeds = args.seeds if rnd == 1 else seeds_path
+            gff_path = os.path.join(gff_dir, f"{gid}.miniprot.r{rnd}.gff")
+            run_miniprot_gff(miniprot, fa, gff_seeds, args.threads,
+                             gff_path, args.outc, args.outn)
+            # Keep a canonical (latest-round) symlink/copy at the historical
+            # path so downstream consumers don't break.
+            canonical = os.path.join(gff_dir, f"{gid}.miniprot.gff")
+            try:
+                if os.path.lexists(canonical):
+                    os.remove(canonical)
+                os.symlink(os.path.basename(gff_path), canonical)
+            except OSError:
+                shutil.copyfile(gff_path, canonical)
             if not cands:
                 print(f"  {gid}: 0 candidates")
                 continue
@@ -196,18 +253,36 @@ def main():
                 faa = os.path.join(td, "cand.faa")
                 names = [f"{gid}__r{rnd}c{i}" for i in range(len(cands))]
                 write_faa(list(zip(names, [c["protein"] for c in cands])), faa)
-                trbd = hmmsearch_best(hmmsearch, args.trbd_hmm, faa, td, "trbd")
-                rt = hmmsearch_best(hmmsearch, args.rt_hmm, faa, td, "rt")
+                trbd = hmmsearch_all(hmmsearch, args.trbd_hmm, faa, td, "trbd",
+                                     use_cut_ga=args.cut_ga)
+                rt = hmmsearch_all(hmmsearch, args.rt_hmm, faa, td, "rt",
+                                   use_cut_ga=args.cut_ga)
 
             ngc = 0
             for name, c in zip(names, cands):
-                t = trbd.get(name)
-                r = rt.get(name)
-                has_trbd = bool(t and t[0] < args.trbd_evalue)
-                has_rt = bool(r and r[0] < args.rt_evalue)
-                # architecture: TRBD must start N-terminal of RT (when both present)
-                order_ok = bool(t and r and t[1] < r[1])
+                t_hits = trbd.get(name, [])
+                r_hits = rt.get(name, [])
+                # Threshold: any TRBD/RT domain below the respective i-Evalue
+                # cutoff (or any reported domain when --cut-ga is set, since
+                # GA gates reporting itself).
+                if args.cut_ga:
+                    t_pass = list(t_hits)
+                    r_pass = list(r_hits)
+                else:
+                    t_pass = [h for h in t_hits if h[0] < args.trbd_evalue]
+                    r_pass = [h for h in r_hits if h[0] < args.rt_evalue]
+                has_trbd = bool(t_pass)
+                has_rt = bool(r_pass)
+                # Architecture: a TERT is strict if ANY threshold-passing
+                # TRBD hit lies N-terminal of ANY threshold-passing RT hit
+                # on the same protein (FIXES_PRIORITIZED #71). This stops
+                # a colocated retroelement RT from masking a real TERT RT
+                # when both occur in the same ORF.
+                order_ok = any(tt[1] < rr[1] for tt in t_pass for rr in r_pass)
                 strict = has_trbd and has_rt and order_ok
+                # Representative best hits for reporting (lowest i-Evalue).
+                t = best_of(t_hits)
+                r = best_of(r_hits)
                 all_candidate_rows.append({
                     "genome_id": gid, "round": rnd, "cand": name,
                     "contig": c["contig"], "start": c["start"], "end": c["end"],
@@ -216,7 +291,10 @@ def main():
                     "best_seed": c["seed"], "seed_qcov": round((c["qend"] - c["qstart"]) / c["qlen"], 3),
                     "trbd_evalue": t[0] if t else float("nan"), "trbd_ali": f"{t[1]}-{t[2]}" if t else "",
                     "rt_evalue": r[0] if r else float("nan"), "rt_ali": f"{r[1]}-{r[2]}" if r else "",
+                    "n_trbd_hits": len(t_hits), "n_rt_hits": len(r_hits),
                     "has_trbd": has_trbd, "has_rt": has_rt, "strict": strict,
+                    "n_internal_stops": c.get("n_internal_stops", 0),
+                    "n_frameshifts": c.get("n_frameshifts", 0),
                     "protein": c["protein"],
                 })
                 if strict:
@@ -256,11 +334,16 @@ def main():
     # plus round-1 within-genus proteins as independent evidence.
     df = df.sort_values(["genome_id", "contig", "start"])
     locus_recs = []
+    # FIXES_PRIORITIZED #116: merge spans within `--locus-merge-gap` (default
+    # 10 kb) on the same contig into a single locus. Without this, a multi-
+    # exon TERT whose miniprot --trans segments straddle a long intron splits
+    # into two adjacent loci and the architecture test fails.
+    merge_gap = max(0, int(args.locus_merge_gap))
     for (gid, contig), sub in df.groupby(["genome_id", "contig"]):
         sub = sub.sort_values("start")
         grp, last_end, groups = -1, -1, []
         for _, row in sub.iterrows():
-            if row["start"] > last_end:
+            if row["start"] > last_end + merge_gap:
                 grp += 1
             groups.append(grp)
             last_end = max(last_end, row["end"])

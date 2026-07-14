@@ -18,20 +18,39 @@ drafts, ED figures, audit notes, `pan_euk_telotrons/`, `tara_oceans_euk_mags/`,
 `AGENT_HANDOFF.md`). Treat `work/old/` as archaeology, not as a place to import
 from or add code.
 
-**Layout.** Tracked source lives at top level (`Snakefile`, `config.yaml`,
-`scripts/`, `envs/`, `profiles/`, `data/`). All large generated/downloaded data
-is gitignored: `raw/` (downloads), `work/` (pipeline outputs `work/results/`,
-manifests `work/manifests/`, and the `work/old/` archive), `analysis/`
-(downstream), `logs/`, `.snakemake/`.
+**Layout (post-2026-06-05 deslop).** Exactly four root subdirs:
+- `scripts/` — pipeline source (~74 files). Every Snakefile rule shells out to
+  one of these. `_common.py` and `telomere_mask.py` are shared helpers
+  (the latter closes the telomere-rotation contamination trap — always import
+  before any composition/motif/logo analysis on telomere-adjacent sequence).
+- `envs/` — conda env YAMLs (`telotrons.yaml`, `meme.yaml`). Materialised envs
+  live in `~/.snakemake-envs/` and are gitignored.
+- `data/raw/` — all downloaded inputs (NCBI RefSeq + Tara SMAGs +
+  telomerase.us + long-read FASTQs). Snakefile rules and CLI args reference
+  `data/raw/refseq` / `data/raw/tara` / etc.
+- `work/` — every pipeline output, log, manifest, and the historical archive:
+  - `work/results/` — Snakemake rule outputs (TSVs + figures)
+  - `work/manifests/` — generated manifests
+  - `work/logs/` — runtime logs from snakemake invocations
+  - `work/old/` — read-only archive: prior generations, manuscript drafts,
+    audit snapshots, decoupled experiments (see "work/old/" section below).
+
+`Snakefile`, `config.yaml`, `CLAUDE.md`, `paper.md`, `.gitignore` are the only
+tracked files at root. No shell orchestrators — invoke via `snakemake`.
 
 ## Pipeline (Snakefile + scripts/ + config.yaml)
 
-One Snakemake workflow (~1500 lines, ~60 rules) configured by
+One Snakemake workflow (~1700 lines, 67 rules) configured by
 [config.yaml](config.yaml) (`configfile:`). It is **not** linear: a scan/filter
 core fans out into many independent analysis and plotting arms. `scripts/` holds
-~36 standalone Python CLIs plus a few `.sh` helpers; each rule shells out to one.
+~70 standalone Python CLIs; each rule shells out to one. **The Snakefile is
+canonical** — all prior shell orchestrators (`run_full_survey.sh`,
+`run_test_survey.sh`, `_survey_env.sh`, `blast_by_arch.sh`,
+`restriction_factor_sweep.sh`, `apply_good_orthologs.sh`) were retired in the
+2026-06-05 deslop because the Snakefile covers every stage they wrapped.
+
 There are no tests or lints — iterate by running a stage directly with the same
-args the rule uses.
+args the rule uses (or `snakemake -n --rulegraph` for DAG inspection).
 
 ### Core survey path
 1. `manifests` / `refseq_urls` / `tara_archives` / `download_refseq` — build
@@ -65,13 +84,53 @@ args the rule uses.
 - **Interstitial arrays** — `make_unannotated_masks` → `find_interstitial_arrays`
   + splice-candidate filtering (telomeric arrays *outside* introns, as a contrast).
 - **Motif discovery** (`envs/meme.yaml`) — STREME on telotrons / non-telo introns /
-  linkers / branchpoints; FIMO branchpoint scan.
-- **Telomerase / TERT homology** — `fetch_telomerase_db` (UniProt Swiss-Prot),
-  BLAST telomerase vs genomes; TERT deep-homology search (`fetch_tert_seeds_hmms`
-  → `find_tert`, miniprot + Pfam TRBD/RVT).
+  linkers. (Branchpoint STREME/FIMO arm retired 2026-07-14 — never produced a
+  usable per-species PWM at coccidian divergence.)
+- **TERT homology** — `fetch_tert_seeds_hmms` → `find_tert` (miniprot + Pfam
+  TRBD/RVT deep-homology search). Recovers Eimeria and sister coccidia TERT
+  below BLAST detection. (The old proteome-BLAST arm — `fetch_telomerase_db`,
+  `blast_telomerase_vs_genomes`, `process_telomerase_blast`,
+  `find_gene_deep_homology` — was retired 2026-07-14; its per-genome
+  BLAST-based i-Evalues were superseded by the HMM-based `find_tert` results.)
+- **Telotron-gene orthologs** (`orthologs` target) — `telotron_ortholog_align`: for each
+  telotron-host gene, miniprot-maps the orthologous locus in a panel of telotron-negative
+  sisters + cross-Eimeria, aligns the gene in protein space (introns removed), and DNA-aligns
+  the telotron against the orthologous intron where present. Resolves fill-vs-create per locus;
+  flags (does **not** correct) frameshifts/stops at the homologous junction as bad intron-
+  boundary alignment. Config: `telotron_ortholog` (focal_ids, ortholog_ids, cutoffs).
+  Two viewers consume its output: `plot_telotron_ortholog_loci` (compiled per-locus PDF:
+  flanking-exon protein MSA + flank DNA + intron DNA, poorly-flank-aligned orthologs dropped)
+  and `telotron_ortholog_textdump` (per-locus text files — unaligned/aligned × DNA/aa for
+  flanks+intron — grouped into `locus_text/{intron_present_nontelo,telotron_present,intron_absent,uncertain}/`).
 - **Figures** — ~20 plotting rules: boundary-kmer plots, splice/sequence logos
   (telotron, control, composite, by-architecture, by-5′/3′-category), array-length
   distributions, terminal-motif density, pipeline-stage diagram.
+- **Architecture / linker / interstitial-ITS** (`architecture_analyses` target, added
+  2026-06-04) — `interstitial_ortholog_textdump` (non-genic ITS DNA-flank orthology,
+  gold-standard ≥4-unit/<1mm-per-unit filter; chains off `find_interstitial_arrays`),
+  `linker_segmentation` + `cluster_linkers` (telotron array/linker decomposition),
+  `mask_telotron_arrays` (G/A/L architecture cartoon + MSA), `ortholog_review_html`
+  (`build_ortholog_review.py` interactive reviewer). The linker/mask/review rules read
+  `work/results/telotron_orthologs_v2/locus_text` (a **manual** v2 ortholog run — reconcile
+  to fully connect the DAG). `curate_locus_text.py` (in-place review-decision curation) and
+  `wrap_locus_text.py` are human-in-the-loop tools, run by hand not as DAG rules.
+- **Analysis arm** (`analysis_arm` target, wired 2026-06-16) — the previously hand-run
+  downstream scripts whose inputs are regenerable from the core pipeline: `nucleosome_features`
+  (telomere-MASKED composition/periodicity panel + BH-FDR), `nucleosome_withingene` (within-gene
+  sibling-intron control), `telotron_gene_bias` (host vs **disjoint** non-host gene class),
+  `telotron_per_intron`, `length_distribution_by_arch` + `length_per_arm_figure` (BH-corrected,
+  single-MAG caveat), `mechanism_diagrams`, and the RNA-seq **expression arm**
+  (`telotron_expr_figures` + `rnaseq_gene_coverage`: per-species SRA→`samtools bedcov` gene coverage
+  driven by `config["rnaseq"]`, writing `work/results/rnaseq/{species}_gene_cov.tsv` — replaces the old
+  hand-run `run_pipeline.sh` + ephemeral `/tmp/eten_gene_cov.tsv`; the optional locus-level splice panel
+  still needs the manual `data/raw/rnaseq_splice_2026/per_locus_counts.tsv` and is skipped if absent).
+  **Not wired** (need external/non-regenerable inputs — documented in a Snakefile note after the
+  `analysis_arm` rule): the
+  Hi-C arm (`hic_*` — ENA FASTQs + cooltools), the ONT arm (`ont_*` — ONT BAM + `work/old/` JSON),
+  the age-ladder / cross-strain scripts (`age_ladder_*`, `expanded_*`, `crossstrain_telotron`
+  — all read the long-read archive under `data/raw/longread/`), and `build_telogator2_ref`
+  (hand-curated cap survey). `characterize_arrays`, `extend_telomeres_from_reads`,
+  `detect_telomere_boundaries` are CLI-parameterised helpers (the last is driven by `telomere_boundaries`).
 
 ### Running it
 ```bash
@@ -84,12 +143,13 @@ snakemake -j 16
 
 snakemake -n                                     # dry run
 snakemake --use-conda -j 8 --forcerun scan_all   # single-stage rerun
+
+# Test on the 22-species set: set `accessions: [...]` in config.yaml or:
+snakemake -j 8 --config 'accessions=["GCF_000499545.2","GCF_000499605.1",...]'
 ```
 Config (threads, `refseq_groups`, `accessions` whitelist, `telomere_motifs`,
 `canonical_telomere_motifs`, `scan`/`filter` cutoffs, data-source URLs) lives in
-`config.yaml`; override with `--config k=v` or `--configfile`. Hand-run drivers
-also exist in `scripts/` (`run_full_survey.sh` for the production survey,
-`run_test_survey.sh` for a small test manifest).
+`config.yaml`; override with `--config k=v` or `--configfile`.
 
 ## Non-obvious constraints (still apply)
 
@@ -112,14 +172,26 @@ also exist in `scripts/` (`run_full_survey.sh` for the production survey,
 ## External data sources
 - **NCBI RefSeq** assembly summary and **Tara Oceans SMAGs v1** — URLs in
   `config.yaml` (`refseq_url`, `tara_base`).
-- **UniProt Swiss-Prot** FASTA for the telomerase DB — hard-coded in the
-  `fetch_telomerase_db` rule.
 
 ## work/old/
-Reference archive only; don't import from it. Notable: `work/old/AGENT_HANDOFF.md`,
-`work/old/MANUSCRIPT_AUDIT_REPORT.md`, `work/old/pan_euk_telotrons/` (v1/v2 surveys,
-ULTRA-based scanner, validated `real_telotrons/`), `work/old/tara_oceans_euk_mags/`
-(606-MAG discovery pipeline), many ED figures and draft `.docx`. Also
-`work/old/_deslop_2026-05-29/` — items pulled out of the live tree during the
-2026-05-29 cleanup (a source backup, redundant AF3 zips, two superseded one-off
-scripts, a stray `pangraph` binary).
+Reference archive only; don't import from it. Aggressive-prune pass on
+2026-07-14 removed the 5 largest historical dirs (`pan_euk_telotrons/` 408G,
+`good_set/` 172G, `analysis_2026-06/` 81G, `tara_oceans_euk_mags/` 28G,
+`comparative_genomics_2026-06/` 5G) — total ~694G reclaimed; findings live in
+memory files and prior commit history. Notable surviving subtrees:
+- `work/old/AGENT_HANDOFF.md`, `MANUSCRIPT_AUDIT_REPORT.md` (top-level audit notes)
+- `work/old/eimeria_rnaseq/` (22G), `work/old/toxo_rnaseq/` (16G) — RNA-seq
+  workspaces used for the expression arm's original hand-runs.
+- `work/old/its_comparison/` (5.5G) — cross-clade ITS load comparison inputs.
+- `work/old/figs/` (3.7G) — legacy figure workspaces (superseded by
+  `work/results/figures/`).
+- `work/old/_deslop_2026-05-29/` (244M) — 2026-05-29 cleanup (source backup,
+  redundant AF3 zips, superseded scripts, stray `pangraph` binary).
+- `work/old/_deslop_2026-06-04/scripts/` (4.9G total dir) — 67 one-off
+  mechanism-deep-dive scripts (kill-tests `k1–k4`, `q2/q3`, `probe_*`,
+  `subtelo_*`, one-off `plot_*`/`telotron_intron_*`).
+- `work/old/audit_2026-06/` (310M) — 2026-06-05 deslop: dated audit snapshots
+  (`register_lock`, `pipeline_review`, `pipeline_fixes`, `intron_overwrite`,
+  `artifact_2026-05-29` formerly `.artifact/` at root).
+- `work/old/paper_backups/` — pre-round manuscript backups (adversarial-review,
+  MAG-highlight, round-4).

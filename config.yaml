@@ -1,3 +1,53 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# TELOTRON DEFINITION THRESHOLDS — single source of truth (consolidation 2026-06-05)
+#
+# Five concurrent thresholds gate what counts as a "telotron"-related signal
+# at different stages. They are intentionally separate (each does different
+# work); this header maps each one to its config key, script consumer, and
+# Snakefile read site so the call hierarchy is auditable in one place.
+#
+# 1. scan.min_repeat_frac = 0.30
+#    Permissive upstream sieve over EVERY annotated intron. Controls which
+#    introns advance from `scan_all` (scripts/scan_telotrons.py) to filtering.
+#    Read in: Snakefile (SCAN_MIN_FRAC) → --min-repeat-frac to scan_telotrons.py.
+#
+# 2. filter.min_repeat_frac = 0.85
+#    Strict single-array admission threshold for the final telotron set.
+#    Densely G- or C-rich introns must meet this in filter_final_set.py.
+#    Read in: Snakefile (FILTER_MIN_FRAC) → --min-repeat-frac to filter_final_set.py.
+#
+# 3. filter.bidir_min_repeat_frac = 0.40  (+ filter.bidir_min_hits = 3)
+#    Looser bidirectional admission pathway: catches DIVERGING+LINKER and
+#    CONVERGING-with-linker introns that fall below 0.85 but show telomeric
+#    repeats on BOTH strands (≥3 hits each).
+#    Read in: Snakefile (FILTER_BIDIR_FRAC / FILTER_BIDIR_HITS) → filter_final_set.py.
+#
+# 4. architecture.min_array_bp = 18
+#    Minimum F or R array length (bp) for architecture classification. Below
+#    this, a stretch of motif hits is treated as noise rather than a real
+#    G-rich (F) or C-rich (R) arm.
+#    Read in: Snakefile → --min-array to classify_telotron_architecture.py
+#             AND msa_telotron_regions.py (both must agree, since the MSA
+#             script reuses the classifier's arm splits).
+#
+# 5. interstitial.min_array_len = 30   (NON-Giulotto upstream scan)
+#    Minimum array length (bp) to retain in find_interstitial_arrays.py's
+#    permissive sweep over non-genic, non-intronic genomic ITS hits. NOT the
+#    paper threshold — this is the broad-net stage before gold-standard
+#    re-filtering.
+#    Read in: Snakefile → --min-array-len to find_interstitial_arrays.py.
+#
+# 6. interstitial.min_its_units = 4    (Giulotto/Nergadze/Santagostino standard)
+#    Gold-standard ITS criterion: ≥4 telomeric repeats AND identity ≥6/7 to a
+#    perfect tandem (TTTAGGG)_n (<1 mismatch per unit). This is the literature
+#    cutoff (Nergadze 2007, Santagostino 2020). Used in
+#    interstitial_ortholog_textdump.py to re-filter the permissive sweep above.
+#    Read in: Snakefile → --min-its-units to interstitial_ortholog_textdump.py.
+#
+# Memory references: [[its-detection-gold-standard]] (criteria for #6),
+#                    [[telotron_polarity_selection]] (why #3 catches bidir).
+# ──────────────────────────────────────────────────────────────────────────────
+
 threads: 32
 
 env: envs/telotrons.yaml
@@ -98,7 +148,9 @@ canonical_telomere_motifs:
 # Scan stage: broad sieve.
 scan:
   min_repeat_frac: 0.30
-  max_flank_repeat_frac: 0.50    # rejects misannotated telomere arrays at flanking exons
+  max_flank_repeat_frac: 0.25    # tightened from 0.50 → 0.25; misannotated subtelomere introns
+                                 # (e.g. Monocercomonoides, Brugia) sit exactly at 0.50.
+  min_intron_len: 30             # rejects degenerate 1-bp GFF intron annotations
 
 # Filter stage: stricter cutoffs that produce final_telotron_set.tsv.
 # Two pathways admit a locus:
@@ -110,12 +162,37 @@ filter:
   bidir_min_repeat_frac: 0.40
   bidir_min_hits: 3
   collapse_unique_loci: true
-  require_terminal_motif_match: true   # intronic motif must match the genome's terminal motif
+  # require_terminal_motif_match: forces the intronic motif to equal the
+  # genome's dominant terminal-end motif. Does real structural work (kills
+  # cross-motif noise), BUT makes "intronic ITS elevated in validated species"
+  # a CIRCULAR finding — validated species are by construction species whose
+  # intronic motif matches the contig-end motif. Downstream comparisons of
+  # validated vs non-validated intronic motif density inherit this circularity.
+  # Memory: [[feedback_intronic_ITS_circular]]. See also review_survey_core.md
+  # lines 174-184. Lead with non-circular results downstream.
+  require_terminal_motif_match: true
   require_canonical_splice: false      # set true to keep only GT-AG introns
+
+# Architecture-classification stage (scripts/classify_telotron_architecture.py
+# and scripts/msa_telotron_regions.py, which reuses the same arm definition).
+# See top-of-file threshold map (#4).
+architecture:
+  min_array_bp: 18           # minimum F or R array length to count as an arm
+
+# Interstitial-array sweep and gold-standard ITS re-filter. See top-of-file
+# threshold map (#5 and #6).
+#   min_array_len: permissive upstream sweep in find_interstitial_arrays.py
+#   min_its_units: literature gold standard in interstitial_ortholog_textdump.py
+#                  (Nergadze 2007, Santagostino 2020 — DO NOT relax without
+#                   updating the paper claim).
+interstitial:
+  min_array_len: 30
+  min_its_units: 4
 
 # Focal genomes for the telomerase / TERT homology searches. Centralized here
 # (single source of truth) instead of hardcoded in the Snakefile.
-# blast_genome_ids: telomerase-ortholog BLAST targets (5 Eimeria + 3 Tara MAGs).
+# blast_genome_ids: telomerase-ortholog BLAST targets (5 Eimeria + 3 Tara MAGs +
+# 4 telotron-negative sister coccidia for contrast — added 2026-06-05).
 blast_genome_ids:
   - GCF_000499385.1          # Eimeria necatrix
   - GCF_000499425.1          # Eimeria acervulina
@@ -125,12 +202,107 @@ blast_genome_ids:
   - TARA_AON_82_MAG_00313
   - TARA_MED_95_MAG_00464
   - TARA_PSW_86_MAG_00284
-# tert_genome_ids: TERT deep-homology targets (5 Eimeria + Toxoplasma control).
+  - GCF_000006565.2          # Toxoplasma gondii    (telotron-negative sister)
+  - GCF_000208865.1          # Neospora caninum     (telotron-negative sister)
+  - GCF_002999335.1          # Cyclospora cayetanensis
+  - GCF_002563875.1          # Besnoitia besnoiti
+# tert_genome_ids: TERT deep-homology targets — full BLAST panel:
+# 5 Eimeria + 4 telotron-negative coccidian sisters + 3 Tara MAGs.
+# Expanded 2026-06-05 (A2) so find_tert covers TARA_MED_95_MAG_00464 (BLAST e=1.58e-54)
+# and the sister coccidia that were previously search-omitted.
 tert_genome_ids:
   - GCF_000499385.1          # Eimeria necatrix
   - GCF_000499425.1          # Eimeria acervulina
   - GCF_000499545.2          # Eimeria tenella
   - GCF_000499605.1          # Eimeria maxima
   - GCF_000499745.2          # Eimeria mitis
-  - GCF_000006565.2          # Toxoplasma gondii (sister-taxon positive control)
+  - GCF_000006565.2          # Toxoplasma gondii         (telotron-negative sister)
+  - GCF_000208865.1          # Neospora caninum          (telotron-negative sister)
+  - GCF_002999335.1          # Cyclospora cayetanensis   (telotron-negative sister)
+  - GCF_002563875.1          # Besnoitia besnoiti        (telotron-negative sister)
+  - TARA_AON_82_MAG_00313    # Tara Oceans SMAG (TERT-BLAST-screened)
+  - TARA_MED_95_MAG_00464    # Tara Oceans SMAG (BLAST e=1.58e-54 — confirmed TERT hit)
+  - TARA_PSW_86_MAG_00284    # Tara Oceans SMAG (TERT-BLAST-screened)
 
+# ── Telotron ortholog alignment (scripts/telotron_ortholog_align.py) ──────────
+# For each telotron-host gene: find the orthologous locus in each panel genome
+# (miniprot, intron-aware), align the gene in PROTEIN space (introns removed),
+# and DNA-align the telotron against the orthologous intron where one is present.
+# Frameshifts / premature stops at the homologous junction are FLAGGED as
+# bad intron-boundary alignment (n_frameshift, frameshift_at_junction) and NOT
+# corrected. Resolves fill-vs-create per locus.
+telotron_ortholog:
+  focal_ids:                 # telotron-positive genomes to take host genes from
+    - GCF_000499385.1        # Eimeria necatrix
+    - GCF_000499545.2        # Eimeria tenella
+    - GCF_000499605.1        # Eimeria maxima
+    - GCF_000499425.1        # Eimeria acervulina
+    - GCF_000499745.2        # Eimeria mitis
+  ortholog_ids:              # genomes searched for orthologs (telotron- sisters + cross-Eimeria)
+    - GCF_000006565.2        # Toxoplasma gondii   (telotron-negative sister)
+    - GCF_000208865.1        # Neospora caninum    (telotron-negative sister)
+    - GCF_002999335.1        # Cyclospora cayetanensis
+    - GCF_002563875.1        # Besnoitia besnoiti
+    - GCF_002600585.1        # Cystoisospora suis
+    - GCF_000499385.1        # cross-Eimeria (shared-telotron detection)
+    - GCF_000499545.2
+    - GCF_000499605.1
+    - GCF_000499425.1
+    - GCF_000499745.2
+  min_array_bp: 50           # ignore degenerate micro-telotrons below this
+  min_identity: 0.40         # miniprot ortholog identity floor (raised 0.20→0.40 per FIXES_APPLIED 2026-06-05)
+  intron_tol: 8              # residue tolerance for homologous-intron / frameshift position
+
+# ── Assembly-based telomere boundary detection ─────────────────────────────────
+# Field-standard motif sliding-window scan on assembled long-read contigs.
+# Identifies the most-internal canonical-motif position contiguous with each
+# contig end (allowing gaps up to max_gap_bp), reporting boundary position
+# and telomere length per chromosome arm.
+telomere_boundaries:
+  # species_id : (assembly_path, G-rich motif). Motif per species per memory
+  # `eimeria_longread_t2t_assemblies_2026-05-30`.
+  assemblies:
+    Etenella:    { path: data/raw/longread/Etenella.fna.gz,    motif: TTTAGGG }
+    Emaxima:     { path: data/raw/longread/Emaxima.fna.gz,     motif: TTAGGG  }
+    Eacervulina: { path: data/raw/longread/Eacervulina.fna.gz, motif: TTTAGGG }
+  scan_kb: 20            # kb scanned from each contig end
+  window_bp: 200         # sliding-window size for density calc
+  density_frac: 0.70     # min motif coverage within the called region
+  max_gap_bp: 100        # max consecutive non-motif bp allowed in the run
+  min_units: 5           # min motif units to call a telomere
+  max_mm_per_unit: 1     # mismatches allowed per motif unit
+
+
+# ── Telogator2 allele-specific telomere-length / TVR caller ────────────────────
+# Replaces the retired TARPON pipeline; see Snakefile `telogator2_one` rule.
+# subtelomere_ref must use <species>_chr<N><p|q> naming (see
+# scripts/build_telogator2_ref.py); the underlying renamed FASTA is built
+# from results/telogator2_ref/subtelomeres/all_subtelomeres.fasta and
+# results/telogator2_ref/cap_survey.tsv.
+# its_bed is consumed POST-HOC (Telogator2 has no -bed flag) to flag
+# interstitial-array alignments in tlens_by_allele.tsv.
+telogator2:
+  env: telogator2                                                              # micromamba env name
+  repo: /scratch1/alex/telogator2                                              # cloned repo path
+  subtelomere_ref: results/telogator2_ref/all_subtelomeres.telogator2.fasta    # renamed Eimeria ref
+  its_bed: results/telogator2_ref/its_catalog.bed                              # gold-standard ITS BED (post-hoc)
+  read_type: ont                                                               # ont | hifi
+  min_reads_per_cluster: 3                                                     # -n; 4 for ~30x ONT, 3 for shallower WGS
+
+# ── RNA-seq gene-level coverage (expression-vs-telotron arm) ───────────────────
+# Per-species short-read RNA-seq -> gene depth-sum TSV (samtools bedcov) via
+# scripts/rnaseq_gene_coverage.py. Consumed by telotron_expr_*.py
+# (work/results/rnaseq/{species}_gene_cov.tsv). Each entry: the genome FASTA+GFF
+# (must be a downloaded RefSeq assembly) and the SRA run accession(s).
+# tenella RNA-seq = SRR7153211 + SRR7153212 (~89M pairs); necatrix = SRR14557240.
+rnaseq:
+  threads: 12
+  species:
+    eten:
+      genome: data/raw/refseq/GCF_000499545.2/GCF_000499545.2_ETH001_genomic.fna
+      gff:    data/raw/refseq/GCF_000499545.2/GCF_000499545.2_ETH001_genomic.gff
+      srr:    [SRR7153211, SRR7153212]
+    necatrix:
+      genome: data/raw/refseq/GCF_000499385.1/GCF_000499385.1_ENH001_genomic.fna
+      gff:    data/raw/refseq/GCF_000499385.1/GCF_000499385.1_ENH001_genomic.gff
+      srr:    [SRR14557240]

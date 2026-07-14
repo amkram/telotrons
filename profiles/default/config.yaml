@@ -1,3 +1,0 @@
-use-conda: true
-conda-prefix: ~/.snakemake-envs/telotrons
-cores: 32

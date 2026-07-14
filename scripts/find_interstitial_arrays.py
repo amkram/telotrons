@@ -156,9 +156,13 @@ def extend_array(seq, start, end, motif_list):
         # Anchor rotation: best match to seq[start:start+L]
         head = seq[start:start + L]
         anchor = max(rots, key=lambda r: sum(a == b for a, b in zip(head, r)))
-        # Bail if even the anchor frame is a poor fit (>1 mismatch on the head).
+        # Bail if even the anchor frame is a poor fit. The extension loop allows
+        # ≤1 mm per unit (≈1/7 ≈ 14%); scale the seed tolerance the same way so
+        # 5-bp (TTAGG) and 12-bp (Allium) motifs face equal *relative* bars at
+        # the seed — fixes NC-7 (verify_interstitial_ITS) asymmetric bail-out.
         head_mm = sum(a != b for a, b in zip(head, anchor))
-        if head_mm > 1:
+        head_mm_max = max(1, L // 7)
+        if head_mm > head_mm_max:
             continue
 
         # Extend right: expected block at offset k from `start` is

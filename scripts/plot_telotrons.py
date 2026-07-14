@@ -7,7 +7,12 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import pandas as pd
 
-from _common import slug as _slug, TEAL, RUST, GOLD, GREY, ORIENT_COLORS
+from _common import (
+    slug as _slug,
+    TEAL, RUST, GOLD, GREY,
+    ORIENT_COLORS,
+    ARCH_ORDER, ARCH_COLORS,
+)
 
 
 def plot_counts(species, outdir):
@@ -31,13 +36,31 @@ def plot_species(genome_id, organism, final_g, kmers_g, dist_row, arch_g, outdir
     fig = plt.figure(figsize=(11, 7), layout="constrained")
     gs = gridspec.GridSpec(2, 2, figure=fig)
 
-    # ── Panel A: orientation breakdown ──────────────────────────────────────
+    # ── Panel A: splice architecture breakdown ──────────────────────────────
+    # Drives the panel from `architecture` (classify_telotron_architecture)
+    # rather than `orientation` so the bidirectional GT-F-R-AG /
+    # GT-{F,R}-linker-{R,F}-AG classes are surfaced individually instead of
+    # being collapsed into the orientation `Mixed` bin. See
+    # verify_figures_visualization new_concern 4 (2026-06-04) +
+    # telotron_two_linker_classes_2026-06-03. Falls back to `orientation` if
+    # the `architecture` column is missing from older final-set TSVs.
     ax_or = fig.add_subplot(gs[0, 0])
-    orient_counts = final_g["orientation"].value_counts()
-    colors = [ORIENT_COLORS.get(o, GREY) for o in orient_counts.index]
-    ax_or.bar(orient_counts.index, orient_counts.values, color=colors)
+    if "architecture" in final_g.columns and final_g["architecture"].notna().any():
+        arch_counts = final_g["architecture"].value_counts()
+        ordered = [a for a in ARCH_ORDER if a in arch_counts.index]
+        for a in arch_counts.index:
+            if a not in ordered:
+                ordered.append(a)
+        arch_counts = arch_counts.reindex(ordered)
+        colors = [ARCH_COLORS.get(a, GREY) for a in arch_counts.index]
+        ax_or.bar(arch_counts.index, arch_counts.values, color=colors)
+        ax_or.set_title("Splice architecture")
+    else:
+        orient_counts = final_g["orientation"].value_counts()
+        colors = [ORIENT_COLORS.get(o, GREY) for o in orient_counts.index]
+        ax_or.bar(orient_counts.index, orient_counts.values, color=colors)
+        ax_or.set_title("Splice orientation")
     ax_or.set_ylabel("loci")
-    ax_or.set_title("Splice orientation")
     ax_or.spines[["top", "right"]].set_visible(False)
     for tick in ax_or.get_xticklabels():
         tick.set_rotation(30)
@@ -55,13 +78,34 @@ def plot_species(genome_id, organism, final_g, kmers_g, dist_row, arch_g, outdir
     ax_len.spines[["top", "right"]].set_visible(False)
 
     # ── Panel C: top boundary k-mers ────────────────────────────────────────
+    # analyze_telotrons.py writes Fisher p + BH q (`bh_q`) and flags the
+    # boundary-k-mer comparison as "partly DEFINITIONAL" (telomere-motif
+    # rotations are guaranteed enriched). Filter by q<0.05 when the column
+    # is present; otherwise retitle as descriptive so the reader cannot
+    # misread the panel as an enrichment test
+    # (verify_figures_visualization Finding 7, 2026-06-04).
     ax_km = fig.add_subplot(gs[1, 0])
     if kmers_g is not None and not kmers_g.empty:
-        top = kmers_g.sort_values("fold_enrichment", ascending=False).head(15)
-        ax_km.barh(top["kmer"][::-1], top["fold_enrichment"][::-1], color=RUST)
-        ax_km.set_xlabel("fold enrichment")
-        ax_km.set_title("Boundary k-mers (top 15)")
-        ax_km.spines[["top", "right"]].set_visible(False)
+        if "bh_q" in kmers_g.columns:
+            sig = kmers_g[kmers_g["bh_q"] < 0.05]
+            title = "Boundary k-mers (q<0.05, top 15)"
+        else:
+            sig = kmers_g
+            title = "Boundary k-mers (top 15, descriptive)"
+        if not sig.empty:
+            top = sig.sort_values("fold_enrichment", ascending=False).head(15)
+            ax_km.barh(top["kmer"][::-1], top["fold_enrichment"][::-1], color=RUST)
+            ax_km.set_xlabel("fold enrichment")
+            n_shown = len(top)
+            if n_shown < 15:
+                title = f"{title.split(',')[0]} (n={n_shown})"
+            ax_km.set_title(title)
+            ax_km.spines[["top", "right"]].set_visible(False)
+        else:
+            ax_km.text(0.5, 0.5, "no kmers pass q<0.05", ha="center", va="center",
+                       transform=ax_km.transAxes, color=GREY)
+            ax_km.set_title("Boundary k-mers")
+            ax_km.axis("off")
     else:
         ax_km.text(0.5, 0.5, "no boundary k-mer data", ha="center", va="center",
                    transform=ax_km.transAxes, color=GREY)
@@ -79,13 +123,30 @@ def plot_species(genome_id, organism, final_g, kmers_g, dist_row, arch_g, outdir
     ax_dist.set_title("Distance to contig end")
     ax_dist.spines[["top", "right"]].set_visible(False)
     if dist_row is not None:
+        # The histogram is over every positive locus (all contigs); the
+        # median line comes from analyze_telotrons.distance_to_end() which
+        # restricts to capped contigs (capped_only=True). Label the line
+        # so the two denominators are not visually conflated
+        # (verify_figures_visualization Finding 6, 2026-06-04).
         med = dist_row["median_telotron_distance_to_end"] / 1e3
         ax_dist.axvline(med, color=RUST, linestyle="--", linewidth=1,
-                        label=f"median {med:.1f} kb")
+                        label=f"median {med:.1f} kb (capped contigs)")
         ax_dist.legend(fontsize=8)
 
     n = len(final_g)
-    motif = final_g["terminal_motif"].iloc[0] if "terminal_motif" in final_g.columns else ""
+    # Summarise all distinct terminal motifs at the species level rather
+    # than reading `.iloc[0]` as if it were scalar — 18% of focal Eimeria
+    # telotrons mix TTAGGG + TTTAGGG at the same locus
+    # (telotron_within_locus_motif_mixing_2026-06-03;
+    # verify_figures_visualization new_concern 5, 2026-06-04).
+    if "terminal_motif" in final_g.columns:
+        motifs = (
+            final_g["terminal_motif"].dropna().astype(str)
+            .replace({"": pd.NA}).dropna().unique().tolist()
+        )
+        motif = ",".join(sorted(motifs)) if motifs else ""
+    else:
+        motif = ""
     fig.suptitle(f"{organism}  ({genome_id})   n={n} loci   motif: {motif}",
                  fontsize=10, fontweight="bold")
 

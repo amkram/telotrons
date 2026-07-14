@@ -146,8 +146,12 @@ def find_genome_files(gid, refseq_dir, tara_dir):
     """Locate (fasta, gff) for a genome; either element may be None."""
     if gid.startswith("TARA"):
         fa = glob.glob(f"{tara_dir}/Contigs/{gid}.fa*")
-        gff = (glob.glob(f"{tara_dir}/Annot/{gid}.gff*")
-               or glob.glob(f"{tara_dir}/**/{gid}.gff*", recursive=True))
+        # Tara MAG GFFs are named `<gid>.gmove.gff` (Genoscope gmove), so the
+        # glob needs a `*` between gid and `.gff` — the prior `{gid}.gff*` never
+        # matched them (left find_genome_files returning gff=None for every MAG).
+        gff = (glob.glob(f"{tara_dir}/Genes/GFF/{gid}*.gff*")
+               or glob.glob(f"{tara_dir}/Annot/{gid}*.gff*")
+               or glob.glob(f"{tara_dir}/**/{gid}*.gff*", recursive=True))
     else:
         fa = glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.fna*", recursive=True)
         gff = glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.gff*", recursive=True)
@@ -222,8 +226,13 @@ GREY = "#AAAAAA"
 ORIENT_COLORS = {
     "Fwd/G-rich": TEAL,
     "Rev/C-rich": RUST,
-    "Bidirectional": GOLD,
-    "Unknown": GREY,
+    # Keys must match scan_telotrons.classify_orientation outputs
+    # ("Fwd/G-rich", "Rev/C-rich", "Mixed", "None"). Previously this map
+    # used "Bidirectional"/"Unknown", which never matched and silently
+    # collapsed bidirectional + linker loci to GREY (per
+    # verify_figures_visualization Finding F, 2026-06-04).
+    "Mixed": GOLD,
+    "None": GREY,
 }
 
 # Splice-architecture categories emitted by classify_telotron_architecture.py.
@@ -238,4 +247,39 @@ ARCH_COLORS = {
     "GT-F-linker-R-AG": GOLD,
     "GT-R-linker-F-AG": "#8B5A99",
     "Other":            "#BBBBBB",
+}
+
+
+# --------------------------------------------------------------------------- #
+# Focal-panel accession <-> species map (single source of truth)
+# --------------------------------------------------------------------------- #
+# The 5 RefSeq Eimeria genomes + the 2 outgroup coccidia used as the focal
+# panel for ortholog/architecture work. Ground truth verified from each
+# assembly's FASTA description lines and the strain code in its filename:
+#   GCF_000499385.1 / ENH001 -> Eimeria necatrix Houghton
+#   GCF_000499425.1 / EAH001 -> Eimeria acervulina Houghton
+#   GCF_000499545.2 / ETH001 -> Eimeria tenella Houghton
+#   GCF_000499605.1 / EMW001 -> Eimeria maxima Weybridge
+#   GCF_000499745.2 / EMH001 -> Eimeria mitis Houghton
+# NB: Eimeria brunetti and Eimeria praecox are NOT in this panel; if those
+# names appear in a downstream TSV the upstream script had a swapped map.
+SPECIES_BY_ACC = {
+    "GCF_000499385.1": "Eimeria_necatrix",
+    "GCF_000499425.1": "Eimeria_acervulina",
+    "GCF_000499545.2": "Eimeria_tenella",
+    "GCF_000499605.1": "Eimeria_maxima",
+    "GCF_000499745.2": "Eimeria_mitis",
+    "GCF_000006565.2": "Toxoplasma_gondii",
+    "GCF_000208865.1": "Neospora_caninum",
+}
+
+# Short 4-letter abbreviations used in locus_text rows and downstream TSVs.
+SPECIES_ABBREV = {
+    "Eimeria_necatrix":   "Enec",
+    "Eimeria_acervulina": "Eace",
+    "Eimeria_tenella":    "Eten",
+    "Eimeria_maxima":     "Emax",
+    "Eimeria_mitis":      "Emit",
+    "Toxoplasma_gondii":  "Tgon",
+    "Neospora_caninum":   "Ncan",
 }

@@ -60,57 +60,99 @@ def main():
             return fa_handles[arch_key], fl_handles[arch_key]
 
         n = 0
-        for r in sub.itertuples(index=False):
-            chrom = seqs.get(r.seqid, "")
-            if not chrom:
-                continue
-            L = len(chrom)
-            ls = max(0, r.start - 1 - args.flank)
-            le = r.start - 1
-            rs = r.end
-            re_ = min(L, r.end + args.flank)
-            # Build all sequences in display (spliced) orientation
-            genomic = chrom[r.start - 1:r.end]
-            if r.strand == "-":
-                intron = rc(genomic)
-                left = rc(chrom[rs:re_])
-                right = rc(chrom[ls:le])
-            else:
-                intron = genomic
-                left = chrom[ls:le]
-                right = chrom[rs:re_]
+        try:
+            for r in sub.itertuples(index=False):
+                chrom = seqs.get(r.seqid, "")
+                if not chrom:
+                    continue
+                L = len(chrom)
+                # Requested flank window (may extend off contig); track actual+pad
+                ls_req = r.start - 1 - args.flank
+                re_req = r.end + args.flank
+                ls = max(0, ls_req)
+                le = r.start - 1
+                rs = r.end
+                re_ = min(L, re_req)
+                left_pad_n = max(0, -ls_req)            # N's prepended to left flank (genomic)
+                right_pad_n = max(0, re_req - L)        # N's appended to right flank (genomic)
+                # Genomic-orientation flanks before strand flip + padding
+                left_g = ("N" * left_pad_n) + chrom[ls:le]
+                right_g = chrom[rs:re_] + ("N" * right_pad_n)
+                # Build all sequences in display (spliced) orientation
+                genomic = chrom[r.start - 1:r.end]
+                if r.strand == "-":
+                    intron = rc(genomic)
+                    # On minus strand, display "left" is rc of genomic-right (and vice versa)
+                    left = rc(right_g)
+                    right = rc(left_g)
+                    # Display-orientation pad counts (rc swaps + reverses)
+                    disp_left_pad = right_pad_n
+                    disp_right_pad = left_pad_n
+                else:
+                    intron = genomic
+                    left = left_g
+                    right = right_g
+                    disp_left_pad = left_pad_n
+                    disp_right_pad = right_pad_n
 
-            arch = getattr(r, "architecture", "") if has_arch else ""
-            linker_seq = getattr(r, "linker_seq", "") if has_arch else ""
-            is_linker_arch = isinstance(linker_seq, str) and linker_seq and "linker" in arch
+                arch = getattr(r, "architecture", "") if has_arch else ""
+                linker_seq = getattr(r, "linker_seq", "") if has_arch else ""
+                is_linker_arch = isinstance(linker_seq, str) and linker_seq and "linker" in arch
 
-            if is_linker_arch:
-                # linker_seq was extracted from spliced (display) orientation by classify script
-                pos = intron.find(linker_seq)
-                if pos != -1:
-                    arr1 = intron[:pos]
-                    lnk = intron[pos:pos + len(linker_seq)]
-                    arr2 = intron[pos + len(linker_seq):]
+                if is_linker_arch:
+                    # Prefer classifier-emitted linker_start/linker_end (0-based, into
+                    # the spliced-orientation intron) — see classify_telotron_architecture.py.
+                    # Falls back to string-search only if those columns are absent or unparseable.
+                    lstart = getattr(r, "linker_start", None) if has_arch else None
+                    lend = getattr(r, "linker_end", None) if has_arch else None
+                    try:
+                        lstart_i = int(lstart)
+                        lend_i = int(lend)
+                        if 0 <= lstart_i < lend_i <= len(intron):
+                            arr1 = intron[:lstart_i]
+                            lnk = intron[lstart_i:lend_i]
+                            arr2 = intron[lend_i:]
+                        else:
+                            raise ValueError
+                    except (TypeError, ValueError):
+                        pos = intron.find(linker_seq)
+                        if pos != -1:
+                            arr1 = intron[:pos]
+                            lnk = intron[pos:pos + len(linker_seq)]
+                            arr2 = intron[pos + len(linker_seq):]
+                        else:
+                            arr1, lnk, arr2 = intron, "", ""
                 else:
                     arr1, lnk, arr2 = intron, "", ""
-            else:
-                arr1, lnk, arr2 = intron, "", ""
 
-            header = (f">{gid}|{r.seqid}|{r.start}-{r.end}|strand={r.strand}"
-                      f"|tx={r.tx_id}|gene={r.gene_id}|len={r.intron_len}"
-                      f"|motif={r.motif}|arch={arch}")
-            intron_out = arr1 + lnk + arr2
+                # Record actual emitted flank length AND N-pad counts so downstream
+                # tools can detect contig-edge truncation (review finding 3).
+                header = (f">{gid}|{r.seqid}|{r.start}-{r.end}|strand={r.strand}"
+                          f"|tx={r.tx_id}|gene={r.gene_id}|len={r.intron_len}"
+                          f"|motif={r.motif}|arch={arch}"
+                          f"|left_len={len(left)}|right_len={len(right)}"
+                          f"|left_pad_n={disp_left_pad}|right_pad_n={disp_right_pad}")
+                intron_out = arr1 + lnk + arr2
 
-            arch_key = arch if isinstance(arch, str) and arch else "Unknown"
-            fa_out, fl_out = _get_handles(arch_key)
-            fa_out.write(header + "\n" + intron_out + "\n")
-            if is_linker_arch and lnk:
-                fl_out.write(header + "\n" + left + " " + arr1 + " " + lnk + " " + arr2 + " " + right + "\n")
-            else:
-                fl_out.write(header + "\n" + left + " " + intron_out + " " + right + "\n")
-            n += 1
-        for h in fa_handles.values(): h.close()
-        for h in fl_handles.values(): h.close()
+                arch_key = arch if isinstance(arch, str) and arch else "Unknown"
+                fa_out, fl_out = _get_handles(arch_key)
+                fa_out.write(header + "\n" + intron_out + "\n")
+                if is_linker_arch and lnk:
+                    fl_out.write(header + "\n" + left + " " + arr1 + " " + lnk + " " + arr2 + " " + right + "\n")
+                else:
+                    fl_out.write(header + "\n" + left + " " + intron_out + " " + right + "\n")
+                n += 1
+        finally:
+            for h in fa_handles.values():
+                try:
+                    h.close()
+                except Exception:
+                    pass
+            for h in fl_handles.values():
+                try:
+                    h.close()
+                except Exception:
+                    pass
         per_arch = sub.groupby("architecture").size().to_dict() if "architecture" in sub.columns else {}
         print(f"  {gid}: {n} loci  " + " ".join(f"{a}={c}" for a, c in per_arch.items()))
 

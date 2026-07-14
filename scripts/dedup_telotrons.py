@@ -14,10 +14,13 @@ Method
       1. Extract 250 bp upstream and 250 bp downstream flanks per locus
          (spliced/display orientation) and write each as a separate FASTA record.
       2. blastn all-vs-all of the flanks (own DB, -dust no, word_size 11).
-      3. Two loci A and B are duplicates if their upstream flanks share an
-         alignment of >= MIN_LEN bp at >= MIN_PIDENT identity, OR their
-         downstream flanks do. Self-hits (A==B) and cross-side hits
-         (A.upstream vs B.downstream) are ignored.
+      3. Two loci A and B are duplicates if BOTH their upstream flanks AND
+         their downstream flanks share an alignment of >= MIN_LEN bp at
+         >= MIN_PIDENT identity (Ling 2007 — Apicomplexan multigene families
+         have ≥95% identity in flanks; requiring both sides simultaneously
+         prevents merging recent paralogs that independently acquired a
+         telotron). Self-hits (A==B) and cross-side hits (A.upstream vs
+         B.downstream) are ignored.
       4. Connected components in the duplicate graph collapse to one
          representative — the locus with the longest intron (tie-break: first
          occurrence). All other members are dropped.
@@ -36,7 +39,7 @@ import pandas as pd
 
 from _common import rc, slug as _slug, load_fasta, find_genome_fasta
 
-MIN_PIDENT = 90.0
+MIN_PIDENT = 95.0
 MIN_LEN = 100
 FLANK = 250
 
@@ -109,24 +112,38 @@ def dedup_one_species(gid, sub, chrom_seqs, tmpdir, threads):
     sp.run(["blastn", "-query", fa_path, "-db", db_prefix, "-out", out_blast,
             "-outfmt", "6 qseqid sseqid pident length",
             "-evalue", "1e-10", "-word_size", "11", "-dust", "no",
-            "-max_target_seqs", "200",
+            "-max_target_seqs", "1000",
             "-num_threads", str(threads)],
            check=True, stdout=sp.DEVNULL, stderr=sp.DEVNULL)
 
-    edges = []
+    # Collect per-side duplicate pairs separately; an edge is admitted only when
+    # BOTH the upstream and downstream flanks of the same locus pair are duplicates
+    # (Apicomplexan SAG/multigene families often share ≥95% flank identity on one
+    # side without being the same locus — requiring both sides preserves recent
+    # paralog insertions; Ling 2007).
+    pairs_U = set()
+    pairs_D = set()
     with open(out_blast) as fh:
         for line in fh:
             qid, sid, pid, ln = line.rstrip("\n").split("\t")
-            qi, qside = qid.split("|")
-            si, sside = sid.split("|")
+            qi_s, qside = qid.split("|")
+            si_s, sside = sid.split("|")
             if qside != sside:
                 continue                # only same-side hits count
-            qi, si = int(qi[1:]), int(si[1:])
+            try:
+                qi, si = int(qi_s[1:]), int(si_s[1:])
+            except ValueError:
+                continue                # malformed blast record id
             if qi == si:
                 continue                # self
             if float(pid) < MIN_PIDENT or int(ln) < MIN_LEN:
                 continue
-            edges.append((qi, si))
+            key = (qi, si) if qi < si else (si, qi)
+            if qside == "U":
+                pairs_U.add(key)
+            else:
+                pairs_D.add(key)
+    edges = [(a, b) for (a, b) in pairs_U & pairs_D]
 
     groups = union_find_groups(n, edges)
     keep = [False] * n

@@ -1,0 +1,6 @@
+name: nupop
+channels: [conda-forge, bioconda]
+dependencies:
+  - r-base
+  - bioconductor-nupop
+  - bioconductor-biostrings
