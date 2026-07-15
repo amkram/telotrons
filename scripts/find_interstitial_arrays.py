@@ -252,8 +252,14 @@ def parse_array_bed(bed_text):
 
 def process_genome(gid, organism, group, fa_path, gff_path, motifs_csv,
                    threads, terminal_bp, min_len, extra_mask_bed=None,
-                   base_motifs=None):
-    """Returns list[dict] of interstitial array records (or [] if errors)."""
+                   base_motifs=None, canonical_motif=None):
+    """Returns list[dict] of interstitial array records (or [] if errors).
+
+    `canonical_motif` is the per-genome curated motif (from canonical_motifs.tsv)
+    when known; when set, MAX_GAP is scaled to 2 * len(canonical_motif) so
+    long-motif taxa (Allium 12bp, Bombus 11bp) don't have arrays fragmented
+    at gaps smaller than one motif unit. Falls back to the config-wide max
+    when canonical_motif is None."""
     with tempfile.TemporaryDirectory(prefix="interst_") as tmpdir:
         fa_plain = maybe_decompress(fa_path, tmpdir)
         # samtools faidx for sort/length
@@ -266,10 +272,12 @@ def process_genome(gid, organism, group, fa_path, gff_path, motifs_csv,
         if not bed_text.strip():
             return []
         # Per-genome MAX_GAP: at least the default (12 bp) but never less than
-        # 2 motif units — long-motif taxa (Allium 12bp, Bombus 11bp) would
-        # fragment single arrays otherwise.
-        max_motif_len = max((len(m) for m in (base_motifs or ["TTAGGG"])), default=6)
-        per_genome_max_gap = max(MAX_GAP, 2 * max_motif_len)
+        # 2 units of THIS genome's canonical motif when known.
+        if canonical_motif:
+            motif_len = len(canonical_motif)
+        else:
+            motif_len = max((len(m) for m in (base_motifs or ["TTAGGG"])), default=6)
+        per_genome_max_gap = max(MAX_GAP, 2 * motif_len)
         merged = bedtools_merge(bed_text, fai, per_genome_max_gap)
 
         # filter by length + terminal
@@ -416,11 +424,22 @@ def main():
     ap.add_argument("--mask-dir", default=None,
                     help="optional dir of per-genome BED masks (miniprot ∪ ORFs); "
                          "files named {genome_id}.bed are added to the exclusion set")
+    ap.add_argument("--canonical-motifs", default="",
+                    help="optional TSV (genome_id,motif) from scan_all — enables per-genome "
+                         "MAX_GAP scaling by the actual curated motif length.")
     args = ap.parse_args()
 
     motif_list = [m.strip() for m in args.motifs.split(",") if m.strip()]
     expanded = expand_motifs(motif_list)
     motifs_csv = ",".join(expanded)
+
+    canonical = {}
+    if args.canonical_motifs and os.path.exists(args.canonical_motifs):
+        import csv as _csv
+        with open(args.canonical_motifs) as _fh:
+            for r in _csv.DictReader(_fh, delimiter="\t"):
+                if r.get("motif"):
+                    canonical[r["genome_id"]] = r["motif"]
 
     manifest = pd.read_csv(args.manifest, sep="\t")
     all_rows = []
@@ -438,7 +457,8 @@ def main():
         try:
             rows = process_genome(gid, organism, group, fa, gff, motifs_csv,
                                   args.threads, args.terminal_bp, args.min_array_len,
-                                  extra_mask_bed=extra_mask, base_motifs=motif_list)
+                                  extra_mask_bed=extra_mask, base_motifs=motif_list,
+                                  canonical_motif=canonical.get(gid))
         except sp.CalledProcessError as e:
             print(f"  {gid}: tool failed ({e.cmd[0]} exit {e.returncode})", flush=True)
             continue

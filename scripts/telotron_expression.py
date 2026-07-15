@@ -12,7 +12,7 @@ import numpy as np
 from scipy.stats import mannwhitneyu, spearmanr
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 np.random.seed(0)
-import os, sys, glob, gzip
+import os, sys, glob, gzip, yaml
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _common import find_genome_files  # noqa: E402
 # Persistent gene-coverage TSVs (produced by the rnaseq_gene_coverage Snakemake rule); override dir
@@ -28,10 +28,32 @@ def _resolve_gff(genome_id):
 def _open_maybe_gz(p):
     return gzip.open(p, "rt") if p.endswith(".gz") else open(p)
 
-SP={  # species: (gene_cov, gff, genome_id, label)
- "necatrix":(f"{RNASEQ_DIR}/necatrix_gene_cov.tsv", _resolve_gff("GCF_000499385.1"), "GCF_000499385.1", "E. necatrix"),
- "tenella":(f"{RNASEQ_DIR}/eten_gene_cov.tsv", _resolve_gff("GCF_000499545.2"), "GCF_000499545.2", "E. tenella"),
-}
+# Build SP from config.yaml's `rnaseq.species` block — one entry per species
+# with rnaseq_gene_coverage output. Adding a new species means adding one YAML
+# entry (with genome + gff + srr) and running rnaseq_gene_coverage; NO edit
+# to this script. Kept a fallback to the historical Eimeria pair for backward
+# compatibility when the config path can't be resolved (running by hand outside
+# the snakemake tree).
+def _load_species_from_config():
+    for cfg_path in ("config.yaml", "../config.yaml"):
+        if os.path.exists(cfg_path):
+            with open(cfg_path) as fh:
+                cfg = yaml.safe_load(fh) or {}
+            entries = ((cfg.get("rnaseq") or {}).get("species") or {})
+            out = {}
+            for sp, ent in entries.items():
+                gid = os.path.basename(os.path.dirname(ent["genome"]))
+                out[sp] = (f"{RNASEQ_DIR}/{sp}_gene_cov.tsv", _resolve_gff(gid), gid,
+                           ent.get("label", sp))
+            if out:
+                return out
+    # Fallback: historical Eimeria pair.
+    return {
+        "necatrix": (f"{RNASEQ_DIR}/necatrix_gene_cov.tsv", _resolve_gff("GCF_000499385.1"), "GCF_000499385.1", "E. necatrix"),
+        "tenella":  (f"{RNASEQ_DIR}/eten_gene_cov.tsv",     _resolve_gff("GCF_000499545.2"), "GCF_000499545.2", "E. tenella"),
+    }
+
+SP = _load_species_from_config()
 def load_telo(genome_id):
     telo=defaultdict(list)
     for r in csv.DictReader(open("work/results/final_telotron_set_architecture.tsv"),delimiter="\t"):
@@ -114,7 +136,7 @@ if pg:
     print(f"\n=== POOLED (within-species-normalised) ===  telotron-host {len(he)}")
     print(f"  host median {np.median(he):.2f}  non-host {np.median(ne):.2f}  ratio {np.median(he)/np.median(ne):.2f}  MWU p={mannwhitneyu(he,ne).pvalue:.2e}")
     E=np.array([x[0] for x in pg]); N=np.array([x[1] for x in pg]); H=np.array([1 if x[2] else 0 for x in pg])
-    SP=np.array([x[3] for x in pg])
+    SP_IDX=np.array([x[3] for x in pg])  # per-row species index; SP dict is module-level
     # Pooled size-controlled OLS with species fixed effect (one dummy per species
     # after the reference). Without the fixed effect the necatrix pool dominates
     # the host coefficient and a new species with a different baseline can flip
@@ -124,8 +146,8 @@ if pg:
         import statsmodels.api as sm
         # dummy-encode species (drop first as reference)
         n_species = len(sp_list)
-        species_dummies = np.zeros((len(SP), max(n_species - 1, 0)))
-        for i, s in enumerate(SP):
+        species_dummies = np.zeros((len(SP_IDX), max(n_species - 1, 0)))
+        for i, s in enumerate(SP_IDX):
             if s > 0:
                 species_dummies[i, s - 1] = 1.0
         design = np.column_stack([H, np.log(N + 1)] + ([species_dummies] if n_species > 1 else []))

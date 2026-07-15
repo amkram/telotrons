@@ -75,33 +75,43 @@ def main():
         np.where(single_pass, "single_array",
         np.where(bidir_pass, "bidirectional",
         np.where(partial_pass, "partial", "none")))))
-    final = loci[single_pass | bidir_pass | partial_pass].copy()
-    # Sensitivity companion: keep the pre-motif-gate table so downstream figures
-    # can be rerun with the circular gate off (see docstring).
-    final_no_motif_gate = final.copy()
+    admitted = loci[single_pass | bidir_pass | partial_pass].copy()
+
+    def _apply_post_gate_filters(df):
+        """canonical-splice filter + collapse_unique_loci, isolated so the
+        `_no_motif_gate` companion can be produced with the same schema."""
+        out = df
+        if args.require_canonical_splice:
+            out = out[out.splice_class == "GT-AG"]
+        if args.collapse_unique_loci:
+            # Collapse alt-spliced paralogs sharing (genome_id, seqid, start, end, strand)
+            # into a single representative row, but PRESERVE tx_ids/gene_ids of the
+            # dropped paralogs as comma-joined columns so downstream host-gene analyses
+            # (telotron_ortholog_align, etc.) can recover alt-splice incidence.
+            dup_keys = ["genome_id", "seqid", "start", "end", "strand"]
+            if {"tx_id", "gene_id"}.issubset(out.columns):
+                agg_ids = (out.groupby(dup_keys, dropna=False)
+                              .agg(tx_ids=("tx_id", lambda s: ",".join(sorted(set(str(v) for v in s if pd.notna(v))))),
+                                   gene_ids=("gene_id", lambda s: ",".join(sorted(set(str(v) for v in s if pd.notna(v))))))
+                              .reset_index())
+            else:
+                agg_ids = None
+            out = (out.sort_values("telomeric_frac", ascending=False)
+                      .drop_duplicates(dup_keys))
+            if agg_ids is not None:
+                out = out.merge(agg_ids, on=dup_keys, how="left")
+        return out
+
+    # Sensitivity companion: apply the same post-gate filters WITHOUT the
+    # (circular) motif gate. Same schema as final.tsv so downstream figures
+    # can consume either without special-casing.
+    final_no_motif_gate = _apply_post_gate_filters(admitted).copy()
+
+    final = admitted
     if args.require_terminal_motif_match and len(final):
         final = final[final.terminal_motif.notna() & (final.terminal_motif != "")
                       & (final.motif == final.terminal_motif)]
-    if args.require_canonical_splice:
-        final = final[final.splice_class == "GT-AG"]
-    if args.collapse_unique_loci:
-        # Collapse alt-spliced paralogs sharing (genome_id, seqid, start, end, strand)
-        # into a single representative row, but PRESERVE tx_ids/gene_ids of the
-        # dropped paralogs as comma-joined columns so downstream host-gene analyses
-        # (telotron_ortholog_align, etc.) can recover alt-splice incidence.
-        # FIXES_PRIORITIZED.md #56 (review_survey_core.md MEDIUM, line 54).
-        dup_keys = ["genome_id", "seqid", "start", "end", "strand"]
-        if {"tx_id", "gene_id"}.issubset(final.columns):
-            agg_ids = (final.groupby(dup_keys, dropna=False)
-                            .agg(tx_ids=("tx_id", lambda s: ",".join(sorted(set(str(v) for v in s if pd.notna(v))))),
-                                 gene_ids=("gene_id", lambda s: ",".join(sorted(set(str(v) for v in s if pd.notna(v))))))
-                            .reset_index())
-        else:
-            agg_ids = None
-        final = (final.sort_values("telomeric_frac", ascending=False)
-                      .drop_duplicates(dup_keys))
-        if agg_ids is not None:
-            final = final.merge(agg_ids, on=dup_keys, how="left")
+    final = _apply_post_gate_filters(final)
 
     per_species = (final.groupby(["genome_id", "organism", "group", "source", "motif"], dropna=False)
                         .agg(telotrons=("seqid", "size"),
@@ -125,7 +135,7 @@ def main():
         # never got scanned and mixing them into negatives inflates the
         # "true-negative" pool with missing-input artifacts.
         status = species.get("status", pd.Series([""] * len(species))).fillna("").astype(str)
-        scanned_ok = ~status.str.startswith(("NO_FASTA", "ERROR"))
+        scanned_ok = ~status.str.startswith(("NO_FASTA", "NO_GFF", "ERROR"))
         negatives = species[(species.telotrons == 0) & (species.n_pre_filter_candidates == 0) & scanned_ok].copy()
     else:
         negatives = species[species.telotrons == 0].copy()

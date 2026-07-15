@@ -35,13 +35,13 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_ROOT = Path(
     os.environ.get(
         "LINKER_SEGMENTATION_ROOT",
-        _REPO_ROOT / "results" / "telotron_orthologs_v2" / "locus_text",
+        _REPO_ROOT / "work" / "results" / "telotron_orthologs_v2" / "locus_text",
     )
 )
 DEFAULT_OUT_DIR = Path(
     os.environ.get(
         "LINKER_SEGMENTATION_OUT_DIR",
-        _REPO_ROOT / "results" / "mechanism_deepdive",
+        _REPO_ROOT / "work" / "results" / "mechanism_deepdive",
     )
 )
 # Module-level aliases preserved for backwards compatibility with any importer

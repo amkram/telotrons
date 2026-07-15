@@ -175,9 +175,14 @@ def find_genome_files(gid, refseq_dir, tara_dir):
     else:
         fa = glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.fna*", recursive=True)
         gff = glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.gff*", recursive=True)
-        if not fa and not gff:
-            gb = _genbank_dir(refseq_dir)
+        # Fill EITHER missing side from the parallel genbank dir independently.
+        # Previously used `and` — a partial refseq download (only fna, no gff)
+        # blocked the genbank fallback for the missing gff, silently returning
+        # gff=None even though the file existed on disk.
+        gb = _genbank_dir(refseq_dir)
+        if not fa:
             fa = glob.glob(f"{gb}/{gid}/**/*_genomic.fna*", recursive=True)
+        if not gff:
             gff = glob.glob(f"{gb}/{gid}/**/*_genomic.gff*", recursive=True)
     fa = [p for p in fa if not p.endswith((".fai", ".gzi", ".bai", ".ndx"))]
     fa = [p for p in fa if p.endswith((".fna", ".fa", ".fasta"))] or fa

@@ -425,6 +425,8 @@ def genome_paths(row, refseq_dir, tara_dir):
     gff = next((p for p in gff_paths if not p.endswith((".tbi", ".idx"))), None)
     if fa is None:
         raise FileNotFoundError(f"NO_FASTA:{gid}")
+    if gff is None:
+        raise FileNotFoundError(f"NO_GFF:{gid}")
     return fa, gff
 
 
@@ -505,8 +507,10 @@ def scan_one(args):
         )
         introns["fwd_hits"] = introns.fwd_hits.astype(int)
         introns["rev_hits"] = introns.rev_hits.astype(int)
+        _bmh = opts.get("bidir_min_hits", 3)
         introns["orientation"] = [
-            classify_orientation(f, r) for f, r in zip(introns.fwd_hits, introns.rev_hits)
+            classify_orientation(f, r, bidir_min_hits=_bmh)
+            for f, r in zip(introns.fwd_hits, introns.rev_hits)
         ]
 
         # Substring extracts: donor, acceptor, first40, last40 (spliced orientation).
@@ -630,10 +634,13 @@ def scan_one(args):
         }
 
     except FileNotFoundError as e:
-        # NO_FASTA distinct from ERROR — filter_final must exclude these from
-        # "negative control" (missing input, not a genuine no-telotron genome).
+        # NO_FASTA / NO_GFF distinct from ERROR — filter_final must exclude
+        # these from "negative control" (missing input, not a genuine
+        # no-telotron genome). The message prefix carries which one is missing.
+        msg = str(e)
+        status = "NO_FASTA" if msg.startswith("NO_FASTA") else ("NO_GFF" if msg.startswith("NO_GFF") else f"ERROR:{msg}")
         return {"summary": [gid, org, group, source, 0, 0, 0, "", 0,
-                            "NO_FASTA", "none", 0.0, ""],
+                            status, "none", 0.0, ""],
                 "introns": [], "loci": []}
     except subprocess.CalledProcessError as e:
         return {"summary": [gid, org, group, source, 0, 0, 0, "", 0,
@@ -661,6 +668,9 @@ def main():
     ap.add_argument("--flank-bp", type=int, default=200,
                     help="Per-side flank window (bp) for flank_telomeric_frac. "
                          "Extended from 50 → 200 to span typical eukaryotic terminal exons.")
+    ap.add_argument("--bidir-min-hits", type=int, default=3,
+                    help="Per-strand hit threshold that triggers 'Mixed' orientation "
+                         "in classify_orientation. Must match filter_final --bidir-min-hits.")
     ap.add_argument("--min-intron-len", type=int, default=30,
                     help="Reject GFF-annotated introns shorter than this. Default 30 bp "
                          "rejects degenerate 1-bp annotations (Lucilia/Homarus/etc.) and "
@@ -696,6 +706,7 @@ def main():
         "max_flank_repeat_frac": args.max_flank_repeat_frac,
         "flank_bp": args.flank_bp,
         "min_intron_len": args.min_intron_len,
+        "bidir_min_hits": args.bidir_min_hits,
         "canonical": canonical,
     }
 

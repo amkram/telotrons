@@ -239,6 +239,7 @@ with open("{input.manifest}") as f, open("{output.canonical}", "w", newline="") 
             --motifs {TELOMERE_MOTIFS} \
             --min-repeat-frac {SCAN_MIN_FRAC} --max-flank-repeat-frac {SCAN_MAX_FLANK_FRAC} \
             --min-intron-len {SCAN_MIN_INTRON_LEN} \
+            --bidir-min-hits {FILTER_BIDIR_HITS} \
             --threads {threads} \
             --loci {output.loci} --introns {output.introns} --summary {output.summary}
         """
@@ -323,6 +324,10 @@ rule classify_architecture:
 # (GT-F-R-AG or a linker variant — a distinctive telomerase-mediated signature).
 # All downstream analyses (gene-class, expression, nucleosome, ortholog panels)
 # key off this file so new bearer species flow through automatically.
+_CONFIDENT = config.get("confident_species", {}) or {}
+CONFIDENT_MIN_N = int(_CONFIDENT.get("min_n", 3))
+CONFIDENT_MIN_BIDIR = int(_CONFIDENT.get("min_bidir", 2))
+
 rule confident_species:
     input:
         arch="work/results/final_telotron_set_architecture.tsv",
@@ -335,7 +340,8 @@ rule confident_species:
         r"""
         python scripts/confident_species.py \
             --arch {input.arch} --manifest {input.manifest} \
-            --min-n 3 --out {output}
+            --min-n {CONFIDENT_MIN_N} --min-bidir {CONFIDENT_MIN_BIDIR} \
+            --out {output}
         """
 
 
@@ -401,6 +407,7 @@ rule extract_fasta:
 rule find_interstitial_arrays:
     input:
         manifest="work/results/all_species_raw_summary.tsv",
+        canonical="work/manifests/canonical_motifs.tsv",
         tara=["data/raw/tara/.fna.done"],
         assemblies=ASSEMBLIES_DONE,
     output:
@@ -426,6 +433,7 @@ rule find_interstitial_arrays:
             --manifest {input.manifest} \
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
             --motifs {TELOMERE_MOTIFS} \
+            --canonical-motifs {input.canonical} \
             --mask-dir {params.mask_dir} \
             --min-array-len {INTERSTITIAL_MIN_ARRAY_LEN} \
             --out {output} --threads {threads}

@@ -81,16 +81,21 @@ FEATS=[("GC content",f_gc,WI,True,("real","ns")),
        ("junction microhomology",None,None,False,("ns","artifact"))]
 def lineage(o): return "MAG" if "MAG" in o else ("Eimeria" if "Eimeria" in o else "o")
 def load(man,wd):
-    out=[]
+    out=[]; genome_by_lin=defaultdict(set)
     for r in csv.DictReader(open(man),delimiter="\t"):
         F=int(r["flank"]); L=int(r["ilen"]); lid=r["locus_id"]; p=f"{wd}/{lid}.fa"
         if not os.path.exists(p): continue
         s=seqof(p)
         if len(s)<2*F+L: continue
-        out.append((lineage(r["organism"]),F,L,s))
-    return out
-T=load(f"{ROOT}/manifest.tsv",f"{ROOT}/seqs/with")
-C=load(f"{ROOT}/control_manifest.tsv",f"{ROOT}/control_seqs/with")
+        lin=lineage(r["organism"])
+        out.append((lin,F,L,s))
+        # Count distinct genome_ids per lineage — this is the real replication
+        # unit for cluster-robust inference (MAG=1 assembly historically, but
+        # this now scales as new bearer species arrive).
+        genome_by_lin[lin].add(r.get("genome_id",""))
+    return out, {lin: len(genomes) for lin, genomes in genome_by_lin.items()}
+T, N_GENOMES_T = load(f"{ROOT}/manifest.tsv",f"{ROOT}/seqs/with")
+C, _NG_C = load(f"{ROOT}/control_manifest.tsv",f"{ROOT}/control_seqs/with")
 print(f"telotron {len(T)} control {len(C)} (computed on non-joined real host flanks)")
 def feat_delta(recs,fn,w,mask=False):
     out=defaultdict(list)
@@ -106,18 +111,12 @@ def mh_delta(recs):  # junction MH directly (no interior-baseline subtraction th
     for lin,F,L,s in recs: out[lin].append(lcs(s[F-50:F], s[F+L:F+L+50]))
     return out
 LINS=["MAG","Eimeria"]
-# Guard: MAG lineage is one assembly (TARA_PSW_86_MAG_00284), so the "MAG"
-# MWU here is within-assembly variance masquerading as between-lineage
-# inference. Count distinct contigs as the effective cluster count; if
-# fewer than MIN_CLUSTERS (3), refuse to emit a p/q value for that lineage.
+# Guard: cluster-robust inference requires ≥ MIN_CLUSTERS independent genomes
+# per lineage. Cluster count comes from the actual manifest (load() counts
+# distinct genome_ids per lineage) so new bearer species scale correctly —
+# no more hardcoded "MAG=1, Eimeria=5" that silently breaks when the
+# confident_species set changes.
 MIN_CLUSTERS = 3
-def _n_contig_clusters(recs, lin):
-    # recs: [(lin,F,L,seq)]; only lin filter applied
-    # Insertion-site FASTAs are keyed by locus, but the contig is embedded in the
-    # locus id — since we can't recover it here without the source table, treat
-    # MAG (a single assembly) as n_clusters=1 and Eimeria (5 assemblies) as
-    # n_clusters=5. This is coarse; when a per-contig table is added, refine.
-    return 1 if lin == "MAG" else 5
 
 rows=[]
 for name,fn,w,mask,verd in FEATS:
@@ -125,7 +124,7 @@ for name,fn,w,mask,verd in FEATS:
     cd=mh_delta(C) if fn is None else feat_delta(C,fn,w,mask)
     for j,lin in enumerate(LINS):
         tv=td.get(lin,[]); cv=cd.get(lin,[])
-        n_clu = _n_contig_clusters(T + C, lin)
+        n_clu = N_GENOMES_T.get(lin, 0)
         if len(tv)>3 and len(cv)>3:
             if n_clu < MIN_CLUSTERS:
                 # Refuse a p — single-assembly pseudo-replication makes it uninterpretable.

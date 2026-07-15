@@ -167,10 +167,15 @@ def _distance_one(args):
 
 def distance_to_end(final, out_path, threads=1, capped_only=True, n_perm=2000, seed=1):
     """Per-genome subtelomeric-clustering test vs a within-contig random-placement
-    null. Emits BOTH the capped-only pass (telomere-capped contigs, defensible
-    for chromosome-level assemblies) and an `_all_contigs` companion (every
-    contig, defensible for MAGs where "chromosome end" isn't meaningful — the
-    capped-only test drops most Tara MAG loci and gives a high-variance zero)."""
+    null. Emits TWO ROWS PER GENOME (one per mode) — the `mode` column
+    disambiguates them; downstream consumers MUST filter on `mode` before
+    grouping by `genome_id`, otherwise every genome double-counts.
+      mode='capped_only'  → telomere-capped contigs (both ends), defensible for
+                             chromosome-level assemblies (Eimeria, refseq).
+      mode='all_contigs'  → every contig, defensible for MAGs where the notion
+                             of "chromosome end" isn't meaningful. The capped-only
+                             test drops most Tara MAG loci and gives a
+                             high-variance zero without this companion mode."""
     def _run(_capped, suffix):
         tasks = [(gid, group, _capped, n_perm, seed)
                  for gid, group in final.groupby("genome_id")]

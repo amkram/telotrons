@@ -104,9 +104,11 @@ def main():
         log(f"minimap2 -ax splice {srr} -> sort")
         # SPLICE-AWARE preset: reads spanning exon-exon junctions get gapped
         # alignments (essential for intron-rich telotron-host genes).
-        # `-uf` favors the transcript-forward strand; `--secondary=no` keeps
-        # bedcov from double-counting multimappers.
-        run(f"minimap2 -ax splice -uf --secondary=no -t {a.threads} {a.genome} {' '.join(reads)} "
+        # `-ub` = unstranded (both-strand splice-site discovery); correct for
+        # the standard-Illumina PE dUTP-free libraries in config['rnaseq'].
+        # Use `-uf` only for stranded libraries (dUTP/directional). `--secondary=no`
+        # keeps bedcov from double-counting multimappers.
+        run(f"minimap2 -ax splice -ub --secondary=no -t {a.threads} {a.genome} {' '.join(reads)} "
             f"2>{scratch}/{srr}.mm2.log | samtools sort -@ 4 -m 2G -o {bam} -")
         run(["samtools", "index", bam])
         per_run_bams.append(bam)

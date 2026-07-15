@@ -190,6 +190,12 @@ interstitial:
   min_array_len: 30
   min_its_units: 4
 
+# Species-level confident-bearer admission. See scripts/confident_species.py
+# for the two-path admission logic.
+confident_species:
+  min_n: 3          # OR-1: >= this many telotrons pass filter_final
+  min_bidir: 2      # OR-2: >= this many bidirectional-architecture telotrons
+
 # Focal genomes for the telomerase / TERT homology searches. Centralized here
 # (single source of truth) instead of hardcoded in the Snakefile.
 # blast_genome_ids: telomerase-ortholog BLAST targets (5 Eimeria + 3 Tara MAGs +
