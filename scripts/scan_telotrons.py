@@ -223,8 +223,11 @@ def compute_intron_motif_metrics(introns_df, hits_bed_path, contig_lens, tmp_dir
     _sort_bed_inplace(introns_bed)
 
     hits_sorted = os.path.join(tmp_dir, "hits.sorted.bed")
-    subprocess.run(f"sort -k1,1 -k2,2n {hits_bed_path} > {hits_sorted}",
-                   shell=True, check=True)
+    # Shell-safe: no shell=True, no unquoted path interpolation. Handles
+    # genome_ids that contain shell metacharacters (`:`, `|`, whitespace) safely.
+    with open(hits_sorted, "w") as fh:
+        subprocess.run(["sort", "-k1,1", "-k2,2n", hits_bed_path],
+                       stdout=fh, check=True)
 
     # === Intron × hit overlaps ===
     inter_path = os.path.join(tmp_dir, "intersect.tsv")
@@ -311,9 +314,17 @@ def compute_intron_motif_metrics(introns_df, hits_bed_path, contig_lens, tmp_dir
     return best_motif, flank_df, strand
 
 
-def classify_orientation(fwd, rev):
+def classify_orientation(fwd, rev, bidir_min_hits=3):
+    """Coarse per-intron orientation label. If both strands hit the
+    bidirectional threshold (bidir_min_hits per strand — the same rule
+    filter_final uses for bidirectional admission), the intron is Mixed.
+    Otherwise the >2× asymmetry rule picks the dominant strand. Kept
+    consistent with filter_final so downstream tables using orientation
+    as a bidirectionality proxy don't disagree with the admission logic."""
     if fwd == 0 and rev == 0:
         return "None"
+    if fwd >= bidir_min_hits and rev >= bidir_min_hits:
+        return "Mixed"
     if fwd >= 2 and fwd > 2 * rev:
         return "Fwd/G-rich"
     if rev >= 2 and rev > 2 * fwd:
@@ -396,12 +407,24 @@ def genome_paths(row, refseq_dir, tara_dir):
                                  if p.endswith((".gff", ".gff.gz"))),
                                 key=lambda p: p.endswith(".gz"))
         return fa_candidates[0], gff_candidates[0]
+    # RefSeq (GCF_) then GenBank (GCA_-only) fallback under the parallel dir.
+    gb_dir = os.path.join(os.path.dirname(os.path.abspath(refseq_dir)), "genbank")
     fa_paths = (glob.glob(f"{refseq_dir}/{gid}/*/*/*_genomic.fna*")
                 + glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.fna*", recursive=True))
     gff_paths = (glob.glob(f"{refseq_dir}/{gid}/**/genomic.gff*", recursive=True)
                  + glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.gff*", recursive=True))
-    fa = next(p for p in fa_paths if not p.endswith((".fai", ".gzi")))
-    gff = next(p for p in gff_paths if not p.endswith((".tbi", ".idx")))
+    if not fa_paths:
+        fa_paths = glob.glob(f"{gb_dir}/{gid}/**/*_genomic.fna*", recursive=True)
+    if not gff_paths:
+        gff_paths = glob.glob(f"{gb_dir}/{gid}/**/*_genomic.gff*", recursive=True)
+    # Explicit search + FileNotFoundError. Prior naked next() raised StopIteration
+    # inside the broad try/except of scan_one and turned "no FASTA" into
+    # "ERROR:StopIteration", which filter_final could not distinguish from a
+    # genuine tool crash on a real assembly.
+    fa = next((p for p in fa_paths if not p.endswith((".fai", ".gzi"))), None)
+    gff = next((p for p in gff_paths if not p.endswith((".tbi", ".idx"))), None)
+    if fa is None:
+        raise FileNotFoundError(f"NO_FASTA:{gid}")
     return fa, gff
 
 
@@ -606,6 +629,12 @@ def scan_one(args):
             "loci": loci,
         }
 
+    except FileNotFoundError as e:
+        # NO_FASTA distinct from ERROR — filter_final must exclude these from
+        # "negative control" (missing input, not a genuine no-telotron genome).
+        return {"summary": [gid, org, group, source, 0, 0, 0, "", 0,
+                            "NO_FASTA", "none", 0.0, ""],
+                "introns": [], "loci": []}
     except subprocess.CalledProcessError as e:
         return {"summary": [gid, org, group, source, 0, 0, 0, "", 0,
                             f"ERROR:tool-{e.returncode}", "none", 0.0, ""],

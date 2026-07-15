@@ -3,11 +3,15 @@
 non-telotron introns (telomeric_frac<0.1) from the SAME genomes, builds the identical adaptive-flank
 with/without NuPoP inputs, so we can ask whether the telotron occupancy pattern is telotron-specific
 or generic to introns. Control count per species is matched to the telotron count (clamped [50,400])."""
-import csv, os, re, random, argparse, glob
+import csv, os, re, random, argparse, glob, sys, gzip
 from collections import Counter, defaultdict
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import find_genome_fasta  # noqa: E402
 def load(p):
+    """Load a FASTA (plain or .gz) into a dict of seqid -> uppercase sequence."""
+    opener = gzip.open if p.endswith(".gz") else open
     s={};h=None;b=[]
-    for l in open(p):
+    for l in opener(p, "rt"):
         if l[0]=='>':
             if h:s[h]="".join(b)
             h=l[1:].split()[0];b=[]
@@ -15,9 +19,8 @@ def load(p):
     if h:s[h]="".join(b); return s
 def rc(s): return s.translate(str.maketrans("ACGTN","TGCAN"))[::-1]
 def resolve(gid, refseq_dir, tara_dir):
-    if gid.startswith("GCF_") or gid.startswith("GCA_"):
-        hit=glob.glob(f"{refseq_dir}/{gid}/{gid}_*_genomic.fna"); return hit[0] if hit else None
-    p=f"{tara_dir}/Contigs/{gid}.fa"; return p if os.path.exists(p) else None
+    """Resolve GCF_/GCA_ + Tara through _common (handles .fna.gz + data/raw/genbank/)."""
+    return find_genome_fasta(gid, refseq_dir, tara_dir, required=False)
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--controls", default="work/results/non_telotron_controls.tsv")

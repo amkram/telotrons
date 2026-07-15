@@ -28,12 +28,16 @@ Notes
 """
 import argparse
 
+import hashlib
+
 import pandas as pd
 
 
 def _group_seed(base_seed: int, gid: str) -> int:
-    """Stable per-group seed (FIXES_PRIORITIZED #58)."""
-    return hash((base_seed, gid)) & 0x7FFFFFFF
+    """Stable per-group seed. SHA1-based (not Python's built-in hash()) so it
+    doesn't drift across interpreter runs — PYTHONHASHSEED randomization would
+    otherwise reshuffle the per-species control sample on every rerun."""
+    return int(hashlib.sha1(f"{base_seed}:{gid}".encode()).hexdigest()[:8], 16)
 
 
 def main():

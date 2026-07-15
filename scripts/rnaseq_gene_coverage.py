@@ -5,10 +5,17 @@ Generalises the per-species E. necatrix recipe (work/necatrix_rnaseq/run_pipelin
 expression-vs-telotron arm is reproducible from a Snakemake rule instead of a hand-run shell script
 and an ephemeral /tmp output. Steps, per accession:
 
-  prefetch + fasterq-dump (--split-3)  ->  minimap2 -ax sr  ->  samtools sort/merge  ->  samtools bedcov
+  prefetch + fasterq-dump (--split-3)  ->  minimap2 -ax splice  ->  samtools sort/merge  ->  samtools bedcov
+
+Uses SPLICE-AWARE alignment (`minimap2 -ax splice -uf --secondary=no`) so exon-junction reads are
+placed as gapped alignments instead of soft-clipped by the short-read preset. This matters directly
+for the telotron_expression analysis: intron-rich telotron-host genes have many exon-exon junctions,
+and short-read alignment would systematically depress their coverage — producing a spurious
+"host genes have lower expression" that is really the alignment artifact of the exact confound
+(intron count) the downstream OLS tries to control for.
 
 Output is BED6 + a 7th column = summed read depth over the gene interval (samtools bedcov), one row per
-`gene` feature in the GFF. Consumers (telotron_expr_*.py) compute expression = depth_sum / gene_length.
+`gene` feature in the GFF. Consumers (telotron_expression.py) compute expression = depth_sum / gene_length.
 
 Large intermediates (FASTQ, per-run BAM) are removed after the merged BAM + bedcov are produced unless
 --keep-intermediates is given. Idempotent: skips the final TSV if it already exists and is non-empty
@@ -94,9 +101,12 @@ def main():
             reads = [single]
         else:
             raise SystemExit(f"no FASTQ produced for {srr} in {scratch}")
-        log(f"minimap2 -ax sr {srr} -> sort")
-        # stream minimap2 | samtools sort, both via shell so the pipe is honoured.
-        run(f"minimap2 -ax sr -t {a.threads} {a.genome} {' '.join(reads)} "
+        log(f"minimap2 -ax splice {srr} -> sort")
+        # SPLICE-AWARE preset: reads spanning exon-exon junctions get gapped
+        # alignments (essential for intron-rich telotron-host genes).
+        # `-uf` favors the transcript-forward strand; `--secondary=no` keeps
+        # bedcov from double-counting multimappers.
+        run(f"minimap2 -ax splice -uf --secondary=no -t {a.threads} {a.genome} {' '.join(reads)} "
             f"2>{scratch}/{srr}.mm2.log | samtools sort -@ 4 -m 2G -o {bam} -")
         run(["samtools", "index", bam])
         per_run_bams.append(bam)

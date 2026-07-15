@@ -23,6 +23,16 @@ Output TSV columns:
 `cat5_3` is one of {GG, GC, CG, CC, NG, GN, …}: the orientation of the 5' and
 3' ends of the array (G-rich-telomeric vs C-rich-telomeric), classified
 independently. Hybrid arrays (GC, CG) come from strand-switched repeats.
+
+**Rotation-trap note:** `edge_orient` compares the first/last L bp of the
+array against motif rotations + reverse complements — this is rotation
+matching, not a composition metric, so the telomere-mask fragment removal
+(which retracted four earlier composition-based findings) does not apply
+here. `upstream_flank10` and `downstream_flank10` are emitted as raw
+flanking bp; any downstream that uses those flanks for composition metrics
+(GC / CpG / entropy) MUST apply `telomere_mask.mask_telomere_fragments`
+before scoring, or the flanking base-composition inherits residual
+telomeric bases from the array boundary.
 """
 import argparse
 import gzip
@@ -40,9 +50,15 @@ from _common import (rc, expand_motifs, find_genome_files, maybe_decompress,
 # `snakemake --use-conda` (no-op when they're already on PATH).
 ensure_tool_on_path("bedtools", "seqkit", "samtools")
 
-MAX_GAP = 12           # merge motif hits within 12 bp (≈2 motif units) into one array
+MAX_GAP = 12           # default: merge motif hits within 12 bp (≈2 motif units) into one array
 MIN_ARRAY_LEN = 30     # minimum array length to consider
-TERMINAL_BP = 5000     # arrays within 5 kb of a contig end are "terminal", excluded
+TERMINAL_BP = 5000     # default: arrays within 5 kb of a contig end are "terminal", excluded
+
+# On short Tara MAG contigs a fixed 5 kb terminal window excludes almost all
+# loci; --terminal-bp can be lowered per run. MAX_GAP defaults to 12 but is
+# scaled per-genome to `max(MAX_GAP, 2*motif_len)` so long-motif taxa
+# (Allium 12 bp, Bombus 11 bp) don't fragment single arrays at a gap smaller
+# than one motif unit — bias is measured against the interstitial contrast.
 
 
 def contig_lengths(fai_path):
@@ -249,7 +265,12 @@ def process_genome(gid, organism, group, fa_path, gff_path, motifs_csv,
         bed_text = seqkit_locate_bed(fa_plain, motifs_csv, threads)
         if not bed_text.strip():
             return []
-        merged = bedtools_merge(bed_text, fai, MAX_GAP)
+        # Per-genome MAX_GAP: at least the default (12 bp) but never less than
+        # 2 motif units — long-motif taxa (Allium 12bp, Bombus 11bp) would
+        # fragment single arrays otherwise.
+        max_motif_len = max((len(m) for m in (base_motifs or ["TTAGGG"])), default=6)
+        per_genome_max_gap = max(MAX_GAP, 2 * max_motif_len)
+        merged = bedtools_merge(bed_text, fai, per_genome_max_gap)
 
         # filter by length + terminal
         kept_lines = []

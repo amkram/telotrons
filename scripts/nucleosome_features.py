@@ -106,13 +106,31 @@ def mh_delta(recs):  # junction MH directly (no interior-baseline subtraction th
     for lin,F,L,s in recs: out[lin].append(lcs(s[F-50:F], s[F+L:F+L+50]))
     return out
 LINS=["MAG","Eimeria"]
+# Guard: MAG lineage is one assembly (TARA_PSW_86_MAG_00284), so the "MAG"
+# MWU here is within-assembly variance masquerading as between-lineage
+# inference. Count distinct contigs as the effective cluster count; if
+# fewer than MIN_CLUSTERS (3), refuse to emit a p/q value for that lineage.
+MIN_CLUSTERS = 3
+def _n_contig_clusters(recs, lin):
+    # recs: [(lin,F,L,seq)]; only lin filter applied
+    # Insertion-site FASTAs are keyed by locus, but the contig is embedded in the
+    # locus id — since we can't recover it here without the source table, treat
+    # MAG (a single assembly) as n_clusters=1 and Eimeria (5 assemblies) as
+    # n_clusters=5. This is coarse; when a per-contig table is added, refine.
+    return 1 if lin == "MAG" else 5
+
 rows=[]
 for name,fn,w,mask,verd in FEATS:
     td=mh_delta(T) if fn is None else feat_delta(T,fn,w,mask)
     cd=mh_delta(C) if fn is None else feat_delta(C,fn,w,mask)
     for j,lin in enumerate(LINS):
         tv=td.get(lin,[]); cv=cd.get(lin,[])
+        n_clu = _n_contig_clusters(T + C, lin)
         if len(tv)>3 and len(cv)>3:
+            if n_clu < MIN_CLUSTERS:
+                # Refuse a p — single-assembly pseudo-replication makes it uninterpretable.
+                rows.append((name,lin,np.median(tv)-np.median(cv), np.nan, np.nan, f"{verd[j]} [1-genome; p suppressed]"))
+                continue
             p=mannwhitneyu(tv,cv).pvalue
             U=mannwhitneyu(tv,cv,alternative="two-sided").statistic; r=2*U/(len(tv)*len(cv))-1
             rows.append((name,lin,np.median(tv)-np.median(cv),p,r,verd[j]))

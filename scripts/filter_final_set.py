@@ -32,7 +32,11 @@ def main():
     ap.add_argument("--require-canonical-splice", action="store_true")
     ap.add_argument("--collapse-unique-loci", action="store_true")
     ap.add_argument("--require-terminal-motif-match", action="store_true",
-                    help="Intron motif must equal the genome's dominant telomere motif.")
+                    help="Intron motif must equal the genome's dominant telomere motif. "
+                         "CIRCULAR for downstream motif comparisons: the admitted set is by "
+                         "construction motif-matched, so any figure that asks 'do telotron "
+                         "motifs match host telomeres?' is definitional. When on, a "
+                         "companion `*_no_motif_gate.tsv` is written as a sensitivity view.")
     ap.add_argument("--final", required=True)
     ap.add_argument("--species", required=True)
     ap.add_argument("--negatives", required=True)
@@ -72,6 +76,9 @@ def main():
         np.where(bidir_pass, "bidirectional",
         np.where(partial_pass, "partial", "none")))))
     final = loci[single_pass | bidir_pass | partial_pass].copy()
+    # Sensitivity companion: keep the pre-motif-gate table so downstream figures
+    # can be rerun with the circular gate off (see docstring).
+    final_no_motif_gate = final.copy()
     if args.require_terminal_motif_match and len(final):
         final = final[final.terminal_motif.notna() & (final.terminal_motif != "")
                       & (final.motif == final.terminal_motif)]
@@ -113,16 +120,24 @@ def main():
     # FIXES_PRIORITIZED.md unnumbered (review_survey_core.md MEDIUM, line 69).
     if "telotron_candidates" in species.columns:
         species["n_pre_filter_candidates"] = species["telotron_candidates"].fillna(0).astype(int)
-        # Only species with zero pre-filter candidates are genuine negatives;
-        # species with pre-filter candidates but zero post-filter telotrons were
-        # eliminated by filter cuts and are NOT comparable to true negatives.
-        negatives = species[(species.telotrons == 0) & (species.n_pre_filter_candidates == 0)].copy()
+        # Only species with zero pre-filter candidates AND a successful scan
+        # are genuine negatives. Exclude rows tagged NO_FASTA / ERROR:* — those
+        # never got scanned and mixing them into negatives inflates the
+        # "true-negative" pool with missing-input artifacts.
+        status = species.get("status", pd.Series([""] * len(species))).fillna("").astype(str)
+        scanned_ok = ~status.str.startswith(("NO_FASTA", "ERROR"))
+        negatives = species[(species.telotrons == 0) & (species.n_pre_filter_candidates == 0) & scanned_ok].copy()
     else:
         negatives = species[species.telotrons == 0].copy()
 
     final.to_csv(args.final, sep="\t", index=False)
     species.to_csv(args.species, sep="\t", index=False)
     negatives.to_csv(args.negatives, sep="\t", index=False)
+    # Companion sensitivity output (only meaningful when --require-terminal-motif-match
+    # is set): the pre-motif-gate table.
+    if args.require_terminal_motif_match:
+        final_no_motif_gate.to_csv(
+            args.final.replace(".tsv", "_no_motif_gate.tsv"), sep="\t", index=False)
 
 
 if __name__ == "__main__":

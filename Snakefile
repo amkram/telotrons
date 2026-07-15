@@ -521,7 +521,9 @@ rule telotron_orthologs:
         focal=_TELO_ORTHO_FOCAL,
         panel=_TELO_ORTHO_PANEL,
         min_array=_TELO_ORTHO.get("min_array_bp", 50),
-        min_id=_TELO_ORTHO.get("min_identity", 0.20),
+        # Bumped 2026-07-14 from 0.20 -> 0.40: below 0.40 is the twilight zone
+        # that reopens ABS-bucket leakage (see memory locus_text_patterns_2026-06-03).
+        min_id=_TELO_ORTHO.get("min_identity", 0.40),
         tol=_TELO_ORTHO.get("intron_tol", 8),
     threads: THREADS
     conda:
@@ -557,7 +559,7 @@ rule build_non_telotron_controls:
         r"""
         python scripts/build_non_telotron_controls.py \
             --introns {input.introns} --final {input.final} \
-            --out {output.tsv} --max-frac 0.01 --n-per-species 5000 \
+            --out {output.tsv} --max-frac 0.01 \
             --all-genomes
         """
 
@@ -590,11 +592,40 @@ rule package:
 
 
 # ── Architecture / linker analyses ─────────────────────────────────────────
-# Downstream of telotron_ortholog + interstitial-array arms; chains off the
-# v3 locus_text sentinel. Invoke individually (linker_analysis,
-# mask_telotron_arrays) — no aggregate target.
+# Downstream of telotron_orthologs. Textdump rule (below) produces the
+# per-locus text-view layout that linker_analysis + mask_telotron_arrays
+# consume. Invoke individually — no aggregate target.
 
-V2_LOCUS_TEXT = TELOTRON_ORTHO_TEXT   # textdump sentinel; the scripts read the dir themselves
+V2_LOCUS_TEXT = TELOTRON_ORTHO_TEXT   # textdump sentinel
+
+
+# Per-locus text-view of the ortholog alignments, panel-split. The linker
+# and mask rules read this v2 directory layout directly (was killed in the
+# 4th deslop then restored 2026-07-14 when both downstream rules turned
+# out to depend on it).
+rule telotron_ortholog_textdump:
+    input:
+        TELOTRON_ORTHO_SENTINEL,
+    output:
+        touch(TELOTRON_ORTHO_TEXT),
+    params:
+        v2=TELOTRON_ORTHO_V2,
+        within=_TELO_WITHIN_PANEL,
+        outgroup=_TELO_OUTGROUP_PANEL,
+    threads: THREADS
+    conda:
+        ENV
+    shell:
+        r"""
+        python scripts/telotron_ortholog_textdump.py \
+            --ortho-dir work/results/telotron_orthologs --threads {threads} \
+            --panel-ids {params.within} \
+            --out-dir {params.v2}/locus_text/within_eimeria
+        python scripts/telotron_ortholog_textdump.py \
+            --ortho-dir work/results/telotron_orthologs --threads {threads} \
+            --panel-ids {params.outgroup} \
+            --out-dir {params.v2}/locus_text/outgroup
+        """
 
 
 # Linker analysis: segment each telotron into arrays + linkers, then cluster

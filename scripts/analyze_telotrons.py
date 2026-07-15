@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Boundary k-mer enrichment, distance-to-contig-end, and architecture summary."""
+"""Boundary k-mer enrichment, distance-to-contig-end, and architecture summary.
+
+**Rotation-trap note:** `boundary_kmers()` counts k-mers at the donor/acceptor
+edges of telotrons vs non-telotron introns. Telotron edges are BY CONSTRUCTION
+rotations of the defining telomere motif, so enrichment is definitional. The
+output is flagged `circular_by_construction=True` and consumers should treat
+the Fisher p-values as descriptive, not inferential. Telomere-fragment masking
+(`telomere_mask.mask_telomere_fragments`) does not apply here because the
+k-mer counts themselves ARE the signal — masking would delete what we're
+counting. The non-circular question (register bias beyond splice-signal
+selection) is a within-array null handled by the splice-site-gate analysis."""
 import argparse
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
@@ -74,12 +84,16 @@ def _boundary_one(args):
 def boundary_kmers(final, introns, out_path, threads=1):
     """Per (genome, motif), top 10 k-mers at the donor/acceptor edges vs non-telotron introns.
 
-    Fisher's exact p + BH q are reported, but note the comparison is partly
-    DEFINITIONAL: telotron boundary k-mers are rotations of the telomere repeat
-    that defines a telotron, so enrichment over non-telomeric introns is
-    expected. The non-circular question (is the observed repeat-rotation register
-    biased beyond what splice-signal selection requires?) is a within-array null,
-    handled separately (see splice_site_gate.py)."""
+    Fisher's exact p + BH q are reported for continuity with prior versions,
+    but the comparison is DEFINITIONALLY CIRCULAR: telotron boundary k-mers
+    are rotations of the telomere repeat that defines a telotron, so
+    enrichment over non-telomeric introns is expected by construction. Rows
+    with fold_enrichment='inf' come from k-mers absent from every control
+    intron (they are all definitional rotations of the motif); every table row
+    is flagged with `circular_by_construction=True` and downstream consumers
+    should treat the Fisher p as descriptive, not inferential. The
+    non-circular question (register bias beyond splice-signal selection) is a
+    within-array null handled by the splice-site-gate analysis."""
     controls = split_controls(final, introns)
     # Pre-slice control set per genome so each worker only gets the data it needs.
     ctrl_by_genome = {gid: g for gid, g in controls.groupby("genome_id")}
@@ -101,12 +115,16 @@ def boundary_kmers(final, introns, out_path, threads=1):
     for r, q in zip(rows, qvals):
         r.append(q if q is not None else "")
 
-    pd.DataFrame(rows, columns=[
+    df = pd.DataFrame(rows, columns=[
         "genome_id", "motif", "boundary", "kmer",
         "telotron_count", "telotron_freq",
         "control_count", "control_freq", "fold_enrichment",
         "fisher_p", "bh_q",
-    ]).to_csv(out_path, sep="\t", index=False)
+    ])
+    # Flag every row: this table is definitionally circular (see docstring).
+    # Downstream consumers should treat p/q values as descriptive, not inferential.
+    df["circular_by_construction"] = True
+    df.to_csv(out_path, sep="\t", index=False)
 
 
 def _distance_one(args):
@@ -149,22 +167,28 @@ def _distance_one(args):
 
 def distance_to_end(final, out_path, threads=1, capped_only=True, n_perm=2000, seed=1):
     """Per-genome subtelomeric-clustering test vs a within-contig random-placement
-    null. Restricts to fully telomere-capped contigs (both ends) unless
-    capped_only=False, because fragmented contigs have no real chromosome end."""
-    tasks = [(gid, group, capped_only, n_perm, seed)
-             for gid, group in final.groupby("genome_id")]
-    if threads > 1 and len(tasks) > 1:
-        with ProcessPoolExecutor(max_workers=threads) as ex:
-            rows = list(tqdm(ex.map(_distance_one, tasks), total=len(tasks),
-                             desc="distance-to-end", unit="genome"))
-    else:
-        rows = [_distance_one(t) for t in tqdm(tasks, desc="distance-to-end", unit="genome")]
-
-    pd.DataFrame(rows, columns=[
-        "genome_id", "telotron_n", "n_capped_contigs",
-        "median_telotron_distance_to_end", "median_null_distance_to_end",
-        "frac_closer_than_contig_null", "sign_test_p", "mc_permutation_p",
-    ]).to_csv(out_path, sep="\t", index=False)
+    null. Emits BOTH the capped-only pass (telomere-capped contigs, defensible
+    for chromosome-level assemblies) and an `_all_contigs` companion (every
+    contig, defensible for MAGs where "chromosome end" isn't meaningful — the
+    capped-only test drops most Tara MAG loci and gives a high-variance zero)."""
+    def _run(_capped, suffix):
+        tasks = [(gid, group, _capped, n_perm, seed)
+                 for gid, group in final.groupby("genome_id")]
+        if threads > 1 and len(tasks) > 1:
+            with ProcessPoolExecutor(max_workers=threads) as ex:
+                rows = list(tqdm(ex.map(_distance_one, tasks), total=len(tasks),
+                                 desc=f"distance-to-end{suffix}", unit="genome"))
+        else:
+            rows = [_distance_one(t) for t in tqdm(tasks, desc=f"distance-to-end{suffix}", unit="genome")]
+        df = pd.DataFrame(rows, columns=[
+            "genome_id", "telotron_n", "n_capped_contigs",
+            "median_telotron_distance_to_end", "median_null_distance_to_end",
+            "frac_closer_than_contig_null", "sign_test_p", "mc_permutation_p",
+        ])
+        df["mode"] = "capped_only" if _capped else "all_contigs"
+        return df
+    pd.concat([_run(True, " (capped)"), _run(False, " (all)")], ignore_index=True) \
+        .to_csv(out_path, sep="\t", index=False)
 
 
 def main():

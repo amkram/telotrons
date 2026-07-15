@@ -12,13 +12,25 @@ import numpy as np
 from scipy.stats import mannwhitneyu, spearmanr
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 np.random.seed(0)
-import os
+import os, sys, glob, gzip
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import find_genome_files  # noqa: E402
 # Persistent gene-coverage TSVs (produced by the rnaseq_gene_coverage Snakemake rule); override dir
 # with TELOTRON_RNASEQ_DIR. Previously read /tmp/eten_gene_cov.tsv (ephemeral, non-reproducible).
 RNASEQ_DIR=os.environ.get("TELOTRON_RNASEQ_DIR","work/results/rnaseq")
+
+def _resolve_gff(genome_id):
+    """Locate a genome's GFF under data/raw/refseq/ or data/raw/genbank/ (via _common).
+    Falls back to any *_genomic.gff[.gz] under either dir; returns None if nothing found."""
+    _fa, gff = find_genome_files(genome_id, "data/raw/refseq", "data/raw/tara")
+    return gff
+
+def _open_maybe_gz(p):
+    return gzip.open(p, "rt") if p.endswith(".gz") else open(p)
+
 SP={  # species: (gene_cov, gff, genome_id, label)
- "necatrix":(f"{RNASEQ_DIR}/necatrix_gene_cov.tsv","data/raw/refseq/GCF_000499385.1/GCF_000499385.1_ENH001_genomic.gff","GCF_000499385.1","E. necatrix"),
- "tenella":(f"{RNASEQ_DIR}/eten_gene_cov.tsv","data/raw/refseq/GCF_000499545.2/GCF_000499545.2_ETH001_genomic.gff","GCF_000499545.2","E. tenella"),
+ "necatrix":(f"{RNASEQ_DIR}/necatrix_gene_cov.tsv", _resolve_gff("GCF_000499385.1"), "GCF_000499385.1", "E. necatrix"),
+ "tenella":(f"{RNASEQ_DIR}/eten_gene_cov.tsv", _resolve_gff("GCF_000499545.2"), "GCF_000499545.2", "E. tenella"),
 }
 def load_telo(genome_id):
     telo=defaultdict(list)
@@ -43,7 +55,7 @@ def species_data(cov,gff,genome_id):
         if ln>0: expr[f[3]]=int(f[6])/ln
     it=make_is_telo(load_telo(genome_id))
     mex=defaultdict(list); mg={}
-    for l in open(gff):
+    for l in _open_maybe_gz(gff):
         if l.startswith("#"): continue
         f=l.rstrip("\n").split("\t")
         if len(f)<9: continue
@@ -88,24 +100,38 @@ for sp,(cov,gff,gid,lab) in SP.items():
     for k in range(5):
         m=(ie>=qs[k])&(ie<=qs[k+1]); print(f"{1e4*iy[m].sum()/m.sum():.1f}",end=" ")
     print()
-# pooled (normalise expr to within-species median)
+# pooled (normalise expr to within-species median) — species tag preserved for
+# the fixed-effect design so the necatrix pool (n=174) doesn't dominate the
+# host coefficient over tenella (n=21).
 pg=[]; pi=[]
+sp_list=list(allg.keys()); sp_idx={s:i for i,s in enumerate(sp_list)}
 for sp in allg:
     med=np.median([x[0] for x in allg[sp]])
-    for e,N,h in allg[sp]: pg.append((e/med,N,h))
+    for e,N,h in allg[sp]: pg.append((e/med,N,h,sp_idx[sp]))
     for e,h in alli[sp]: pi.append((e/med,h))
 if pg:
     he=[x[0] for x in pg if x[2]]; ne=[x[0] for x in pg if not x[2]]
     print(f"\n=== POOLED (within-species-normalised) ===  telotron-host {len(he)}")
     print(f"  host median {np.median(he):.2f}  non-host {np.median(ne):.2f}  ratio {np.median(he)/np.median(ne):.2f}  MWU p={mannwhitneyu(he,ne).pvalue:.2e}")
     E=np.array([x[0] for x in pg]); N=np.array([x[1] for x in pg]); H=np.array([1 if x[2] else 0 for x in pg])
-    # pooled size-controlled OLS = the headline (raw host-vs-non-host gap is gene-architecture-confounded)
+    SP=np.array([x[3] for x in pg])
+    # Pooled size-controlled OLS with species fixed effect (one dummy per species
+    # after the reference). Without the fixed effect the necatrix pool dominates
+    # the host coefficient and a new species with a different baseline can flip
+    # the HEADLINE verdict for reasons unrelated to biology.
     ols_coef=ols_p=None
     try:
         import statsmodels.api as sm
-        m=sm.OLS(np.log10(E+0.01), sm.add_constant(np.column_stack([H,np.log(N+1)]))).fit()
+        # dummy-encode species (drop first as reference)
+        n_species = len(sp_list)
+        species_dummies = np.zeros((len(SP), max(n_species - 1, 0)))
+        for i, s in enumerate(SP):
+            if s > 0:
+                species_dummies[i, s - 1] = 1.0
+        design = np.column_stack([H, np.log(N + 1)] + ([species_dummies] if n_species > 1 else []))
+        m=sm.OLS(np.log10(E+0.01), sm.add_constant(design)).fit()
         ols_coef=m.params[1]; ols_p=m.pvalues[1]
-        print(f"  OLS host coef {ols_coef:+.3f} p={ols_p:.2e} (size-controlled, pooled HEADLINE)")
+        print(f"  OLS host coef {ols_coef:+.3f} p={ols_p:.2e} (size + species-fixed-effect controlled, pooled HEADLINE)")
     except Exception: pass
     if ols_coef is not None and ols_p is not None and ols_p<0.05 and ols_coef<0:
         HEADLINE="telotrons sit in LOWER-expression genes even after size control (pooled OLS p=%.1e)"%ols_p

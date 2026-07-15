@@ -117,8 +117,13 @@ def arm_extents(seq, motif):
     R = rotations(rc(motif))
     fi = merge_close(find_intervals(seq, F))
     ri = merge_close(find_intervals(seq, R))
-    arrs = [(s, e) for s, e in fi if e - s >= MIN_ARRAY] + \
-           [(s, e) for s, e in ri if e - s >= MIN_ARRAY]
+    # Motif-scaled minimum: at least MIN_ARRAY bp AND at least 3 motif units.
+    # For long-motif taxa (Allium 12bp, Bombus 11bp) the flat 18 bp bar is
+    # ~1.5 units and admits scattered noise as arms. 3 units is the accepted
+    # minimum for a real telomeric block.
+    min_arr = max(MIN_ARRAY, 3 * len(motif))
+    arrs = [(s, e) for s, e in fi if e - s >= min_arr] + \
+           [(s, e) for s, e in ri if e - s >= min_arr]
     arrs.sort()
     return arrs
 
@@ -165,8 +170,9 @@ def classify(seq, motif, bv=None):
         bv = telo_coverage_bitvector(seq, F + R, max_mm=1)
     fi = merge_close(find_intervals(seq, F))
     ri = merge_close(find_intervals(seq, R))
-    fi = [(s, e) for s, e in fi if e - s >= MIN_ARRAY]
-    ri = [(s, e) for s, e in ri if e - s >= MIN_ARRAY]
+    min_arr = max(MIN_ARRAY, 3 * len(motif))
+    fi = [(s, e) for s, e in fi if e - s >= min_arr]
+    ri = [(s, e) for s, e in ri if e - s >= min_arr]
 
     if not fi and not ri:
         return "Other", "", 0, -1, -1

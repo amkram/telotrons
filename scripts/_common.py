@@ -118,11 +118,24 @@ def read_fasta_desc(path):
 # --------------------------------------------------------------------------- #
 # Genome file location (RefSeq tree + Tara Contigs/Annot layout)
 # --------------------------------------------------------------------------- #
+# GenBank-only (GCA_) assemblies land in a sibling dir. Any resolver that
+# takes `refseq_dir` also checks the parallel `genbank_dir` (default:
+# refseq_dir/../genbank). Callers can override via the env var
+# TELOTRON_GENBANK_DIR when running scripts by hand.
+def _genbank_dir(refseq_dir):
+    override = os.environ.get("TELOTRON_GENBANK_DIR")
+    if override:
+        return override
+    parent = os.path.dirname(os.path.abspath(refseq_dir))
+    return os.path.join(parent, "genbank")
+
+
 def find_genome_fasta(gid, refseq_dir, tara_dir, required=True):
     """Locate a genome's nucleotide FASTA.
 
-    RefSeq:  {refseq_dir}/{gid}/**/*_genomic.fna[.gz]
-    Tara:    {tara_dir}/Contigs/{gid}.fa[.gz]
+    RefSeq (GCF_):   {refseq_dir}/{gid}/**/*_genomic.fna[.gz]
+    GenBank (GCA_):  {genbank_dir}/{gid}/**/*_genomic.fna[.gz]  (sibling of refseq_dir)
+    Tara:            {tara_dir}/Contigs/{gid}.fa[.gz]
     Index/aux sidecars are excluded and a plain FASTA is preferred over a .gz
     (miniprot etc. want the uncompressed file). Returns the first such match;
     if none, raises FileNotFoundError when required else returns None.
@@ -131,6 +144,8 @@ def find_genome_fasta(gid, refseq_dir, tara_dir, required=True):
         hits = glob.glob(f"{tara_dir}/Contigs/{gid}.fa*")
     else:
         hits = glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.fna*", recursive=True)
+        if not hits:
+            hits = glob.glob(f"{_genbank_dir(refseq_dir)}/{gid}/**/*_genomic.fna*", recursive=True)
     hits = [p for p in hits if not p.endswith((".fai", ".gzi", ".bai", ".ndx"))]
     plain = [p for p in hits if p.endswith((".fna", ".fa", ".fasta"))]
     gz = [p for p in hits if p.endswith(".gz")]
@@ -143,7 +158,12 @@ def find_genome_fasta(gid, refseq_dir, tara_dir, required=True):
 
 
 def find_genome_files(gid, refseq_dir, tara_dir):
-    """Locate (fasta, gff) for a genome; either element may be None."""
+    """Locate (fasta, gff) for a genome; either element may be None.
+
+    Checks {refseq_dir}/{gid}/ then {genbank_dir}/{gid}/ (parallel dir) then
+    Tara. Necessary for the GenBank front-end: GCA_-only assemblies live
+    under data/raw/genbank/, not data/raw/refseq/.
+    """
     if gid.startswith("TARA"):
         fa = glob.glob(f"{tara_dir}/Contigs/{gid}.fa*")
         # Tara MAG GFFs are named `<gid>.gmove.gff` (Genoscope gmove), so the
@@ -155,6 +175,10 @@ def find_genome_files(gid, refseq_dir, tara_dir):
     else:
         fa = glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.fna*", recursive=True)
         gff = glob.glob(f"{refseq_dir}/{gid}/**/*_genomic.gff*", recursive=True)
+        if not fa and not gff:
+            gb = _genbank_dir(refseq_dir)
+            fa = glob.glob(f"{gb}/{gid}/**/*_genomic.fna*", recursive=True)
+            gff = glob.glob(f"{gb}/{gid}/**/*_genomic.gff*", recursive=True)
     fa = [p for p in fa if not p.endswith((".fai", ".gzi", ".bai", ".ndx"))]
     fa = [p for p in fa if p.endswith((".fna", ".fa", ".fasta"))] or fa
     return (fa[0] if fa else None), (gff[0] if gff else None)

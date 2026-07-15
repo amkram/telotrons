@@ -140,16 +140,33 @@ non_len = np.array([L for *_, _, L, h in per_gene if not h and L])
 
 p_intr = mannwhitneyu(host_intr, non_intr, alternative="greater").pvalue if len(host_intr) and len(non_intr) else float("nan")
 p_len = mannwhitneyu(host_len, non_len, alternative="greater").pvalue if len(host_len) and len(non_len) else float("nan")
-print(f"[A] host introns/gene med {np.median(host_intr):.0f} (n={len(host_intr)}) vs non-host {np.median(non_intr):.0f} (n={len(non_intr)}); pooled MWU p={p_intr:.1e}")
-print(f"[B] host gene len med {np.median(host_len):.0f} vs non-host {np.median(non_len):.0f}; pooled MWU p={p_len:.1e}")
+print(f"[A] host introns/gene med {np.median(host_intr):.0f} (n={len(host_intr)}) vs non-host {np.median(non_intr):.0f} (n={len(non_intr)}); pooled MWU p={p_intr:.1e} (POOLED — pseudo-replicated across bearer genomes; see genome-level test below)")
+print(f"[B] host gene len med {np.median(host_len):.0f} vs non-host {np.median(non_len):.0f}; pooled MWU p={p_len:.1e} (POOLED — pseudo-replicated; see genome-level test below)")
 
+# Genome-level test (the real replication unit): per-genome host-vs-non-host
+# median diff, Wilcoxon signed-rank across genomes when n>=6. This is the
+# HEADLINE test; the pooled MWU above is descriptive only.
 per_species_diff = []
+per_species_len_diff = []
 for gid in GFF:
     h_sp = [N for g, _, N, _, host in per_gene if g == gid and host]
     n_sp = [N for g, _, N, _, host in per_gene if g == gid and not host]
+    h_sp_L = [L for g, _, _, L, host in per_gene if g == gid and host and L]
+    n_sp_L = [L for g, _, _, L, host in per_gene if g == gid and not host and L]
     if h_sp and n_sp:
         per_species_diff.append(np.median(h_sp) - np.median(n_sp))
+    if h_sp_L and n_sp_L:
+        per_species_len_diff.append(np.median(h_sp_L) - np.median(n_sp_L))
 print(f"    per-genome host-vs-non-host intron-count diff (n={len(per_species_diff)}): {[f'{d:+.0f}' for d in per_species_diff]}  all positive: {all(d>0 for d in per_species_diff)}")
+if len(per_species_diff) >= 6:
+    try:
+        from scipy.stats import wilcoxon
+        wp = wilcoxon(per_species_diff, alternative="greater").pvalue
+        print(f"    [HEADLINE] genome-level Wilcoxon signed-rank on intron-count diff: p={wp:.3f}  (n={len(per_species_diff)} genomes)")
+    except Exception as ex:
+        print(f"    (wilcoxon unavailable: {ex})")
+else:
+    print(f"    (n<6 genomes: report per-genome direction/sign, not a within-genome-pooled p)")
 
 # ── C/D  Per-intron dissection  ───────────────────────────────────────────────
 N = np.array([r[1] for r in per_intron])

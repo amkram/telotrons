@@ -13,18 +13,23 @@ from collections import defaultdict
 import numpy as np
 from scipy.stats import mannwhitneyu, wilcoxon
 random.seed(0); W=100
+import gzip as _gz, sys as _sys
+_sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import find_genome_fasta  # noqa: E402
+from telomere_mask import mask_telomere_fragments  # noqa: E402  (closes rotation trap)
 def load_g(p):
+    """Load a FASTA (plain or .gz) into a dict of seqid -> uppercase sequence."""
+    opener = _gz.open if p.endswith(".gz") else open
     s={};h=None;b=[]
-    for l in open(p):
+    for l in opener(p, "rt"):
         if l[0]=='>':
             if h:s[h]="".join(b)
             h=l[1:].split()[0];b=[]
         else:b.append(l.strip().upper())
     if h:s[h]="".join(b); return s
 def resolve(g,rs="data/raw/refseq",ta="data/raw/tara"):
-    if g.startswith(("GCF_","GCA_")):
-        h=glob.glob(f"{rs}/{g}/{g}_*_genomic.fna"); return h[0] if h else None
-    p=f"{ta}/Contigs/{g}.fa"; return p if os.path.exists(p) else None
+    """Resolve GCF_/GCA_ + Tara through _common (handles .fna.gz + data/raw/genbank/)."""
+    return find_genome_fasta(g, rs, ta, required=False)
 def f_gc(s):
     n=sum(s.count(b) for b in "ACGT") or 1; return (s.count("G")+s.count("C"))/n
 def f_cpg(s):
@@ -48,10 +53,16 @@ for r in csv.DictReader(open("work/results/final_telotron_set_architecture.tsv")
 # all introns grouped by gene; classify telotron / sibling(non-telo) ; collect random pool
 by_gene=defaultdict(list); telo_genes=set(telo_gene.keys())
 def flankfeat(genome,seqid,s,e,fn):
+    """Mean of `fn` over the two W-bp flanks. Telomere-fragment mask is
+    applied before composition metrics — this closes the rotation-contamination
+    trap that retracted four earlier findings (see MEMORY.md)."""
     chrom=G[genome].get(seqid)
     if not chrom or s-W<0 or e+W>len(chrom): return np.nan
     up=chrom[s-W:s]; dn=chrom[e:e+W]
     if "NNNNN" in up or "NNNNN" in dn: return np.nan
+    # Mask any residual telomere-motif fragments in the flank so composition
+    # metrics (GC / CpG / WW) don't inherit signal from the array itself.
+    up=mask_telomere_fragments(up); dn=mask_telomere_fragments(dn)
     return np.nanmean([fn(up),fn(dn)])
 rand_pool=defaultdict(list)
 for r in csv.DictReader(open("work/results/non_telotron_controls.tsv"),delimiter="\t"):  # confident non-telo introns, has gene_id

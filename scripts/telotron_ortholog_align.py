@@ -521,23 +521,31 @@ def main():
     os.makedirs(work, exist_ok=True)
 
     # ── read telotrons for the focal genomes ────────────────────────────────
-    # cols: 0 gid 4 seqid 5 start 6 end 8 tx_id 9 gene_id 14 motif 15 telob 16 tfrac
+    # Read by column NAME (csv.DictReader) rather than by position — the header
+    # gains an extra `tx_ids`/`gene_ids` column after collapse_unique_loci, and
+    # positional indexing (previously f[8]/f[9]) misaligns silently on collapsed
+    # rows. Also prefer the comma-joined `tx_ids`/`gene_ids` when the singular
+    # column is empty (collapsed rows only carry the multi-id form).
     # NB: motif is honoured per-row (not the CLI default) so genomes with non-TTTAGGG
     # canonical telomeres get the right tandem reference for telomere_frac.
     tel_by_focal = {}
-    for line in open(args.final):
-        f = line.rstrip("\n").split("\t")
-        if f[0] not in focal_ids:
-            continue
-        try:
-            s, e = int(f[5]), int(f[6])
-        except ValueError:
-            continue
-        if e - s < args.min_array_bp:
-            continue
-        row_motif = f[14].strip() if len(f) > 14 and f[14].strip() else args.motif
-        tel_by_focal.setdefault(f[0], []).append(
-            dict(seqid=f[4], start=s, end=e, tx=f[8], gene=f[9], motif=row_motif))
+    import csv as _csv
+    with open(args.final) as _fh:
+        for r in _csv.DictReader(_fh, delimiter="\t"):
+            if r.get("genome_id") not in focal_ids:
+                continue
+            try:
+                s, e = int(r["start"]), int(r["end"])
+            except (KeyError, ValueError):
+                continue
+            if e - s < args.min_array_bp:
+                continue
+            row_motif = (r.get("motif") or args.motif).strip() or args.motif
+            # Prefer singular column; fall back to first of the comma-joined form.
+            tx = r.get("tx_id") or (r.get("tx_ids") or "").split(",")[0]
+            gene = r.get("gene_id") or (r.get("gene_ids") or "").split(",")[0]
+            tel_by_focal.setdefault(r["genome_id"], []).append(
+                dict(seqid=r["seqid"], start=s, end=e, tx=tx, gene=gene, motif=row_motif))
 
     # ── per focal genome: build host proteins + telotron residue positions ──
     # focal protein record: prot_id -> dict(focal, gene, tx, seq, telotrons=[(tid,res,dna)])

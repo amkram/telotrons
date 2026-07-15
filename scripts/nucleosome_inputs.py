@@ -9,10 +9,14 @@ needs one sequence per file):
   without/<lid>.fa = 5'flank + 3'flank              (element removed; insertion site at position=flank)
 oriented to the transcript strand (5' splice site at position=flank). Manifest carries species +
 architecture (for faceting) + the per-locus flank."""
-import csv, os, re, argparse, glob
+import csv, os, re, argparse, glob, sys, gzip
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import find_genome_fasta  # noqa: E402
 def load(p):
+    """Load a FASTA (plain or .gz) into a dict of seqid -> uppercase sequence."""
+    opener = gzip.open if p.endswith(".gz") else open
     s={};h=None;b=[]
-    for l in open(p):
+    for l in opener(p, "rt"):
         if l[0]=='>':
             if h:s[h]="".join(b)
             h=l[1:].split()[0];b=[]
@@ -20,11 +24,8 @@ def load(p):
     if h:s[h]="".join(b); return s
 def rc(s): return s.translate(str.maketrans("ACGTN","TGCAN"))[::-1]
 def resolve(genome_id, refseq_dir, tara_dir):
-    if genome_id.startswith("GCF_") or genome_id.startswith("GCA_"):
-        hit=glob.glob(f"{refseq_dir}/{genome_id}/{genome_id}_*_genomic.fna")
-        return hit[0] if hit else None
-    p=f"{tara_dir}/Contigs/{genome_id}.fa"
-    return p if os.path.exists(p) else None
+    """Resolve GCF_/GCA_ + Tara through _common (handles .fna.gz + data/raw/genbank/)."""
+    return find_genome_fasta(genome_id, refseq_dir, tara_dir, required=False)
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--table", default="work/results/final_telotron_set_architecture.tsv")

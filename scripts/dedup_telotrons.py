@@ -144,6 +144,12 @@ def dedup_one_species(gid, sub, chrom_seqs, tmpdir, threads):
             else:
                 pairs_D.add(key)
     edges = [(a, b) for (a, b) in pairs_U & pairs_D]
+    # One-side-only edge diagnostic: pairs where a single flank shares
+    # >=MIN_LEN/MIN_PIDENT but not both. These are potential under-collapse
+    # candidates (segmental-duplication artifacts collapsed on one side only).
+    one_side_only = len((pairs_U | pairs_D) - (pairs_U & pairs_D))
+    print(f"    [dedup] both-flank edges: {len(edges)}; one-side-only (potential under-collapse): {one_side_only}",
+          flush=True)
 
     groups = union_find_groups(n, edges)
     keep = [False] * n

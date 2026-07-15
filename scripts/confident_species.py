@@ -3,8 +3,13 @@
 
 A species is admitted as a confident bearer when it either
   (a) has >= --min-n telotrons that pass filter_final, OR
-  (b) has >= 1 bidirectional telotron (GT-F-R-AG, GT-R-linker-F-AG, GT-F-linker-R-AG),
-      a distinctive telomerase-mediated architecture unlikely by chance.
+  (b) has >= --min-bidir bidirectional telotrons (GT-F-R-AG, GT-R-linker-F-AG,
+      GT-F-linker-R-AG) — a distinctive telomerase-mediated architecture whose
+      per-locus false-positive rate is low but non-zero (motif rotations alone
+      can occasionally hit both strands at bidir_min_repeat_frac=0.40). A single
+      bidirectional locus is not sufficient in the RefSeq+GenBank ~50k
+      assembly regime — use --min-bidir 2 (default) so noise-driven singletons
+      don't seed downstream figures.
 
 Output TSV: genome_id, organism, source, n_telotrons, n_bidirectional, admission.
 Downstream analyses (gene-class, expression, nucleosome, ortholog panels) key
@@ -20,7 +25,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--arch", required=True, help="final_telotron_set_architecture.tsv")
     ap.add_argument("--manifest", required=True, help="work/manifests/all_genomes.tsv")
-    ap.add_argument("--min-n", type=int, default=3)
+    ap.add_argument("--min-n", type=int, default=3,
+                    help="min total telotrons for admission (default 3)")
+    ap.add_argument("--min-bidir", type=int, default=2,
+                    help="min bidirectional telotrons for the bidir admission path (default 2)")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
@@ -45,8 +53,8 @@ def main():
             passes = []
             if n[gid] >= args.min_n:
                 passes.append(f"n>={args.min_n}")
-            if n_bidir[gid] >= 1:
-                passes.append("bidirectional")
+            if n_bidir[gid] >= args.min_bidir:
+                passes.append(f"bidirectional>={args.min_bidir}")
             if not passes:
                 continue
             w.writerow([gid, organism[gid], src.get(gid, ""),
