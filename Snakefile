@@ -50,7 +50,6 @@ FILTER_FLAGS = " ".join(
     if on
 )
 
-FIGURES = ["work/results/figures/telotron_counts.png"]
 MEME_ENV = "envs/meme.yaml"
 
 # Sentinels (path = ".../<name>/.done" or the canonical output file).
@@ -74,27 +73,12 @@ TELOTRON_CAT = {
 INTERSTITIAL_CAT = {c: ("cat5_3", c) for c in ("GG", "GC", "CG", "CC")}
 
 
-# Default target = core survey through `package` + `pipeline_report`. Named
-# subgraph targets: `telomerase_search`, `orthologs`, `architecture_analyses`,
-# `analysis_arm`, `telogator2`. Kick off individual rules by name for reruns.
+# Default target = core survey through `package`. Sub-arms are invoked by
+# rule name (e.g. `snakemake analysis_arm`, `snakemake find_tert`,
+# `snakemake linker_analysis`). `analysis_arm` is the only surviving aggregate.
 rule all:
     input:
         "work/results/telotron_pipeline_outputs.zip",
-        "work/results/pipeline_report.html",
-
-
-rule telomerase_search:
-    input:
-        TERT_DEEP_HOMOLOGY_TSV,
-
-
-# Telotron-host-gene ortholog alignment (protein-space MSA + telotron-vs-intron DNA)
-# + the compiled per-locus figure PDF.
-rule orthologs:
-    input:
-        TELOTRON_ORTHO_SENTINEL,
-        TELOTRON_ORTHO_LOCI_PDF,
-        TELOTRON_ORTHO_TEXT,
 
 
 # Build the unified genome manifest from NCBI GenBank + RefSeq assembly
@@ -401,28 +385,6 @@ rule analyze:
         """
 
 
-# Four headline figures (counts, orientation, boundary k-mers, distance scatter).
-rule figures:
-    input:
-        species="work/results/final_species_summary.tsv",
-        final="work/results/final_telotron_set.tsv",
-        kmers="work/results/boundary_kmer_enrichment.tsv",
-        dist="work/results/distance_to_end.tsv",
-        arch="work/results/architecture_summary.tsv",
-    output:
-        FIGURES,
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures
-        python scripts/plot_telotrons.py \
-            --species {input.species} --final {input.final} \
-            --kmers {input.kmers} --distance {input.dist} --architecture {input.arch} \
-            --outdir work/results/figures
-        """
-
-
 # Per-species, per-architecture FASTA + flanked-text extracts.
 # Flanked lines: [LEFT100] [INTRON] [RIGHT100], or for linker archs
 # [LEFT100] [ARRAY1] [LINKER] [ARRAY2] [RIGHT100]. One subdir per species,
@@ -448,33 +410,6 @@ rule extract_telotron_fasta:
         """
 
 
-# Per-genome ORF mask: 6-frame ATG→stop scan, ORFs >= min_orf_nt (default 450,
-# at which shuffled E. necatrix coverage is ~2% — the noise floor). Used by
-# find_interstitial_arrays on top of the annotated gene/intron mask.
-rule make_unannotated_masks:
-    input:
-        manifest="work/results/all_species_raw_summary.tsv",
-        tara=["data/raw/tara/.fna.done"],
-        assemblies=ASSEMBLIES_DONE,
-    output:
-        touch("work/results/masks/.done"),
-    params:
-        outdir="work/results/masks",
-        min_orf=450,
-    threads: THREADS
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p {params.outdir}
-        python scripts/make_unannotated_mask.py \
-            --manifest {input.manifest} \
-            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
-            --outdir {params.outdir} \
-            --min-orf-nt {params.min_orf}
-        """
-
-
 # Interstitial telomeric arrays: non-terminal (>=5 kb from contig end),
 # non-genic, non-intronic. Exclude (annotated genes ∪ introns) ∪ 6-frame
 # ORF mask (work/results/masks/{gid}.bed, ORFs >= 450 nt). Emits 5'/3'
@@ -484,16 +419,25 @@ rule find_interstitial_arrays:
         manifest="work/results/all_species_raw_summary.tsv",
         tara=["data/raw/tara/.fna.done"],
         assemblies=ASSEMBLIES_DONE,
-        masks="work/results/masks/.done",
     output:
         "work/results/interstitial_arrays.tsv",
     params:
         mask_dir="work/results/masks",
+        min_orf=450,
     threads: THREADS
     conda:
         ENV
     shell:
         r"""
+        # 6-frame ORF mask: excludes unannotated coding regions from the
+        # interstitial-array set. Was a separate `make_unannotated_masks` rule
+        # until 2026-07-14; folded inline (one rule, one deliverable).
+        mkdir -p {params.mask_dir}
+        python scripts/make_unannotated_mask.py \
+            --manifest {input.manifest} \
+            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
+            --outdir {params.mask_dir} \
+            --min-orf-nt {params.min_orf}
         python scripts/find_interstitial_arrays.py \
             --manifest {input.manifest} \
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
@@ -625,66 +569,6 @@ rule plot_telotron_ortholog_loci:
         """
 
 
-# Per-locus TEXT dump: unaligned/aligned × DNA/aa (flanks + intron), grouped into
-# category folders (intron_present_nontelo / telotron_present / intron_absent / uncertain).
-rule telotron_ortholog_textdump:
-    input:
-        TELOTRON_ORTHO_SENTINEL,
-    output:
-        touch(TELOTRON_ORTHO_TEXT),
-    params:
-        within=_TELO_WITHIN_PANEL,
-        outgroup=_TELO_OUTGROUP_PANEL,
-        v2=TELOTRON_ORTHO_V2,
-    threads: THREADS
-    conda:
-        ENV
-    shell:
-        r"""
-        # one canonical panel-split locus_text (within_eimeria + outgroup), reading the
-        # shared align artifacts under work/results/telotron_orthologs.
-        python scripts/telotron_ortholog_textdump.py \
-            --ortho-dir work/results/telotron_orthologs --threads {threads} \
-            --panel-ids {params.within} \
-            --out-dir {params.v2}/locus_text/within_eimeria
-        python scripts/telotron_ortholog_textdump.py \
-            --ortho-dir work/results/telotron_orthologs --threads {threads} \
-            --panel-ids {params.outgroup} \
-            --out-dir {params.v2}/locus_text/outgroup
-        """
-
-
-# ── Splice-signal sequence logos (±10 bp of GT donor and AG acceptor) ──────
-#   {set}='telotron'      + {cat}=''                 -> all telotrons
-#   {set}='telotron'      + {cat}='_GG/_GC/_CG/_CC'  -> architecture-filtered
-#   {set}='non_telotron'  + {cat}=''                 -> non-telotron control
-rule plot_splice_signal_logos:
-    input:
-        sentinel=lambda w: CTRL_FLANKED_SENTINEL if w.set == "non_telotron" else EXTRACT_FASTA_SENTINEL,
-        ann=lambda w: "work/results/final_telotron_set_architecture.tsv" if w.cat else [],
-    output:
-        touch("work/results/figures/{set}_splice_logos{cat}/.done"),
-    wildcard_constraints:
-        set=r"non_telotron|telotron",
-        cat=r"|_GG|_GC|_CG|_CC",
-    params:
-        flanked_dir=lambda w: f"work/results/{w.set}_flanked",
-        filter_args=lambda w: (
-            f"--annotation-tsv work/results/final_telotron_set_architecture.tsv "
-            f"--filter-col {TELOTRON_CAT[w.cat[1:]][0]} --filter-value \"{TELOTRON_CAT[w.cat[1:]][1]}\""
-            if w.set == "telotron" and w.cat else ""
-        ),
-    conda: ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures/{wildcards.set}_splice_logos{wildcards.cat}
-        python scripts/plot_splice_signal_logos.py \
-            --flanked-dir {params.flanked_dir} \
-            --outdir work/results/figures/{wildcards.set}_splice_logos{wildcards.cat} \
-            {params.filter_args}
-        """
-
-
 # Definitely-non-telotron intron control set: introns with telomeric_frac < 10%
 # from the same positive species, sampled per genome. Produced TSV mirrors the
 # architecture-table schema so extract_telotron_fasta.py can ingest it.
@@ -740,7 +624,6 @@ PACKAGE_INPUTS = [
     "work/results/architecture_summary.tsv",
     "work/results/dedup_log.tsv",
     "work/results/interstitial_arrays.tsv",
-    *FIGURES,
     "work/manifests/all_genomes.tsv",
 ]
 
@@ -754,74 +637,31 @@ rule package:
         "zip -qj {output} {input}"
 
 
-# ── Self-contained HTML report ──────────────────────────────────────────────
-# Aggregates the pipeline outputs into a single HTML file with sortable tables,
-# inline base64 figures, colored MSAs, and collapsible sections. Inputs are the
-# same as `package` plus a handful of figure/MSA roots that the script samples.
-rule pipeline_report:
-    input:
-        PACKAGE_INPUTS,
-        EXTRACT_FASTA_SENTINEL,
-    output:
-        "work/results/pipeline_report.html",
-    conda: ENV
-    shell:
-        r"""
-        python scripts/build_pipeline_report.py \
-            --results work/results \
-            --out {output}
-        """
-
-
-# ── Architecture / linker / interstitial-ITS analyses ──────────────────────
-# Aggregate target: `architecture_analyses`. Downstream of telotron_ortholog +
-# interstitial-array arms; chains off the v3 locus_text sentinel.
+# ── Architecture / linker analyses ─────────────────────────────────────────
+# Downstream of telotron_ortholog + interstitial-array arms; chains off the
+# v3 locus_text sentinel. Invoke individually (linker_analysis,
+# mask_telotron_arrays) — no aggregate target.
 
 V2_LOCUS_TEXT = TELOTRON_ORTHO_TEXT   # textdump sentinel; the scripts read the dir themselves
 
 
-rule interstitial_ortholog_textdump:
-    input:
-        "work/results/interstitial_arrays.tsv",
-        *ASSEMBLIES_DONE,
-    output:
-        directory("work/results/interstitial_orthologs/locus_text"),
-    threads: THREADS
-    conda:
-        ENV
-    shell:
-        r"""
-        python scripts/interstitial_ortholog_textdump.py \
-            --threads {threads} \
-            --min-its-units {INTERSTITIAL_MIN_ITS_UNITS}
-        """
-
-
-rule linker_segmentation:
+# Linker analysis: segment each telotron into arrays + linkers, then cluster
+# the linker sequences by 7-mer Jaccard to quantify cross-locus recurrence.
+# One DAG node covering both steps (previously two rules).
+rule linker_analysis:
     input:
         V2_LOCUS_TEXT,
     output:
-        "work/results/mechanism_deepdive/linker_segmentation.tsv",
-        "work/results/mechanism_deepdive/linker_segmentation.jsonl",
-        "work/results/mechanism_deepdive/architecture_per_locus.tsv",
+        seg="work/results/mechanism_deepdive/linker_segmentation.tsv",
+        seg_jsonl="work/results/mechanism_deepdive/linker_segmentation.jsonl",
+        arch="work/results/mechanism_deepdive/architecture_per_locus.tsv",
+        clusters="work/results/mechanism_deepdive/linker_clusters.tsv",
+        recurrence="work/results/mechanism_deepdive/linker_recurrence_summary.txt",
     conda:
         ENV
     shell:
         r"""
         python scripts/linker_segmentation.py
-        """
-
-
-rule cluster_linkers:
-    input:
-        "work/results/mechanism_deepdive/linker_segmentation.tsv",
-    output:
-        "work/results/mechanism_deepdive/linker_clusters.tsv",
-        "work/results/mechanism_deepdive/linker_recurrence_summary.txt",
-    conda:
-        ENV
-    shell:
-        r"""
         python scripts/cluster_linkers.py
         """
 
@@ -840,13 +680,6 @@ rule mask_telotron_arrays:
         r"""
         python scripts/mask_telotron_arrays.py
         """
-
-
-rule architecture_analyses:
-    input:
-        rules.interstitial_ortholog_textdump.output,
-        rules.cluster_linkers.output,
-        rules.mask_telotron_arrays.output,
 
 
 # ── Assembly-based telomere boundary detection ──────────────────────────────
@@ -889,33 +722,6 @@ _TG2_SPECIES = {r["accession"]: r["species"] for r in TG2_RUNS}
 _LR_URL_BY_DEST = {("data/raw/longread/" + r["fastq_local"]): ("https://" + r["fastq_url"]) for r in LR_RUNS}
 
 
-# ===================================================================================
-# Nucleosome flanking-site inputs. Builds insertion-site + flank FASTAs used by
-# nucleosome_features (composition/periodicity panel) and nucleosome_withingene
-# (within-gene sibling-intron control). The NuPoP occupancy arm was retired
-# 2026-07-14 — memory (telotron_nucleosome_nupop_2026-06-08) recorded the
-# linker interpretation as artifact; only the composition/periodicity signals
-# in nucleosome_features held up.
-rule nucleosome_inputs:
-    input:
-        arch="work/results/final_telotron_set_architecture.tsv",
-        controls="work/results/non_telotron_controls.tsv",
-        tara=["data/raw/tara/.fna.done"],
-        assemblies=ASSEMBLIES_DONE,
-    output:
-        manifest="work/results/nucleosome/manifest.tsv",
-        control_manifest="work/results/nucleosome/control_manifest.tsv",
-    conda:
-        ENV
-    shell:
-        r"""
-        python scripts/nucleosome_inputs.py \
-            --table {input.arch} --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
-            --out work/results/nucleosome
-        python scripts/nucleosome_control_inputs.py \
-            --controls {input.controls} --telo-manifest {output.manifest} \
-            --refseq-dir data/raw/refseq --tara-dir data/raw/tara --out work/results/nucleosome
-        """
 
 
 # ── Downstream analysis arm (was hand-run; now wired) ───────────────────────
@@ -962,18 +768,32 @@ rule rnaseq_gene_coverage:
         """
 
 
-# Insertion-site composition/periodicity feature panel (telomere-masked flanks,
-# BH-FDR). Reads the nucleosome manifests + per-locus FASTAs from nucleosome_inputs.
+# Insertion-site composition / periodicity feature panel (telomere-masked
+# flanks, BH-FDR). One rule: builds per-locus flank FASTAs + control FASTAs,
+# then computes the composition / 10-bp WW periodicity / CpG panel. The old
+# NuPoP occupancy arm was retired 2026-07-14 (linker interpretation was
+# artifact per memory telotron_nucleosome_nupop_2026-06-08); the signals
+# reported here are the ones that held up.
 rule nucleosome_features:
     input:
+        arch=ARCH_TSV,
+        controls="work/results/non_telotron_controls.tsv",
+        tara=["data/raw/tara/.fna.done"],
+        assemblies=ASSEMBLIES_DONE,
+    output:
+        summary="work/results/nucleosome/nucleosome_feature_summary.png",
         manifest="work/results/nucleosome/manifest.tsv",
         control_manifest="work/results/nucleosome/control_manifest.tsv",
-    output:
-        "work/results/nucleosome/nucleosome_feature_summary.png",
     conda:
         ENV
     shell:
         r"""
+        python scripts/nucleosome_inputs.py \
+            --table {input.arch} --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
+            --out work/results/nucleosome
+        python scripts/nucleosome_control_inputs.py \
+            --controls {input.controls} --telo-manifest {output.manifest} \
+            --refseq-dir data/raw/refseq --tara-dir data/raw/tara --out work/results/nucleosome
         python scripts/nucleosome_features.py
         """
 

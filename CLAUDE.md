@@ -83,8 +83,8 @@ args the rule uses (or `snakemake -n --rulegraph` for DAG inspection).
    distinctive telomerase-mediated signature). **Every downstream analysis
    keys off this file** — new bearer species flow through automatically
    without touching Python.
-8. `figures` → [scripts/plot_telotrons.py](scripts/plot_telotrons.py) — counts +
-   per-species panels. `package` — zip final TSVs + figures.
+8. `package` — zip final TSVs + confident-species set + manifest into the
+   deliverable at `work/results/telotron_pipeline_outputs.zip`.
 
 ### Downstream analysis arms (mutually independent)
 - **Extraction / alignment** — `extract_telotron_fasta`, `build_non_telotron_controls`
