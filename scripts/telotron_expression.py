@@ -133,4 +133,4 @@ if pg:
     ax[2].set_title("C  pooled per-intron rate vs expression\n(necatrix+tenella; ~195 telotrons)",fontsize=9.5,weight="bold")
     [ax[2].spines[s].set_visible(False) for s in ("top","right")]
     fig.suptitle("Expression vs telotron presence (E. necatrix RNA-seq added, 174 host genes).  "+HEADLINE,fontsize=9.5,weight="bold",y=1.04)
-    fig.tight_layout(); fig.savefig("analysis/telotron_expr_presence_necatrix.png",dpi=150,bbox_inches="tight"); print("\nwrote analysis/telotron_expr_presence_necatrix.png")
+    fig.tight_layout(); fig.savefig("work/results/figures/telotron_expression.png",dpi=150,bbox_inches="tight"); print("\nwrote work/results/figures/telotron_expression.png")

@@ -36,7 +36,7 @@ def bh_fdr(pvals):
 
 # Repo-relative default; CLI/env override keeps this runnable off /scratch1.
 ROOT = os.environ.get('TELOTRON_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-OUTDIR = os.path.join(ROOT, 'work/results/length_distribution_2026-06-07')
+OUTDIR = os.path.join(ROOT, 'work/results/length_distribution')
 os.makedirs(OUTDIR, exist_ok=True)
 
 TSV = os.path.join(ROOT, 'work/results/final_telotron_set_architecture.tsv')
@@ -237,3 +237,31 @@ cmp_lin['mwu_q_bh'] = bh_fdr(cmp_lin['mwu_p'].values)  # BH across the 7 per-arc
 cmp_lin.to_csv(os.path.join(OUTDIR,'psw_vs_eimeria_per_arch.tsv'), sep='\t', index=False)
 print('\nPSW vs Eimeria per architecture (MWU two-sided; mwu_q_bh = BH-FDR over architectures):')
 print(cmp_lin.to_string(index=False))
+
+# ===== Per-arm burst-length figure =====
+# 1-arm vs 2-arm/2 (telomeric_bases); per-arm burst-length comparison, ticked
+# at the motif-length step so each tick = one repeat unit.
+fig, axes = plt.subplots(1, 2, figsize=(8.5, 3.5))
+for ax, lin, motif_len in [(axes[0], 'PSW_MAG', 6), (axes[1], 'Eimeria', 7)]:
+    sub = df[df['lineage'] == lin]
+    one = sub[sub['architecture'].isin(['GT-F-AG', 'GT-R-AG'])]['telomeric_bases'].astype(float).values
+    two = sub[sub['architecture'] == 'GT-F-R-AG']['telomeric_bases'].astype(float).values / 2.0
+    link = sub[sub['architecture'].isin(['GT-R-linker-F-AG', 'GT-F-linker-R-AG'])]['telomeric_bases'].astype(float).values / 2.0
+    bins = np.arange(0, 250, motif_len)
+    if len(one):
+        ax.hist(one, bins=bins, alpha=0.5, color='#1f78b4', density=True,
+                label=f'1-arm (n={len(one)}) med={int(np.median(one))}bp')
+    if len(two):
+        ax.hist(two, bins=bins, alpha=0.5, color='#e31a1c', density=True,
+                label=f'2-arm /2 (n={2*len(two)//1}) med={int(np.median(two))}bp')
+    if len(link):
+        ax.hist(link, bins=bins, alpha=0.4, color='#33a02c', density=True,
+                label=f'linker /2 (n={2*len(link)//1}) med={int(np.median(link))}bp')
+    ax.set_xlabel(f'per-arm telomeric_bases (bp; ticks every {motif_len}bp = 1 repeat)')
+    ax.set_ylabel('density')
+    ax.set_title(f'{lin} (motif_len={motif_len})')
+    ax.legend(fontsize=7, loc='upper right')
+plt.tight_layout()
+p = os.path.join(OUTDIR, 'per_arm_burst_length.pdf')
+plt.savefig(p); plt.close()
+print(f'\nwrote {p}')

@@ -116,5 +116,5 @@ ax[3].set_yscale("log"); ax[3].set_xlabel("telotrons in one gene"); ax[3].set_yl
 ax[3].set_title("D  recurrence: telotrons cluster\nin specific genes (up to 9)",fontsize=10,weight="bold"); ax[3].legend(fontsize=8)
 [ax[3].spines[s].set_visible(False) for s in ("top","right")]
 fig.suptitle("Telotron host-gene class: telotrons accumulate in LARGE, INTRON-RICH genes (cytoskeletal motors / ATPases) — a gene-architecture/selection bias, not local targeting\n(host vs disjoint non-host; pooled p's over 5 Eimeria assemblies — direction confirmed per-genome, see stdout)",fontsize=10.5,weight="bold",y=1.04)
-fig.tight_layout(); fig.savefig("analysis/telotron_gene_bias.png",dpi=150,bbox_inches="tight")
-print("wrote analysis/telotron_gene_bias.png")
+fig.tight_layout(); fig.savefig("work/results/figures/telotron_gene_bias.png",dpi=150,bbox_inches="tight")
+print("wrote work/results/figures/telotron_gene_bias.png")

@@ -115,4 +115,4 @@ ax[2].set_xlabel("position within gene (5'->3')"); ax[2].set_ylabel("telotron ra
 ax[2].set_title("C  genuine 5' bias (logistic p=3e-4)\nrate 40-46 in 5' half vs 21 at 3' end",fontsize=9.5,weight="bold")
 [ax[2].spines[s].set_visible(False) for s in ("top","right")]
 fig.suptitle("Per-intron dissection (Eimeria): the host-gene bias is mostly OPPORTUNITY (intron trial-count) + a genuine 5' positional preference — the LARGEST/longest genes are DISFAVORED per intron",fontsize=10.5,weight="bold",y=1.02)
-fig.tight_layout(); fig.savefig("analysis/telotron_per_intron.png",dpi=150,bbox_inches="tight"); print("\nwrote analysis/telotron_per_intron.png")
+fig.tight_layout(); fig.savefig("work/results/figures/telotron_per_intron.png",dpi=150,bbox_inches="tight"); print("\nwrote work/results/figures/telotron_per_intron.png")

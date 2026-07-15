@@ -102,35 +102,26 @@ args the rule uses (or `snakemake -n --rulegraph` for DAG inspection).
   flanking-exon protein MSA + flank DNA + intron DNA, poorly-flank-aligned orthologs dropped)
   and `telotron_ortholog_textdump` (per-locus text files — unaligned/aligned × DNA/aa for
   flanks+intron — grouped into `locus_text/{intron_present_nontelo,telotron_present,intron_absent,uncertain}/`).
-- **Figures** — ~20 plotting rules: boundary-kmer plots, splice/sequence logos
-  (telotron, control, composite, by-architecture, by-5′/3′-category), array-length
-  distributions, terminal-motif density, pipeline-stage diagram.
-- **Architecture / linker / interstitial-ITS** (`architecture_analyses` target, added
-  2026-06-04) — `interstitial_ortholog_textdump` (non-genic ITS DNA-flank orthology,
-  gold-standard ≥4-unit/<1mm-per-unit filter; chains off `find_interstitial_arrays`),
-  `linker_segmentation` + `cluster_linkers` (telotron array/linker decomposition),
-  `mask_telotron_arrays` (G/A/L architecture cartoon + MSA), `ortholog_review_html`
-  (`build_ortholog_review.py` interactive reviewer). The linker/mask/review rules read
-  `work/results/telotron_orthologs_v2/locus_text` (a **manual** v2 ortholog run — reconcile
-  to fully connect the DAG). `curate_locus_text.py` (in-place review-decision curation) and
-  `wrap_locus_text.py` are human-in-the-loop tools, run by hand not as DAG rules.
-- **Analysis arm** (`analysis_arm` target, wired 2026-06-16) — the previously hand-run
-  downstream scripts whose inputs are regenerable from the core pipeline: `nucleosome_features`
-  (telomere-MASKED composition/periodicity panel + BH-FDR), `nucleosome_withingene` (within-gene
-  sibling-intron control), `telotron_gene_bias` (host vs **disjoint** non-host gene class),
-  `telotron_per_intron`, `length_distribution_by_arch` + `length_per_arm_figure` (BH-corrected,
-  single-MAG caveat), `mechanism_diagrams`, and the RNA-seq **expression arm**
-  (`telotron_expr_figures` + `rnaseq_gene_coverage`: per-species SRA→`samtools bedcov` gene coverage
-  driven by `config["rnaseq"]`, writing `work/results/rnaseq/{species}_gene_cov.tsv` — replaces the old
-  hand-run `run_pipeline.sh` + ephemeral `/tmp/eten_gene_cov.tsv`; the optional locus-level splice panel
-  still needs the manual `data/raw/rnaseq_splice_2026/per_locus_counts.tsv` and is skipped if absent).
-  **Not wired** (need external/non-regenerable inputs — documented in a Snakefile note after the
-  `analysis_arm` rule): the
-  Hi-C arm (`hic_*` — ENA FASTQs + cooltools), the ONT arm (`ont_*` — ONT BAM + `work/old/` JSON),
-  the age-ladder / cross-strain scripts (`age_ladder_*`, `expanded_*`, `crossstrain_telotron`
-  — all read the long-read archive under `data/raw/longread/`), and `build_telogator2_ref`
-  (hand-curated cap survey). `characterize_arrays`, `extend_telomeres_from_reads`,
-  `detect_telomere_boundaries` are CLI-parameterised helpers (the last is driven by `telomere_boundaries`).
+- **Figures** — headline `figures` rule + `terminal_motif_figures`,
+  `plot_boundary_kmers_by_arch`, `plot_interstitial_boundary_kmers`,
+  `plot_array_length_distribution`, `plot_pipeline_stages`,
+  `plot_splice_signal_logos`. (Redundant composite / combined / logo-variant /
+  control-set duplicate plots retired 2026-07-14.)
+- **Architecture / linker / interstitial-ITS** (`architecture_analyses` target) —
+  `interstitial_ortholog_textdump` (non-genic ITS DNA-flank orthology,
+  gold-standard ≥4-unit/<1mm-per-unit filter), `linker_segmentation` +
+  `cluster_linkers` (telotron array/linker decomposition), `mask_telotron_arrays`
+  (G/A/L architecture cartoon + MSA).
+- **Analysis arm** (`analysis_arm` target) — regenerable-from-core-pipeline
+  downstream analyses: `nucleosome_features` (telomere-MASKED composition /
+  10-bp WW periodicity / CpG panel + BH-FDR — the signals that HELD after the
+  2026-06-08 NuPoP artifact retraction), `nucleosome_withingene` (within-gene
+  sibling-intron control), `telotron_gene_bias` (host vs **disjoint** non-host
+  gene class), `telotron_per_intron`, `length_distribution_by_arch` (BH-corrected,
+  single-MAG caveat; emits per-arm burst-length figure too), `mechanism_diagrams`
+  (proven-mechanism capstone cartoon), `telotron_expr_figures` (tenella +
+  necatrix, size-controlled OLS + per-intron rate vs expression quintile) +
+  `rnaseq_gene_coverage` (per-species SRA→`samtools bedcov`, config-driven).
 
 ### Running it
 ```bash

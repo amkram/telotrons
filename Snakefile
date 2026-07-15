@@ -45,27 +45,15 @@ FILTER_FLAGS = " ".join(
 
 FIGURES = ["work/results/figures/telotron_counts.png"]
 MEME_ENV = "envs/meme.yaml"
-NUPOP_ENV = "envs/nupop.yaml"
 
 # Sentinels (path = ".../<name>/.done" or the canonical output file).
 TERMINAL_DENSITY_SENTINEL       = "work/results/figures/terminal_motif/.done"
 ARCH_KMER_SENTINEL              = "work/results/figures/boundary_kmers_by_arch/.done"
 INTERSTITIAL_KMER_SENTINEL      = "work/results/figures/interstitial_boundary_kmers/.done"
-INTERSTITIAL_LOGO_SENTINEL      = "work/results/figures/interstitial_boundary_logos/.done"
 PIPELINE_STAGES_SENTINEL        = "work/results/figures/pipeline_stages/.done"
 EXTRACT_FASTA_SENTINEL          = "work/results/telotron_fasta/.done"
 MSA_SENTINEL                    = "work/results/msa_regions/.done"
 CTRL_FLANKED_SENTINEL           = "work/results/non_telotron_fasta/.done"
-TELOTRON_BOUNDARY_KMER_SENTINEL = "work/results/figures/telotron_boundary_kmers/.done"
-CTRL_BOUNDARY_KMER_SENTINEL     = "work/results/figures/non_telotron_boundary_kmers/.done"
-TELOTRON_SPLICE_LOGO_SENTINEL   = "work/results/figures/telotron_splice_logos/.done"
-CTRL_SPLICE_LOGO_SENTINEL       = "work/results/figures/non_telotron_splice_logos/.done"
-COMPOSITE_KMER_SENTINEL         = "work/results/figures/composite_boundary_kmers/.done"
-COMPOSITE_LOGO_SENTINEL         = "work/results/figures/composite_boundary_logos/.done"
-COMPOSITE_5P3P_KMER_SENTINEL    = "work/results/figures/composite_boundary_kmers_5p3p/.done"
-COMPOSITE_5P3P_LOGO_SENTINEL    = "work/results/figures/composite_boundary_logos_5p3p/.done"
-ARRAY_LEN_DIST_PNG              = "work/results/figures/array_length_distribution.png"
-ARRAY_LEN_DIST_MIN40_PNG        = "work/results/figures/array_length_distribution_min40.png"
 STREME_TELO_SENTINEL            = "work/results/streme/telotrons/streme.xml"
 STREME_LINKER_SENTINEL          = "work/results/streme/linkers/streme.xml"
 TERT_DEEP_HOMOLOGY_TSV          = "work/results/tert_deep_homology/confirmed_tert.tsv"
@@ -86,47 +74,13 @@ TELOTRON_CAT = {
 INTERSTITIAL_CAT = {c: ("cat5_3", c) for c in ("GG", "GC", "CG", "CC")}
 
 
-# Default target = core survey through `package` + `pipeline_report`. Exploratory
-# branches are on-demand targets: `sequences` (FASTAs + MSAs), `figures_extra`
-# (boundary-kmer/logo/composite/density), `motif_discovery` (STREME on telotrons
-# + linkers), `telomerase_search` (TERT deep-homology), `orthologs` (host-gene
-# ortholog align + per-locus PDF + textdump), `architecture_analyses` (mechanism
-# deep-dive), `telogator2` (long-read telomere lengths), or `everything`.
+# Default target = core survey through `package` + `pipeline_report`. Named
+# subgraph targets: `telomerase_search`, `orthologs`, `architecture_analyses`,
+# `analysis_arm`, `telogator2`. Kick off individual rules by name for reruns.
 rule all:
     input:
         "work/results/telotron_pipeline_outputs.zip",
         "work/results/pipeline_report.html",
-
-
-rule sequences:
-    input:
-        EXTRACT_FASTA_SENTINEL,
-        MSA_SENTINEL,
-
-
-rule figures_extra:
-    input:
-        TERMINAL_DENSITY_SENTINEL,
-        ARCH_KMER_SENTINEL,
-        INTERSTITIAL_KMER_SENTINEL,
-        INTERSTITIAL_LOGO_SENTINEL,
-        ARRAY_LEN_DIST_PNG,
-        ARRAY_LEN_DIST_MIN40_PNG,
-        PIPELINE_STAGES_SENTINEL,
-        TELOTRON_SPLICE_LOGO_SENTINEL,
-        CTRL_SPLICE_LOGO_SENTINEL,
-        CTRL_BOUNDARY_KMER_SENTINEL,
-        TELOTRON_BOUNDARY_KMER_SENTINEL,
-        COMPOSITE_KMER_SENTINEL,
-        COMPOSITE_LOGO_SENTINEL,
-        COMPOSITE_5P3P_KMER_SENTINEL,
-        COMPOSITE_5P3P_LOGO_SENTINEL,
-
-
-rule motif_discovery:
-    input:
-        STREME_TELO_SENTINEL,
-        STREME_LINKER_SENTINEL,
 
 
 rule telomerase_search:
@@ -141,17 +95,6 @@ rule orthologs:
         TELOTRON_ORTHO_SENTINEL,
         TELOTRON_ORTHO_LOCI_PDF,
         TELOTRON_ORTHO_TEXT,
-
-
-# Core survey + every exploratory branch (the pre-refactor default target).
-rule everything:
-    input:
-        rules.all.input,
-        rules.sequences.input,
-        rules.figures_extra.input,
-        rules.motif_discovery.input,
-        rules.telomerase_search.input,
-        rules.orthologs.input,
 
 
 # Build the unified genome manifest from RefSeq assembly summary + Tara SMAGs index.
@@ -648,34 +591,6 @@ rule plot_interstitial_boundary_kmers:
         """
 
 
-# Per-species sequence logos (information bits, logomaker) of the 5'-flank
-# + first repeat unit and last repeat unit + 3'-flank for interstitial arrays.
-#   {cat}=''                       -> all arrays
-#   {cat}='_GG'/'_GC'/'_CG'/'_CC'  -> filter by 5'/3' orientation category
-rule plot_interstitial_boundary_logos:
-    input:
-        arrays="work/results/interstitial_arrays.tsv",
-    output:
-        touch("work/results/figures/interstitial_boundary_logos{cat}/.done"),
-    wildcard_constraints:
-        cat=r"|_GG|_GC|_CG|_CC",
-    params:
-        filter_args=lambda w: (
-            f"--filter-col {INTERSTITIAL_CAT[w.cat[1:]][0]} --filter-value \"{INTERSTITIAL_CAT[w.cat[1:]][1]}\""
-            if w.cat else ""
-        ),
-    conda: ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures/interstitial_boundary_logos{wildcards.cat}
-        python scripts/plot_interstitial_boundary_logos.py \
-            --arrays {input.arrays} \
-            --outdir work/results/figures/interstitial_boundary_logos{wildcards.cat} \
-            --flank-len 10 \
-            {params.filter_args}
-        """
-
-
 rule plot_array_length_distribution:
     """Per-species histograms: ITS array_len | telotron telomeric_bases |
     non-telotron intron_len. {suffix}='' = unfiltered, '_min40' = drop <40 bp."""
@@ -699,28 +614,6 @@ rule plot_array_length_distribution:
             --non-telotrons {input.non_telotrons} \
             {params.min_len} \
             --out {output}
-        """
-
-
-# Composite figure (PDF + tall PNG): per-species rows, intron architecture
-# boundary panel on the left, interstitial array boundary panel on the right.
-rule plot_combined_boundary_kmers:
-    input:
-        species="work/results/final_species_summary.tsv",
-        intron_dir=ARCH_KMER_SENTINEL,
-        interst_dir=INTERSTITIAL_KMER_SENTINEL,
-    output:
-        pdf="work/results/figures/boundary_kmers_combined.pdf",
-        png="work/results/figures/boundary_kmers_combined.png",
-    conda:
-        ENV
-    shell:
-        r"""
-        python scripts/plot_combined_boundary_kmers.py \
-            --species {input.species} \
-            --intron-dir work/results/figures/boundary_kmers_by_arch \
-            --interstitial-dir work/results/figures/interstitial_boundary_kmers \
-            --out-pdf {output.pdf} --out-png {output.png}
         """
 
 
@@ -1009,94 +902,6 @@ rule extract_non_telotron_fasta:
         """
 
 
-# Per-species 2x2 boundary k-mer rank plots from the first40/last40 columns.
-#   {set}='telotron'      + {cat}=''                 -> all telotrons
-#   {set}='telotron'      + {cat}='_GG/_GC/_CG/_CC'  -> architecture-filtered
-#   {set}='non_telotron'  + {cat}=''                 -> non-telotron control
-rule plot_intron_boundary_kmers:
-    input:
-        introns=lambda w: (
-            "work/results/non_telotron_controls.tsv" if w.set == "non_telotron"
-            else "work/results/final_telotron_set_architecture.tsv"
-        ),
-    output:
-        touch("work/results/figures/{set}_boundary_kmers{cat}/.done"),
-    wildcard_constraints:
-        set=r"non_telotron|telotron",
-        cat=r"|_GG|_GC|_CG|_CC",
-    params:
-        label=lambda w: (
-            "non-telotron control (telomeric_frac<0.10)" if w.set == "non_telotron"
-            else (f"telotrons 5'/3' = {w.cat[1:]}" if w.cat else "telotrons")
-        ),
-        filter_args=lambda w: (
-            f"--filter-col {TELOTRON_CAT[w.cat[1:]][0]} --filter-value \"{TELOTRON_CAT[w.cat[1:]][1]}\""
-            if w.set == "telotron" and w.cat else ""
-        ),
-    conda: ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures/{wildcards.set}_boundary_kmers{wildcards.cat}
-        python scripts/plot_intron_boundary_kmers.py \
-            --introns {input.introns} \
-            --outdir work/results/figures/{wildcards.set}_boundary_kmers{wildcards.cat} \
-            --label "{params.label}" \
-            {params.filter_args}
-        """
-
-
-# Composite per-species figures: side-by-side panels.
-#   {mode}='kmers' or 'logos'
-#   {split}=''       -> 3 panels (interstitial | non_telotron control | telotron)
-#   {split}='_5p3p'  -> 9 panels stratified by 5'/3' end-orientation
-# Panel paths are asymmetric (interstitial uses _logos for mode=logos but
-# telotron/non_telotron use _splice_logos); _composite_panel_args() handles it.
-def _composite_panel_args(mode, split):
-    interst_dir = f"work/results/figures/interstitial_boundary_{'kmers' if mode == 'kmers' else 'logos'}"
-    non_telo_dir = ("work/results/figures/non_telotron_boundary_kmers"
-                    if mode == "kmers" else "work/results/figures/non_telotron_splice_logos")
-    telo_dir = ("work/results/figures/telotron_boundary_kmers"
-                if mode == "kmers" else "work/results/figures/telotron_splice_logos")
-    suffix_kmers = " arrays" if mode == "kmers" else " array boundary"
-    if split == "":
-        panels = [
-            (interst_dir, f"interstitial{suffix_kmers}"),
-            (non_telo_dir, "non-telotron control introns" if mode == "kmers" else "non-telotron intron splice signal"),
-            (telo_dir, "telotrons" if mode == "kmers" else "telotron splice signal"),
-        ]
-    else:  # _5p3p
-        cats = [("GG", "5'=G 3'=G"), ("GC", "5'=G 3'=C (hybrid)"),
-                ("CG", "5'=C 3'=G (hybrid)"), ("CC", "5'=C 3'=C")]
-        panels = [(f"{interst_dir}_{c}", f"interstitial {l}") for c, l in cats]
-        panels.append((non_telo_dir, "non-telotron control" if mode == "kmers" else "non-telotron control splice signal"))
-        panels += [(f"{telo_dir}_{c}", f"telotron {l}") for c, l in cats]
-    return " ".join(f'--panel "{p}:{lab}"' for p, lab in panels)
-
-def _composite_inputs(mode, split):
-    args = _composite_panel_args(mode, split).split('"')[1::2]
-    return [a.split(":", 1)[0] + "/.done" for a in args]
-
-
-rule plot_composite_per_species:
-    input:
-        sentinels=lambda w: _composite_inputs(w.mode, w.split),
-    output:
-        touch("work/results/figures/composite_boundary_{mode}{split}/.done"),
-    wildcard_constraints:
-        mode=r"kmers|logos",
-        split=r"|_5p3p",
-    params:
-        panel_args=lambda w: _composite_panel_args(w.mode, w.split),
-    conda: ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures/composite_boundary_{wildcards.mode}{wildcards.split}
-        python scripts/plot_composite_per_species.py \
-            --outdir work/results/figures/composite_boundary_{wildcards.mode}{wildcards.split} \
-            {params.panel_args}
-        """
-
-
 # Bundle all final TSVs + figures + manifest into a single zip for sharing.
 PACKAGE_INPUTS = [
     "work/results/final_telotron_set.tsv",
@@ -1112,7 +917,6 @@ PACKAGE_INPUTS = [
     "work/results/interstitial_arrays.tsv",
     "work/results/linker_blast_hits_own_genome.tsv",
     "work/results/linker_blast_hits_all_genomes.tsv",
-    "work/results/figures/boundary_kmers_combined.pdf",
     *FIGURES,
     "work/manifests/all_genomes.tsv",
 ]
@@ -1137,11 +941,8 @@ rule pipeline_report:
         EXTRACT_FASTA_SENTINEL,
         MSA_SENTINEL,
         PIPELINE_STAGES_SENTINEL,
-        TELOTRON_BOUNDARY_KMER_SENTINEL,
-        CTRL_BOUNDARY_KMER_SENTINEL,
         ARCH_KMER_SENTINEL,
-        COMPOSITE_KMER_SENTINEL,
-        COMPOSITE_LOGO_SENTINEL,
+        INTERSTITIAL_KMER_SENTINEL,
     output:
         "work/results/pipeline_report.html",
     conda: ENV
@@ -1222,25 +1023,11 @@ rule mask_telotron_arrays:
         """
 
 
-rule ortholog_review_html:
-    input:
-        V2_LOCUS_TEXT,
-    output:
-        "work/results/telotron_orthologs_v2/review.html",
-    conda:
-        ENV
-    shell:
-        r"""
-        python scripts/build_ortholog_review.py
-        """
-
-
 rule architecture_analyses:
     input:
         rules.interstitial_ortholog_textdump.output,
         rules.cluster_linkers.output,
         rules.mask_telotron_arrays.output,
-        rules.ortholog_review_html.output,
 
 
 # ── Assembly-based telomere boundary detection ──────────────────────────────
@@ -1438,13 +1225,12 @@ rule telogator2_one:
 
 
 # ===================================================================================
-# Nucleosome occupancy (NuPoP), replicating Gozashti et al. 2022 (doi:10.1073/pnas.2209766119).
-# Adaptive-flank NuPoP (predNuPoP species=0 model=4) over telotron insertion sites and matched
-# confident non-telotron introns, run twice: with the element and with the element computationally
-# removed. The composition-independent (element-removed) test asks whether telotron insertion sites
-# sit in nucleosome-linker DNA (introner-like). The within-array occupancy is confounded by the
-# telomeric-repeat composition and is reported but not interpreted. The Tara MAG is included via the
-# adaptive flank (its short contigs fail a fixed 5 kb flank). Figure is faceted by species x architecture.
+# Nucleosome flanking-site inputs. Builds insertion-site + flank FASTAs used by
+# nucleosome_features (composition/periodicity panel) and nucleosome_withingene
+# (within-gene sibling-intron control). The NuPoP occupancy arm was retired
+# 2026-07-14 — memory (telotron_nucleosome_nupop_2026-06-08) recorded the
+# linker interpretation as artifact; only the composition/periodicity signals
+# in nucleosome_features held up.
 rule nucleosome_inputs:
     input:
         arch="work/results/final_telotron_set_architecture.tsv",
@@ -1465,55 +1251,6 @@ rule nucleosome_inputs:
             --controls {input.controls} --telo-manifest {output.manifest} \
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara --out work/results/nucleosome
         """
-
-
-# Run predNuPoP on every single-sequence FASTA. NuPoP needs one sequence per file and writes the
-# prediction into the input file's directory (run_nupop.R setwd's there to avoid collisions); we
-# fan {threads} R workers over the file list.
-rule nucleosome_nupop:
-    input:
-        manifest="work/results/nucleosome/manifest.tsv",
-        control_manifest="work/results/nucleosome/control_manifest.tsv",
-    output:
-        touch("work/results/nucleosome/.nupop.done"),
-    threads: THREADS
-    conda:
-        NUPOP_ENV
-    shell:
-        r"""
-        ls work/results/nucleosome/seqs/with/*.fa work/results/nucleosome/seqs/without/*.fa \
-           work/results/nucleosome/control_seqs/with/*.fa work/results/nucleosome/control_seqs/without/*.fa \
-           > work/results/nucleosome/all_fastas.txt
-        rm -rf work/results/nucleosome/chunks && mkdir -p work/results/nucleosome/chunks
-        split -n l/{threads} -d work/results/nucleosome/all_fastas.txt work/results/nucleosome/chunks/chunk_
-        for c in work/results/nucleosome/chunks/chunk_*; do
-            Rscript scripts/run_nupop.R "$c" > "${{c}}.log" 2>&1 &
-        done
-        wait
-        """
-
-
-# Per-locus occupancy scalars, paper-style binomial tests, telotron-vs-control comparison, and the
-# species x architecture figure (element-removed insertion-site occupancy profiles).
-rule nucleosome_figure:
-    input:
-        "work/results/nucleosome/.nupop.done",
-    output:
-        png="work/results/nucleosome/nucleosome_occupancy.png",
-        per_locus="work/results/nucleosome/per_locus.tsv",
-    conda:
-        ENV
-    shell:
-        r"""
-        python scripts/nucleosome_aggregate.py
-        """
-
-
-# Convenience target.
-rule nucleosome:
-    input:
-        "work/results/nucleosome/nucleosome_occupancy.png",
-        "work/results/nucleosome/per_locus.tsv",
 
 
 # ── Downstream analysis arm (was hand-run; now wired) ───────────────────────
@@ -1603,12 +1340,12 @@ rule telotron_gene_bias:
         arch=ARCH_TSV,
         refseq="data/raw/refseq/.done",
     output:
-        "analysis/telotron_gene_bias.png",
+        "work/results/figures/telotron_gene_bias.png",
     conda:
         ENV
     shell:
         r"""
-        mkdir -p analysis
+        mkdir -p work/results/figures
         python scripts/telotron_gene_bias.py
         """
 
@@ -1619,26 +1356,28 @@ rule telotron_per_intron:
         arch=ARCH_TSV,
         refseq="data/raw/refseq/.done",
     output:
-        "analysis/telotron_per_intron.png",
+        "work/results/figures/telotron_per_intron.png",
     conda:
         ENV
     shell:
         r"""
-        mkdir -p analysis
+        mkdir -p work/results/figures
         python scripts/telotron_per_intron.py
         """
 
 
 # Length distribution by (lineage x architecture) — BH-FDR corrected, single-MAG
-# caveat in the output. Repo-relative paths (TELOTRON_ROOT override available).
+# caveat in the output. Per-arm burst-length subfigure is emitted from the same
+# TSVs by the same script.
 rule length_distribution_by_arch:
     input:
         ARCH_TSV,
     output:
-        summary="work/results/length_distribution_2026-06-07/summary_by_lineage_arch.tsv",
-        linker="work/results/length_distribution_2026-06-07/linker_vs_nolinker.tsv",
-        per_arch="work/results/length_distribution_2026-06-07/psw_vs_eimeria_per_arch.tsv",
-        hist="work/results/length_distribution_2026-06-07/length_hist_by_lineage_arch.pdf",
+        summary="work/results/length_distribution/summary_by_lineage_arch.tsv",
+        linker="work/results/length_distribution/linker_vs_nolinker.tsv",
+        per_arch="work/results/length_distribution/psw_vs_eimeria_per_arch.tsv",
+        hist="work/results/length_distribution/length_hist_by_lineage_arch.pdf",
+        per_arm="work/results/length_distribution/per_arm_burst_length.pdf",
     conda:
         ENV
     shell:
@@ -1647,43 +1386,24 @@ rule length_distribution_by_arch:
         """
 
 
-rule length_per_arm_figure:
-    input:
-        ARCH_TSV,
-    output:
-        "work/results/length_distribution_2026-06-07/per_arm_burst_length.pdf",
-    conda:
-        ENV
-    shell:
-        r"""
-        TELOTRON_ROOT="$(pwd)" python scripts/length_per_arm_figure.py
-        """
-
-
-# Schematic mechanism figures — no data inputs (hardcoded labels distilled from
-# the analyses); wired so they regenerate deterministically.
+# Capstone mechanism cartoon — no data inputs (hardcoded labels distilled from
+# the analyses); wired so it regenerates deterministically.
 rule mechanism_diagrams:
     output:
-        "analysis/telotron_mechanism_diagram.png",
-        "analysis/proven_mechanism.png",
-        "analysis/telotron_removal_fill_diagram.png",
+        "work/results/figures/proven_mechanism.png",
     conda:
         ENV
     shell:
         r"""
-        mkdir -p analysis
-        python scripts/plot_mechanism_diagram.py
+        mkdir -p work/results/figures
         python scripts/plot_proven_mechanism.py
-        python scripts/plot_removal_fill_diagram.py
         """
 
 
-# Expression-vs-telotron-presence figures. Gene-level coverage now comes from the
-# reproducible rnaseq_gene_coverage rule (not /tmp). The locus-level panel in
-# telotron_expr_presence additionally reads data/raw/rnaseq_splice_2026/
-# per_locus_counts.tsv (still a manual build — see the external note below), so
-# that rule is wired only when both species' coverage TSVs exist; the figure
-# scripts skip the locus panel gracefully if the splice-counts file is absent.
+# Expression-vs-telotron-presence figure. Gene-level coverage comes from the
+# reproducible rnaseq_gene_coverage rule; the optional locus-level panel reads
+# data/raw/rnaseq_splice_2026/per_locus_counts.tsv (manual build) and is skipped
+# gracefully when absent. One consolidated script (was 2: presence + final).
 rule telotron_expr_figures:
     input:
         eten="work/results/rnaseq/eten_gene_cov.tsv",
@@ -1691,15 +1411,13 @@ rule telotron_expr_figures:
         arch=ARCH_TSV,
         refseq="data/raw/refseq/.done",
     output:
-        "analysis/telotron_expr_presence.png",
-        "analysis/telotron_expr_presence_necatrix.png",
+        "work/results/figures/telotron_expression.png",
     conda:
         ENV
     shell:
         r"""
-        mkdir -p analysis
-        python scripts/telotron_expr_presence.py
-        python scripts/telotron_expr_final.py
+        mkdir -p work/results/figures
+        python scripts/telotron_expression.py
         """
 
 
@@ -1711,7 +1429,6 @@ rule analysis_arm:
         rules.telotron_gene_bias.output,
         rules.telotron_per_intron.output,
         rules.length_distribution_by_arch.output,
-        rules.length_per_arm_figure.output,
         rules.mechanism_diagrams.output,
         rules.telotron_expr_figures.output,
 

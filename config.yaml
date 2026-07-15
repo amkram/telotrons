@@ -306,3 +306,33 @@ rnaseq:
       genome: data/raw/refseq/GCF_000499385.1/GCF_000499385.1_ENH001_genomic.fna
       gff:    data/raw/refseq/GCF_000499385.1/GCF_000499385.1_ENH001_genomic.gff
       srr:    [SRR14557240]
+
+# ── Lineage / independence branch ─────────────────────────────────────────────
+# Multi-lineage independence test: telotron bearers embedded among non-telotron
+# relatives (independent de novo origins), AA-space ancestral-state calling, and
+# the sequenced-reference scan. See lineage_pipeline.md.
+lineage:
+  # 8 telotron-bearing MAGs (bearer proteome/GFF basenames)
+  bearers:
+    - TARA_PSW_86_MAG_00284      # Phaeocystis (flagship, TTAGGG)
+    - TARA_ARC_108_MAG_00312     # Geminigera (TTTAGGG, cross-motif)
+    - TARA_ARC_108_MAG_00323     # Haptolina
+    - TARA_ARC_108_MAG_00234     # Chrysophyceae sp.
+    - TARA_MED_95_MAG_00470      # Chrysophyceae sp.
+    - TARA_ION_45_MAG_00201      # New_Chrysochromulinaceae
+    - TARA_AON_82_MAG_00313      # New_Stramenopiles (cautious)
+    - TARA_MED_95_MAG_00464      # contaminated bin (reported separately)
+  # bearer -> telomere motif (default TTAGGG; Geminigera/Cryptophyta = TTTAGGG)
+  bearer_motifs:
+    TARA_ARC_108_MAG_00312: TTTAGGG
+  # concatenated-protein control tree
+  tree:
+    min_taxa: 18               # a BUSCO marker must hit >=18 taxa to enter supermatrix
+    model: LG+F+G4
+    ufboot: 1000
+    seed: 12345
+  # AA-space ancestral-state caller (diamond blastp bearer telotron-proteins vs ref)
+  aa_ancestral:
+    diamond: /home/alex/micromamba/envs/ortho/bin/diamond
+    evalue: 1e-5
+    codon_tol: 3               # ref ortholog checked for an intron +/- 3 codons
