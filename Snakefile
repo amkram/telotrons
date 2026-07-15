@@ -47,15 +47,8 @@ FIGURES = ["work/results/figures/telotron_counts.png"]
 MEME_ENV = "envs/meme.yaml"
 
 # Sentinels (path = ".../<name>/.done" or the canonical output file).
-TERMINAL_DENSITY_SENTINEL       = "work/results/figures/terminal_motif/.done"
-ARCH_KMER_SENTINEL              = "work/results/figures/boundary_kmers_by_arch/.done"
-INTERSTITIAL_KMER_SENTINEL      = "work/results/figures/interstitial_boundary_kmers/.done"
-PIPELINE_STAGES_SENTINEL        = "work/results/figures/pipeline_stages/.done"
 EXTRACT_FASTA_SENTINEL          = "work/results/telotron_fasta/.done"
-MSA_SENTINEL                    = "work/results/msa_regions/.done"
 CTRL_FLANKED_SENTINEL           = "work/results/non_telotron_fasta/.done"
-STREME_TELO_SENTINEL            = "work/results/streme/telotrons/streme.xml"
-STREME_LINKER_SENTINEL          = "work/results/streme/linkers/streme.xml"
 TERT_DEEP_HOMOLOGY_TSV          = "work/results/tert_deep_homology/confirmed_tert.tsv"
 TELOTRON_ORTHO_SENTINEL         = "work/results/telotron_orthologs/.done"
 TELOTRON_ORTHO_LOCI_PDF         = "work/results/figures/telotron_ortholog_loci.pdf"
@@ -385,32 +378,6 @@ rule figures:
         """
 
 
-# Per-species "where do telomere repeats sit?" plots — one figure per species,
-# one panel per top-N contig, x = genomic coordinate, y = rolling hit density of the
-# species's identified terminal motif. Telotron candidate loci overlaid as ticks.
-rule terminal_motif_figures:
-    input:
-        summary="work/results/all_species_raw_summary.tsv",
-        loci="work/results/all_telotron_loci.tsv",
-        tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
-    output:
-        touch(TERMINAL_DENSITY_SENTINEL),
-    threads: THREADS
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures/terminal_motif
-        python scripts/plot_terminal_motif_density.py \
-            --summary {input.summary} --loci {input.loci} \
-            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
-            --motifs {TELOMERE_MOTIFS} \
-            --outdir work/results/figures/terminal_motif \
-            --threads {threads}
-        """
-
-
 # Per-species, per-architecture FASTA + flanked-text extracts.
 # Flanked lines: [LEFT100] [INTRON] [RIGHT100], or for linker archs
 # [LEFT100] [ARRAY1] [LINKER] [ARRAY2] [RIGHT100]. One subdir per species,
@@ -432,58 +399,6 @@ rule extract_telotron_fasta:
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
             --fasta-dir work/results/telotron_fasta \
             --flanked-dir work/results/telotron_flanked
-        touch {output}
-        """
-
-
-# BLAST linker sequences from linker-architecture telotrons (1) against their own
-# species genome and (2) against a concatenated all-species DB. Outputs hit TSVs
-# annotated with the query genome_id so cross-species recurrences are findable.
-rule blast_linkers:
-    input:
-        arch="work/results/final_telotron_set_architecture.tsv",
-        tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
-    output:
-        own="work/results/linker_blast_hits_own_genome.tsv",
-        all="work/results/linker_blast_hits_all_genomes.tsv",
-    threads: THREADS
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/blast_linkers
-        python scripts/blast_linkers.py \
-            --arch-tsv {input.arch} \
-            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
-            --workdir work/results/blast_linkers \
-            --out-own {output.own} --out-all {output.all} \
-            --threads {threads}
-        """
-
-
-# Per-species × per-architecture MAFFT MSAs of the locus regions
-# (upstream_50 | intron|arm1[+linker+arm2]|arm1[+arm2] | downstream_50).
-# Both raw and homopolymer-compressed alignments; combined.aln.txt collapses
-# everything into one fixed-width view with spaces at region boundaries.
-rule msa_telotron_regions:
-    input:
-        arch="work/results/final_telotron_set_architecture.tsv",
-        tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
-    output:
-        touch(MSA_SENTINEL),
-    threads: 4
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/msa_regions
-        python scripts/msa_telotron_regions.py \
-            --arch-tsv {input.arch} \
-            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
-            --min-array {ARCH_MIN_ARRAY} \
-            --outdir work/results/msa_regions --threads {threads}
         touch {output}
         """
 
@@ -544,144 +459,8 @@ rule find_interstitial_arrays:
         """
 
 
-# Per-species figure: top boundary 6-mers (GT-XXXX donor, XXXX-AG acceptor,
-# and 4+2 linker-edge 6-mers) split by architecture.
-rule plot_boundary_kmers_by_arch:
-    input:
-        kmers="work/results/boundary_kmers_by_architecture.tsv",
-        species="work/results/final_species_summary.tsv",
-    output:
-        touch(ARCH_KMER_SENTINEL),
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures/boundary_kmers_by_arch
-        python scripts/plot_boundary_kmers_by_arch.py \
-            --kmers {input.kmers} --species {input.species} \
-            --outdir work/results/figures/boundary_kmers_by_arch
-        touch {output}
-        """
-
-
-# Per-species 5'/3' boundary 6-mers and 12-mers of interstitial (non-genic,
-# non-intronic, non-terminal) telomeric repeat arrays.
-#   {cat}=''                       -> all arrays
-#   {cat}='_GG'/'_GC'/'_CG'/'_CC'  -> filter by 5'/3' orientation category
-rule plot_interstitial_boundary_kmers:
-    input:
-        arrays="work/results/interstitial_arrays.tsv",
-    output:
-        touch("work/results/figures/interstitial_boundary_kmers{cat}/.done"),
-    wildcard_constraints:
-        cat=r"|_GG|_GC|_CG|_CC",
-    params:
-        filter_args=lambda w: (
-            f"--filter-col {INTERSTITIAL_CAT[w.cat[1:]][0]} --filter-value \"{INTERSTITIAL_CAT[w.cat[1:]][1]}\""
-            if w.cat in ("_GG", "_GC", "_CG", "_CC") else ""
-        ),
-    conda: ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures/interstitial_boundary_kmers{wildcards.cat}
-        python scripts/plot_interstitial_boundary_kmers.py \
-            --arrays {input.arrays} \
-            --outdir work/results/figures/interstitial_boundary_kmers{wildcards.cat} \
-            {params.filter_args}
-        """
-
-
-rule plot_array_length_distribution:
-    """Per-species histograms: ITS array_len | telotron telomeric_bases |
-    non-telotron intron_len. {suffix}='' = unfiltered, '_min40' = drop <40 bp."""
-    input:
-        interstitial="work/results/interstitial_arrays.tsv",
-        telotrons="work/results/final_telotron_set.tsv",
-        non_telotrons="work/results/non_telotron_controls.tsv",
-    output:
-        "work/results/figures/array_length_distribution{suffix}.png",
-    wildcard_constraints:
-        suffix=r"|_min40",
-    params:
-        min_len=lambda w: "--min-len 40" if w.suffix == "_min40" else "",
-    conda:
-        ENV
-    shell:
-        r"""
-        python scripts/plot_array_length_distribution.py \
-            --interstitial {input.interstitial} \
-            --telotrons {input.telotrons} \
-            --non-telotrons {input.non_telotrons} \
-            {params.min_len} \
-            --out {output}
-        """
-
-
-# Pipeline-stage summary figures (manifests, scan, filter funnel, distance,
-# architecture).
-rule plot_pipeline_stages:
-    input:
-        manifest="work/manifests/all_genomes.tsv",
-        raw="work/results/all_species_raw_summary.tsv",
-        sp="work/results/final_species_summary.tsv",
-        dist="work/results/distance_to_end.tsv",
-        arch="work/results/final_telotron_set_architecture.tsv",
-    output:
-        touch(PIPELINE_STAGES_SENTINEL),
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures/pipeline_stages
-        python scripts/plot_pipeline_stages.py \
-            --manifests {input.manifest} \
-            --raw-summary {input.raw} \
-            --species-final {input.sp} \
-            --distance {input.dist} \
-            --architecture-loci {input.arch} \
-            --outdir work/results/figures/pipeline_stages
-        touch {output}
-        """
-
-
-# ── STREME (MEME suite) de novo motif discovery ──────────────────────────────
-# Three positive sets: telotron introns, non-telomeric introns, and linkers.
-# STREME generates its own shuffled control.
-
-rule build_streme_inputs:
-    input:
-        telotrons_done=EXTRACT_FASTA_SENTINEL,
-        introns="work/results/all_introns_scanned.tsv",
-        linkers="work/results/blast_linkers/linker_queries/_all_linkers.fa",
-    output:
-        telo="work/results/streme_inputs/telotrons.fa",
-        linkers="work/results/streme_inputs/linkers.fa",
-    conda: ENV
-    shell:
-        r"""
-        python scripts/build_streme_inputs.py \
-            --telotron-fasta-dir work/results/telotron_fasta \
-            --introns-tsv {input.introns} \
-            --linkers-fa {input.linkers} \
-            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
-            --outdir work/results/streme_inputs \
-            --n-non-telo 0
-        """
-
-
 # STREME: --dna, w 4-12, 10 motifs, p<0.05, deterministic seed.
 STREME_ARGS = "--dna --minw 4 --maxw 12 --nmotifs 10 --thresh 0.05 --seed 1"
-
-# {set} = telotrons | linkers
-rule streme:
-    input: "work/results/streme_inputs/{set}.fa"
-    output: "work/results/streme/{set}/streme.xml"
-    wildcard_constraints: set=r"telotrons|linkers"
-    conda: MEME_ENV
-    shell:
-        r"""
-        streme {STREME_ARGS} --p {input} --oc work/results/streme/{wildcards.set}
-        """
 
 
 # ── TERT by deep homology (miniprot + Pfam domain architecture) ─────────────
@@ -939,10 +718,6 @@ rule pipeline_report:
     input:
         PACKAGE_INPUTS,
         EXTRACT_FASTA_SENTINEL,
-        MSA_SENTINEL,
-        PIPELINE_STAGES_SENTINEL,
-        ARCH_KMER_SENTINEL,
-        INTERSTITIAL_KMER_SENTINEL,
     output:
         "work/results/pipeline_report.html",
     conda: ENV
@@ -1038,42 +813,6 @@ _TELOBND = config.get("telomere_boundaries", {}) or {}
 _TELOBND_ASM = _TELOBND.get("assemblies", {}) or {}
 
 
-rule telomere_boundaries:
-    """Per-arm telomere boundary table from assembled contigs."""
-    input:
-        [v["path"] for v in _TELOBND_ASM.values()],
-    output:
-        tsv="work/results/telomere_boundaries/per_arm.tsv",
-        summary="work/results/telomere_boundaries/summary.md",
-        bed="work/results/telomere_boundaries/telomeres.bed",
-    params:
-        assemblies=",".join(f"{k}:{v['path']}" for k, v in _TELOBND_ASM.items()),
-        motifs=",".join(f"{k}:{v['motif']}" for k, v in _TELOBND_ASM.items()),
-        scan_kb=_TELOBND.get("scan_kb", 20),
-        window_bp=_TELOBND.get("window_bp", 200),
-        density_frac=_TELOBND.get("density_frac", 0.70),
-        max_gap_bp=_TELOBND.get("max_gap_bp", 100),
-        min_units=_TELOBND.get("min_units", 5),
-        max_mm=_TELOBND.get("max_mm_per_unit", 1),
-    conda: ENV
-    shell:
-        r"""
-        mkdir -p work/results/telomere_boundaries
-        python scripts/detect_telomere_boundaries.py \
-            --assemblies "{params.assemblies}" \
-            --motifs "{params.motifs}" \
-            --scan-kb {params.scan_kb} \
-            --window-bp {params.window_bp} \
-            --density-frac {params.density_frac} \
-            --max-gap-bp {params.max_gap_bp} \
-            --min-units {params.min_units} \
-            --max-mm {params.max_mm} \
-            --out-tsv {output.tsv} \
-            --out-summary {output.summary} \
-            --out-bed {output.bed}
-        """
-
-
 # ── Long-read data + Telogator2 allele-specific telomere-length analysis ────
 # data/raw/longread/manifest.tsv is the source of truth. Telogator2 consumes
 # the nanopore subset, anchored to the custom Eimeria subtelomere reference at
@@ -1104,124 +843,6 @@ _TG2_SPECIES = {r["accession"]: r["species"] for r in TG2_RUNS}
 
 # URL lookup keyed by local destination path
 _LR_URL_BY_DEST = {("data/raw/longread/" + r["fastq_local"]): ("https://" + r["fastq_url"]) for r in LR_RUNS}
-
-
-rule longread_data:
-    """Download every long-read fastq listed in data/raw/longread/manifest.tsv."""
-    input:
-        ["data/raw/longread/" + r["fastq_local"] for r in LR_RUNS],
-
-
-rule download_longread_fastq:
-    """Generic per-file downloader. Resumable via wget -c."""
-    output:
-        "data/raw/longread/{platform}/{filename}.fastq.gz",
-    params:
-        url=lambda wc, output: _LR_URL_BY_DEST[str(output[0])],
-    threads: 1
-    resources:
-        network=1,
-    shell:
-        r"""
-        mkdir -p $(dirname {output})
-        wget -q --show-progress=off -t 5 -c -O {output} '{params.url}'
-        """
-
-
-rule telogator2:
-    """Aggregate target: run Telogator2 on every nanopore run in the manifest."""
-    input:
-        [f"work/results/telogator2/{_TG2_SPECIES[acc]}_{acc}/tlens_by_allele.tsv"
-         for acc in _TG2_FILES],
-
-
-rule telogator2_one:
-    """Per-accession Telogator2 invocation.
-
-    Telogator2 (Stephens & Kocher 2024, BMC Bioinf 25:194) is an allele-
-    specific telomere-length / TVR caller for long reads. It internally
-    aligns raw fastq to the supplied subtelomere reference (`-t`) with
-    minimap2 and clusters reads by arm.
-
-    Inputs:
-      - nanopore fastq(s) (multi-file runs are concatenated upstream).
-      - Custom Eimeria subtelomere ref (T2 deliverable, renamed by
-        scripts/build_telogator2_ref.py to <species>_chr<N><p|q> form so
-        that source/tg_util.py:LEXICO_2_IND parsing succeeds).
-      - Maize kmer palette (canonical CCCTAAA, identical to Eimeria
-        TTTAGGG revcomp). For E. maxima the canonical is TTAGGG and the
-        default human kmers TSV is used instead — see params.kmers.
-
-    Notes (cf. work/results/telogator2/telogator2_cli_spec.md):
-      - PYTHONNOUSERSITE=1 is mandatory: a stale user-site Biopython 1.76
-        masks the env's 1.87 and crashes Telogator2's pickling.
-      - --minimap2 must be an absolute path (no default in Telogator2).
-      - WGS nanopore depth is low; -n 4 from the README is appropriate
-        for 30x-equivalent runs. Drop to -n 3 for lower-depth datasets.
-      - There is no `-bed` flag for ITS coordinates; interstitial
-        flagging is hardwired to bundled human ITS positions. We post-
-        process tlens_by_allele.tsv against work/results/telogator2_ref/
-        its_catalog.bed downstream (not in this rule).
-    """
-    input:
-        fastqs=lambda wc: _TG2_FILES[wc.accession],
-        # PER-SPECIES reference, not pooled. Pooling produces cross-species
-        # mis-mapping (e.g. E.acervulina ONT reads anchor to E.maxima/tenella
-        # subtelomeres ~95% of the time due to subtelomere homology + ONT
-        # error). Per-species ref drops fail_reads_unmapped from 100% to 0%.
-        ref=lambda wc: f"work/results/telogator2_ref/{wc.species[0]}{wc.species.split('_')[1]}.telogator2.fasta",
-    output:
-        tsv="work/results/telogator2/{species}_{accession}/tlens_by_allele.tsv",
-    params:
-        outdir=lambda wc: f"work/results/telogator2/{wc.species}_{wc.accession}",
-        merged=lambda wc: f"work/results/telogator2/{wc.species}_{wc.accession}/_merged.fastq.gz",
-        kmers=lambda wc: (
-            "/scratch1/alex/telogator2/source/resources/kmers.tsv"
-            if wc.species == "Eimeria_maxima"     # TTAGGG canonical
-            else "/scratch1/alex/telogator2/source/resources/non-human/kmers_maize.tsv"
-        ),
-        env=config["telogator2"]["env"],
-        repo=config["telogator2"]["repo"],
-        read_type=config["telogator2"].get("read_type", "ont"),
-        min_reads_per_cluster=config["telogator2"].get("min_reads_per_cluster", 2),
-        # Loosened filters for shotgun WGS coverage (defaults assume capture).
-        # filt-tel default 400 bp drops most shotgun telomere-spanning reads.
-        filt_tel=config["telogator2"].get("filt_tel", 100),
-        filt_nontel=config["telogator2"].get("filt_nontel", 500),
-        filt_sub=config["telogator2"].get("filt_sub", 200),
-        min_read_len=config["telogator2"].get("min_read_len", 1000),
-        min_kmer_hits=config["telogator2"].get("min_kmer_hits", 4),
-    threads: 16
-    shell:
-        r"""
-        mkdir -p {params.outdir}
-        if [ $(echo {input.fastqs} | wc -w) -eq 1 ]; then
-            ln -sf $(realpath {input.fastqs}) {params.merged}
-        else
-            cat {input.fastqs} > {params.merged}
-        fi
-
-        # --debug-nosubtel skips the subtel-refinement clustering stage,
-        # which crashes on non-vertebrate refs (dendrogram label/Z size
-        # mismatch). Final anchoring still runs; alleles are anchored from
-        # the iter-0 / iter-1 cluster representatives directly.
-        PYTHONNOUSERSITE=1 micromamba run -n {params.env} \
-            python {params.repo}/telogator2.py \
-                -i {params.merged} \
-                -o {params.outdir} \
-                -t {input.ref} \
-                -k {params.kmers} \
-                -r {params.read_type} \
-                -n {params.min_reads_per_cluster} \
-                -p {threads} \
-                -l {params.min_read_len} \
-                -c {params.min_kmer_hits} \
-                --filt-tel {params.filt_tel} \
-                --filt-nontel {params.filt_nontel} \
-                --filt-sub {params.filt_sub} \
-                --debug-nosubtel \
-                --minimap2 /home/alex/micromamba/envs/{params.env}/bin/minimap2
-        """
 
 
 # ===================================================================================
@@ -1332,38 +953,6 @@ rule nucleosome_withingene:
         """
 
 
-# Host-gene-class characterisation (intron-rich/long; host vs DISJOINT non-host;
-# per-genome contrast). Panel C GO enrichment is optional (degrades if the
-# work/old/ archive table is absent).
-rule telotron_gene_bias:
-    input:
-        arch=ARCH_TSV,
-        refseq="data/raw/refseq/.done",
-    output:
-        "work/results/figures/telotron_gene_bias.png",
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures
-        python scripts/telotron_gene_bias.py
-        """
-
-
-# Per-intron telotron-rate logistic model (descriptive panels + cluster caveat).
-rule telotron_per_intron:
-    input:
-        arch=ARCH_TSV,
-        refseq="data/raw/refseq/.done",
-    output:
-        "work/results/figures/telotron_per_intron.png",
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures
-        python scripts/telotron_per_intron.py
-        """
 
 
 # Length distribution by (lineage x architecture) — BH-FDR corrected, single-MAG
@@ -1383,20 +972,6 @@ rule length_distribution_by_arch:
     shell:
         r"""
         TELOTRON_ROOT="$(pwd)" python scripts/length_distribution_by_arch_lineage.py
-        """
-
-
-# Capstone mechanism cartoon — no data inputs (hardcoded labels distilled from
-# the analyses); wired so it regenerates deterministically.
-rule mechanism_diagrams:
-    output:
-        "work/results/figures/proven_mechanism.png",
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures
-        python scripts/plot_proven_mechanism.py
         """
 
 
@@ -1421,29 +996,33 @@ rule telotron_expr_figures:
         """
 
 
+# Host-gene-class dissection (host vs disjoint non-host intron-count + gene length;
+# per-intron rate vs gene intron count + 5'->3' position). One consolidated
+# analysis for the intron-rich long-gene bias (was 2 rules: telotron_gene_bias
+# + telotron_per_intron, merged 2026-07-14).
+rule telotron_gene_class:
+    input:
+        arch=ARCH_TSV,
+        refseq="data/raw/refseq/.done",
+    output:
+        "work/results/figures/telotron_gene_class.png",
+    conda:
+        ENV
+    shell:
+        r"""
+        mkdir -p work/results/figures
+        python scripts/telotron_gene_class.py
+        """
+
+
 # Aggregate target for the wired analysis arm.
 rule analysis_arm:
     input:
         rules.nucleosome_features.output,
         rules.nucleosome_withingene.output,
-        rules.telotron_gene_bias.output,
-        rules.telotron_per_intron.output,
+        rules.telotron_gene_class.output,
         rules.length_distribution_by_arch.output,
-        rules.mechanism_diagrams.output,
         rules.telotron_expr_figures.output,
-
-
-# ── One remaining external-input helper (documented, NOT wired) ─
-#   telogator2 reference  (build_telogator2_ref.py)
-#       needs: a hand-curated cap_survey.tsv + subtelomeres FASTA (T2T
-#       deliverable). The per-species *.telogator2.fasta consumed by
-#       telogator2_one are hand-built from its output.
-#
-# All previously "not wired" exploratory arms (Hi-C, ONT, age-ladder /
-# cross-strain, 1-species expression test, proteome-BLAST telomerase,
-# find_gene_deep_homology, branchpoint STREME/FIMO) were retired 2026-07-14
-# under the Snakefile-driven / one-analysis-per-task principle. See
-# memory/extreme_deslop_2026-07-14.md for the retirement record.
 #
 # detect_telomere_boundaries.py is fully CLI-parameterised and driven by the
 # telomere_boundaries rule.
