@@ -82,17 +82,25 @@ FEATS=[("GC content",f_gc,WI,True,("real","ns")),
 def lineage(o): return "MAG" if "MAG" in o else ("Eimeria" if "Eimeria" in o else "o")
 def load(man,wd):
     out=[]; genome_by_lin=defaultdict(set)
-    for r in csv.DictReader(open(man),delimiter="\t"):
+    reader = csv.DictReader(open(man),delimiter="\t")
+    if "genome_id" not in (reader.fieldnames or []):
+        raise KeyError(
+            f"{man}: manifest missing 'genome_id' column — cluster-robust inference "
+            "in nucleosome_features requires it (see load()); regenerate the manifest "
+            "via nucleosome_analysis rule.")
+    for r in reader:
         F=int(r["flank"]); L=int(r["ilen"]); lid=r["locus_id"]; p=f"{wd}/{lid}.fa"
         if not os.path.exists(p): continue
         s=seqof(p)
         if len(s)<2*F+L: continue
         lin=lineage(r["organism"])
         out.append((lin,F,L,s))
-        # Count distinct genome_ids per lineage — this is the real replication
-        # unit for cluster-robust inference (MAG=1 assembly historically, but
-        # this now scales as new bearer species arrive).
-        genome_by_lin[lin].add(r.get("genome_id",""))
+        # Count distinct genome_ids per lineage — the real replication unit
+        # for cluster-robust inference. Falls back to counting the locus itself
+        # only when genome_id is genuinely empty (should never happen given the
+        # KeyError guard above).
+        gid = r.get("genome_id") or lid
+        genome_by_lin[lin].add(gid)
     return out, {lin: len(genomes) for lin, genomes in genome_by_lin.items()}
 T, N_GENOMES_T = load(f"{ROOT}/manifest.tsv",f"{ROOT}/seqs/with")
 C, _NG_C = load(f"{ROOT}/control_manifest.tsv",f"{ROOT}/control_seqs/with")
@@ -145,7 +153,8 @@ for (nm,lin,d,p,r,vd,q) in rows:
     i=feats.index(nm); j=LINS.index(lin); M[i,j]=r; cell[(i,j)]=(d,q,vd)
 im=ax.imshow(M,cmap="RdBu_r",aspect="auto",vmin=-0.5,vmax=0.5)
 vcol={"real":"#0a0","real*":"#0a0","GC-conf":"#c80","artifact":"#c00","ns":"#888"}
-ax.set_xticks(range(2)); ax.set_xticklabels(["MAG\n(1 genome)","Eimeria\n(5 genomes)"]); ax.set_yticks(range(len(feats))); ax.set_yticklabels(feats,fontsize=8.5)
+_xlabels = [f"{lin}\n({N_GENOMES_T.get(lin, 0)} genome{'s' if N_GENOMES_T.get(lin, 0) != 1 else ''})" for lin in LINS]
+ax.set_xticks(range(2)); ax.set_xticklabels(_xlabels); ax.set_yticks(range(len(feats))); ax.set_yticklabels(feats,fontsize=8.5)
 for (i,j),(d,q,vd) in cell.items():  # stars are BH q-values, not raw p
     st="***" if q<1e-3 else "**" if q<1e-2 else "*" if q<.05 else "ns"
     ax.text(j,i,f"r={M[i,j]:+.2f} {st}\n[{vd}]",ha="center",va="center",fontsize=6.8,

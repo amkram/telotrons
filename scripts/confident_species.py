@@ -18,7 +18,13 @@ import argparse
 import csv
 from collections import Counter
 
-BIDIR_ARCHS = {"GT-F-R-AG", "GT-R-linker-F-AG", "GT-F-linker-R-AG"}
+# Bidirectional architectures = both arms of the telomeric repeat are present
+# (a distinctive telomerase-mediated signature; unlikely by chance). Includes
+# `Multi-junction` (>=2 F/R junctions per intron, emitted by
+# classify_telotron_architecture) — otherwise species whose telotrons are
+# dominated by multi-junction loci under-count as bidirectional and can
+# silently fail confident-bearer admission.
+BIDIR_ARCHS = {"GT-F-R-AG", "GT-R-linker-F-AG", "GT-F-linker-R-AG", "Multi-junction"}
 
 
 def main():

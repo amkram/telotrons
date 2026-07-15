@@ -135,7 +135,7 @@ def main():
         # never got scanned and mixing them into negatives inflates the
         # "true-negative" pool with missing-input artifacts.
         status = species.get("status", pd.Series([""] * len(species))).fillna("").astype(str)
-        scanned_ok = ~status.str.startswith(("NO_FASTA", "NO_GFF", "ERROR"))
+        scanned_ok = ~status.str.startswith(("NO_FASTA", "NO_GFF", "ERROR", "gt_truncated"))
         negatives = species[(species.telotrons == 0) & (species.n_pre_filter_candidates == 0) & scanned_ok].copy()
     else:
         negatives = species[species.telotrons == 0].copy()

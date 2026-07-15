@@ -205,17 +205,16 @@ def main():
     ap.add_argument("--distance", required=True)
     ap.add_argument("--architecture", required=True)
     ap.add_argument("--threads", type=int, default=1)
-    ap.add_argument("--all-contigs", action="store_true",
-                    help="distance test: use all contigs, not just fully "
-                         "telomere-capped ones (default: capped contigs only).")
     args = ap.parse_args()
 
     final = pd.read_csv(args.final, sep="\t")
     introns = pd.read_csv(args.introns, sep="\t", low_memory=False)
 
     boundary_kmers(final, introns, args.boundary_kmers, threads=args.threads)
-    distance_to_end(final, args.distance, threads=args.threads,
-                    capped_only=not args.all_contigs)
+    # distance_to_end unconditionally emits BOTH modes (capped_only + all_contigs)
+    # as two rows per genome; the `capped_only=` arg is retained for callers
+    # but no longer branches (see docstring).
+    distance_to_end(final, args.distance, threads=args.threads)
     (final.groupby(["genome_id", "orientation", "splice_class"])
           .size().reset_index(name="n")
           .to_csv(args.architecture, sep="\t", index=False))

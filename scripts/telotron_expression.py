@@ -42,16 +42,26 @@ def _load_species_from_config():
             entries = ((cfg.get("rnaseq") or {}).get("species") or {})
             out = {}
             for sp, ent in entries.items():
-                gid = os.path.basename(os.path.dirname(ent["genome"]))
-                out[sp] = (f"{RNASEQ_DIR}/{sp}_gene_cov.tsv", _resolve_gff(gid), gid,
+                genome_path = ent.get("genome") or ent.get("gff")
+                if not genome_path:
+                    print(f"[telotron_expression] skip {sp}: config missing 'genome'", flush=True)
+                    continue
+                gid = os.path.basename(os.path.dirname(genome_path))
+                gff = _resolve_gff(gid)
+                if not gff:
+                    print(f"[telotron_expression] skip {sp}: no GFF for {gid}", flush=True)
+                    continue
+                out[sp] = (f"{RNASEQ_DIR}/{sp}_gene_cov.tsv", gff, gid,
                            ent.get("label", sp))
             if out:
                 return out
-    # Fallback: historical Eimeria pair.
-    return {
+    # Fallback: historical Eimeria pair. Filter to species where the GFF
+    # actually resolves — otherwise species_data() would crash later.
+    fallback = {
         "necatrix": (f"{RNASEQ_DIR}/necatrix_gene_cov.tsv", _resolve_gff("GCF_000499385.1"), "GCF_000499385.1", "E. necatrix"),
         "tenella":  (f"{RNASEQ_DIR}/eten_gene_cov.tsv",     _resolve_gff("GCF_000499545.2"), "GCF_000499545.2", "E. tenella"),
     }
+    return {k: v for k, v in fallback.items() if v[1]}
 
 SP = _load_species_from_config()
 def load_telo(genome_id):
@@ -162,23 +172,28 @@ if pg:
     else:
         HEADLINE="size-controlled OLS unavailable — raw gap is gene-architecture-confounded"
     # ---- figure ----
+    # Species labels come from SP[sp][3] (config's `label`, or the key itself).
+    # Panel A shows the largest-N species; suptitle names all species dynamically.
+    largest_sp = max(allg.keys(), key=lambda k: len(allg[k])) if allg else None
+    all_labels = ", ".join(SP.get(sp, (None, None, None, sp))[3] for sp in allg.keys())
     fig,ax=plt.subplots(1,3,figsize=(15,4.3))
-    # A necatrix host vs non-host
-    if "necatrix" in allg:
-        g=allg["necatrix"]; he2=[x[0] for x in g if x[2]]; ne2=[x[0] for x in g if not x[2]]
+    # A: largest-N species host vs non-host
+    if largest_sp:
+        g=allg[largest_sp]; he2=[x[0] for x in g if x[2]]; ne2=[x[0] for x in g if not x[2]]
+        sp_label = SP.get(largest_sp, (None, None, None, largest_sp))[3]
         ax[0].boxplot([np.log10(np.array(ne2)+.1),np.log10(np.array(he2)+.1)],labels=[f"non-host\nn={len(ne2)}",f"telotron host\nn={len(he2)}"],showfliers=False)
-        ax[0].set_title(f"A  E. necatrix (174 host genes)\nmed {np.median(he2):.0f} vs {np.median(ne2):.0f}  p={mannwhitneyu(he2,ne2).pvalue:.0e}",fontsize=9.5,weight="bold")
+        ax[0].set_title(f"A  {sp_label} ({len(he2)} host genes)\nmed {np.median(he2):.0f} vs {np.median(ne2):.0f}  p={mannwhitneyu(he2,ne2).pvalue:.0e}",fontsize=9.5,weight="bold")
     ax[0].set_ylabel("log10 gene expression (depth/bp)"); [ax[0].spines[s].set_visible(False) for s in ("top","right")]
     # B pooled
     ax[1].boxplot([np.log10(np.array(ne)+.01),np.log10(np.array(he)+.01)],labels=[f"non-host\nn={len(ne)}",f"telotron host\nn={len(he)}"],showfliers=False)
-    ax[1].set_title(f"B  POOLED necatrix+tenella (norm.)\nratio {np.median(he)/np.median(ne):.2f}  p={mannwhitneyu(he,ne).pvalue:.0e}",fontsize=9.5,weight="bold")
+    ax[1].set_title(f"B  POOLED {all_labels} (norm.)\nratio {np.median(he)/np.median(ne):.2f}  p={mannwhitneyu(he,ne).pvalue:.0e}",fontsize=9.5,weight="bold")
     ax[1].set_ylabel("log10 normalised expression"); [ax[1].spines[s].set_visible(False) for s in ("top","right")]
     # C pooled per-intron rate vs expr quintile
     ie=np.array([x[0] for x in pi]); iy=np.array([1 if x[1] else 0 for x in pi]); qs=np.quantile(ie,[0,.2,.4,.6,.8,1.0])
     rate=[1e4*iy[(ie>=qs[k])&(ie<=qs[k+1])].sum()/((ie>=qs[k])&(ie<=qs[k+1])).sum() for k in range(5)]
     ax[2].plot(rate,"o-",color="#b2182b"); ax[2].set_xticks(range(5)); ax[2].set_xticklabels(["Q1\nlow","Q2","Q3","Q4","Q5\nhigh"],fontsize=8)
     ax[2].set_xlabel("host-gene expression quintile"); ax[2].set_ylabel("telotron rate /10k introns")
-    ax[2].set_title("C  pooled per-intron rate vs expression\n(necatrix+tenella; ~195 telotrons)",fontsize=9.5,weight="bold")
+    ax[2].set_title(f"C  pooled per-intron rate vs expression\n({all_labels}; {len(pi)} introns)",fontsize=9.5,weight="bold")
     [ax[2].spines[s].set_visible(False) for s in ("top","right")]
-    fig.suptitle("Expression vs telotron presence (E. necatrix RNA-seq added, 174 host genes).  "+HEADLINE,fontsize=9.5,weight="bold",y=1.04)
+    fig.suptitle(f"Expression vs telotron presence ({all_labels}, {sum(len(g) for g in allg.values())} genes pooled).  "+HEADLINE,fontsize=9.5,weight="bold",y=1.04)
     fig.tight_layout(); fig.savefig("work/results/figures/telotron_expression.png",dpi=150,bbox_inches="tight"); print("\nwrote work/results/figures/telotron_expression.png")

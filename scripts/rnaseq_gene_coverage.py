@@ -7,7 +7,7 @@ and an ephemeral /tmp output. Steps, per accession:
 
   prefetch + fasterq-dump (--split-3)  ->  minimap2 -ax splice  ->  samtools sort/merge  ->  samtools bedcov
 
-Uses SPLICE-AWARE alignment (`minimap2 -ax splice -uf --secondary=no`) so exon-junction reads are
+Uses SPLICE-AWARE alignment (`minimap2 -ax splice -ub --secondary=no`) so exon-junction reads are
 placed as gapped alignments instead of soft-clipped by the short-read preset. This matters directly
 for the telotron_expression analysis: intron-rich telotron-host genes have many exon-exon junctions,
 and short-read alignment would systematically depress their coverage — producing a spurious
