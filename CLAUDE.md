@@ -53,83 +53,64 @@ There are no tests or lints — iterate by running a stage directly with the sam
 args the rule uses (or `snakemake -n --rulegraph` for DAG inspection).
 
 ### Core survey path
-1. `manifests` / `assembly_urls` / `tara_archives` / `download_assemblies` —
-   build `work/manifests/all_genomes.tsv` (columns:
+1. `manifests` / `tara_archives` / `download_assemblies` — build
+   `work/manifests/all_genomes.tsv` (columns:
    `genome_id, organism, group, ftp_path, source`) from three streams:
    **RefSeq** (curated GCF_), **GenBank** (annotated eukaryotes without a
    paired GCF_, `annotation_provider != "na"`), and **Tara SMAGs v1**. RefSeq
    downloads land in `data/raw/refseq/`; GenBank-only in `data/raw/genbank/`.
-2. `canonical_motifs` — emit the curated per-genome/per-group telomere-motif
-   table from config (overrides contig-end motif inference where set).
-3. `scan_all` → [scripts/scan_telotrons.py](scripts/scan_telotrons.py) — derive
+   URL derivation is inlined into `download_assemblies`.
+2. `scan_all` → [scripts/scan_telotrons.py](scripts/scan_telotrons.py) — derive
    introns (`gt gff3 -addintrons`) and scan each for the configured motifs
-   (rotations + reverse complements) via `seqkit locate`; emit three TSVs
-   (per-intron, candidate loci, per-species summary).
-4. `filter_final` → [scripts/filter_final_set.py](scripts/filter_final_set.py) —
+   (rotations + reverse complements) via `seqkit locate`. Builds the canonical
+   per-genome motif TSV inline from config. Emits per-intron, candidate loci,
+   per-species summary, and canonical_motifs.tsv.
+3. `filter_final` → [scripts/filter_final_set.py](scripts/filter_final_set.py) —
    two admission pathways (single-array `filter.min_repeat_frac`=0.85;
    bidirectional `bidir_min_repeat_frac`=0.40 + `bidir_min_hits`=3) plus
    `require_terminal_motif_match`, `collapse_unique_loci`, optional
    `require_canonical_splice`. Splits positives from zero-telotron negative controls.
-5. `dedup_telotrons` / `classify_architecture` — collapse doubly-assembled /
+4. `dedup_telotrons` / `classify_architecture` — collapse doubly-assembled /
    close-paralog loci (flank blastn + union-find); classify splice architecture
    (GT-F-AG etc.) and emit per-architecture boundary k-mers.
-6. `analyze` → [scripts/analyze_telotrons.py](scripts/analyze_telotrons.py) —
+5. `analyze` → [scripts/analyze_telotrons.py](scripts/analyze_telotrons.py) —
    boundary k-mer enrichment vs control introns, distance-to-contig-end test,
    architecture summary.
-7. `confident_species` → [scripts/confident_species.py](scripts/confident_species.py)
+6. `confident_species` → [scripts/confident_species.py](scripts/confident_species.py)
    — emit `work/results/confident_species.tsv`, the paper's central bearer set.
    A species is admitted when it has **≥3 telotrons passing filter_final** OR
    **≥1 bidirectional architecture** (GT-F-R-AG or a linker variant, a
    distinctive telomerase-mediated signature). **Every downstream analysis
    keys off this file** — new bearer species flow through automatically
    without touching Python.
-8. `package` — zip final TSVs + confident-species set + manifest into the
+7. `package` — zip final TSVs + confident-species set + manifest into the
    deliverable at `work/results/telotron_pipeline_outputs.zip`.
 
-### Downstream analysis arms (mutually independent)
-- **Extraction / alignment** — `extract_telotron_fasta`, `build_non_telotron_controls`
-  + `extract_non_telotron_fasta`, `msa_telotron_regions` (MAFFT), `blast_linkers`.
-- **Interstitial arrays** — `make_unannotated_masks` → `find_interstitial_arrays`
-  + splice-candidate filtering (telomeric arrays *outside* introns, as a contrast).
-- **Motif discovery** (`envs/meme.yaml`) — STREME on telotrons / non-telo introns /
-  linkers. (Branchpoint STREME/FIMO arm retired 2026-07-14 — never produced a
-  usable per-species PWM at coccidian divergence.)
+### Downstream analysis arms (mutually independent — invoke by rule name)
+- **Extraction / control** — `extract_fasta` (one wildcarded rule for both
+  `telotron` and `non_telotron` sets) + `build_non_telotron_controls`.
+- **Interstitial arrays** — `find_interstitial_arrays` (builds its 6-frame ORF
+  mask inline; telomeric arrays *outside* introns as a contrast).
 - **TERT homology** — `fetch_tert_seeds_hmms` → `find_tert` (miniprot + Pfam
   TRBD/RVT deep-homology search). Recovers Eimeria and sister coccidia TERT
-  below BLAST detection. (The old proteome-BLAST arm — `fetch_telomerase_db`,
-  `blast_telomerase_vs_genomes`, `process_telomerase_blast`,
-  `find_gene_deep_homology` — was retired 2026-07-14; its per-genome
-  BLAST-based i-Evalues were superseded by the HMM-based `find_tert` results.)
-- **Telotron-gene orthologs** (`orthologs` target) — `telotron_ortholog_align`: for each
-  telotron-host gene, miniprot-maps the orthologous locus in a panel of telotron-negative
-  sisters + cross-Eimeria, aligns the gene in protein space (introns removed), and DNA-aligns
-  the telotron against the orthologous intron where present. Resolves fill-vs-create per locus;
-  flags (does **not** correct) frameshifts/stops at the homologous junction as bad intron-
-  boundary alignment. Config: `telotron_ortholog` (focal_ids, ortholog_ids, cutoffs).
-  Two viewers consume its output: `plot_telotron_ortholog_loci` (compiled per-locus PDF:
-  flanking-exon protein MSA + flank DNA + intron DNA, poorly-flank-aligned orthologs dropped)
-  and `telotron_ortholog_textdump` (per-locus text files — unaligned/aligned × DNA/aa for
-  flanks+intron — grouped into `locus_text/{intron_present_nontelo,telotron_present,intron_absent,uncertain}/`).
-- **Figures** — headline `figures` rule + `terminal_motif_figures`,
-  `plot_boundary_kmers_by_arch`, `plot_interstitial_boundary_kmers`,
-  `plot_array_length_distribution`, `plot_pipeline_stages`,
-  `plot_splice_signal_logos`. (Redundant composite / combined / logo-variant /
-  control-set duplicate plots retired 2026-07-14.)
-- **Architecture / linker / interstitial-ITS** (`architecture_analyses` target) —
-  `interstitial_ortholog_textdump` (non-genic ITS DNA-flank orthology,
-  gold-standard ≥4-unit/<1mm-per-unit filter), `linker_segmentation` +
-  `cluster_linkers` (telotron array/linker decomposition), `mask_telotron_arrays`
-  (G/A/L architecture cartoon + MSA).
-- **Analysis arm** (`analysis_arm` target) — regenerable-from-core-pipeline
-  downstream analyses: `nucleosome_features` (telomere-MASKED composition /
-  10-bp WW periodicity / CpG panel + BH-FDR — the signals that HELD after the
-  2026-06-08 NuPoP artifact retraction), `nucleosome_withingene` (within-gene
-  sibling-intron control), `telotron_gene_bias` (host vs **disjoint** non-host
-  gene class), `telotron_per_intron`, `length_distribution_by_arch` (BH-corrected,
-  single-MAG caveat; emits per-arm burst-length figure too), `mechanism_diagrams`
-  (proven-mechanism capstone cartoon), `telotron_expr_figures` (tenella +
-  necatrix, size-controlled OLS + per-intron rate vs expression quintile) +
-  `rnaseq_gene_coverage` (per-species SRA→`samtools bedcov`, config-driven).
+  below BLAST detection.
+- **Telotron-gene orthologs** — `telotron_orthologs`: miniprot-maps the
+  orthologous locus in a panel of telotron-negative sisters + cross-Eimeria,
+  aligns the gene in protein space (introns removed), DNA-aligns the telotron
+  against the orthologous intron; emits the compiled per-locus PDF in the
+  same rule. Config: `telotron_ortholog` (focal_ids, ortholog_ids, cutoffs).
+- **Architecture / linker** — `linker_analysis` (segment telotrons into arrays
+  + linkers, cluster linkers by 7-mer Jaccard for cross-locus recurrence),
+  `mask_telotron_arrays` (G/A/L architecture cartoon + MSA).
+- **Analysis arm** (`analysis_arm` aggregate) —
+  `nucleosome_analysis` (insertion-site composition / 10-bp WW periodicity /
+  CpG panel + within-gene sibling-intron control, one rule),
+  `telotron_gene_class` (host vs disjoint non-host + per-intron dissection,
+  iterates confident_species dynamically), `length_distribution_by_arch`
+  (BH-corrected, single-MAG caveat; emits per-arm burst-length figure too),
+  `telotron_expr_figures` (tenella + necatrix, size-controlled OLS +
+  per-intron rate vs expression quintile) + `rnaseq_gene_coverage`
+  (per-species SRA→`samtools bedcov`, config-driven).
 
 ### Running it
 ```bash

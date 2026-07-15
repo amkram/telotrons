@@ -53,8 +53,6 @@ FILTER_FLAGS = " ".join(
 MEME_ENV = "envs/meme.yaml"
 
 # Sentinels (path = ".../<name>/.done" or the canonical output file).
-EXTRACT_FASTA_SENTINEL          = "work/results/telotron_fasta/.done"
-CTRL_FLANKED_SENTINEL           = "work/results/non_telotron_fasta/.done"
 TERT_DEEP_HOMOLOGY_TSV          = "work/results/tert_deep_homology/confirmed_tert.tsv"
 TELOTRON_ORTHO_SENTINEL         = "work/results/telotron_orthologs/.done"
 TELOTRON_ORTHO_LOCI_PDF         = "work/results/figures/telotron_ortholog_loci.pdf"
@@ -167,31 +165,16 @@ rule tara_archives:
 
 # Derive per-genome FNA and GFF URLs from every assembly's FTP path. Union
 # writes: acc\tsource\tfna_url\tgff_url. Source-tagged so downloads land under
-# data/raw/refseq/ (GCF_) or data/raw/genbank/ (GCA_-only) as before.
-rule assembly_urls:
+# Fan out per-genome curls. Derives URLs from refseq_euk + genbank_euk
+# manifests inline (the standalone `assembly_urls` rule was inlined 2026-07-14).
+# NCBI rate-limits aggressive parallel pulls, so cap the inner pool at 8
+# regardless of THREADS. curl retries handle transient 503s; `exit 255` aborts
+# xargs on persistent failure. GCF_ accessions land in data/raw/refseq/
+# (unchanged); GCA_-only in data/raw/genbank/.
+rule download_assemblies:
     input:
         refseq="work/manifests/refseq_euk.tsv",
         genbank="work/manifests/genbank_euk.tsv",
-    output:
-        "work/manifests/assembly_urls.tsv",
-    shell:
-        r"""
-        cat {input.refseq} {input.genbank} \
-          | awk -F'\t' 'BEGIN{{OFS="\t"}} {{
-              sub(/\/$/, "", $4);
-              n=split($4,a,"/"); base=a[n];
-              print $1, $5, $4"/"base"_genomic.fna.gz", $4"/"base"_genomic.gff.gz"
-            }}' > {output}
-        """
-
-
-# Fan out per-genome curls. NCBI rate-limits aggressive parallel pulls, so
-# cap the inner pool at 8 regardless of THREADS. curl retries handle transient
-# 503s; `exit 255` aborts xargs on persistent failure. GCF_ accessions land in
-# data/raw/refseq/ (unchanged); GCA_-only in data/raw/genbank/.
-rule download_assemblies:
-    input:
-        "work/manifests/assembly_urls.tsv",
     output:
         refseq_done=touch("data/raw/refseq/.done"),
         genbank_done=touch("data/raw/genbank/.done"),
@@ -199,65 +182,59 @@ rule download_assemblies:
     shell:
         r"""
         mkdir -p data/raw/refseq data/raw/genbank
-        awk -F'\t' '{{
-            root=($2=="refseq"?"data/raw/refseq":"data/raw/genbank");
-            print root"\t"$1"\t"$3;
-            print root"\t"$1"\t"$4
-        }}' {input} \
+        cat {input.refseq} {input.genbank} \
+          | awk -F'\t' 'BEGIN{{OFS="\t"}} {{
+              sub(/\/$/, "", $4);
+              n=split($4,a,"/"); base=a[n];
+              root=($5=="refseq"?"data/raw/refseq":"data/raw/genbank");
+              print root"\t"$1"\t"$4"/"base"_genomic.fna.gz";
+              print root"\t"$1"\t"$4"/"base"_genomic.gff.gz"
+            }}' \
           | xargs -P 8 -n3 sh -c \
               'mkdir -p $0/$1 && curl -L --fail --retry 5 --retry-delay 3 --retry-all-errors -s "$2" -o $0/$1/$(basename "$2") || exit 255'
         touch {output.refseq_done} {output.genbank_done}
         """
 
 
-# Build a `genome_id → motif` TSV from the curated literature mapping in config.yaml.
-# Scan stage uses this in preference to contig-end scanning.
-rule canonical_motifs:
-    input:
-        manifest="work/manifests/all_genomes.tsv",
-    output:
-        "work/manifests/canonical_motifs.tsv",
-    params:
-        by_genome=CANONICAL_BY_GENOME,
-        by_group=CANONICAL_BY_GROUP,
-    run:
-        import csv
-        with open(input.manifest) as f, open(output[0], "w", newline="") as out:
-            w = csv.writer(out, delimiter="\t")
-            w.writerow(["genome_id", "motif"])
-            for r in csv.DictReader(f, delimiter="\t"):
-                gid = r["genome_id"]
-                grp = r["group"]
-                motif = params.by_genome.get(gid)
-                if motif is None:
-                    motif = params.by_group.get(grp, "")
-                w.writerow([gid, motif or ""])
-
-
 # Core scan: per-intron motif coverage, splice signals, orientation,
 # distance-to-end. Broad sieve (low --min-repeat-frac) so linker-architecture
 # loci survive into the TSV; strict cutoffs live in filter_final.
-# --max-flank-repeat-frac 0.25 + --min-intron-len 30 reject misannotated subtelomere
-# introns (flanks themselves telomeric) and 1-bp degenerate GFF intron annotations.
+# --max-flank-repeat-frac 0.25 + --min-intron-len 30 reject misannotated
+# subtelomere introns (flanks themselves telomeric) and 1-bp degenerate GFF
+# intron annotations. The canonical per-genome motif TSV (was a separate
+# `canonical_motifs` rule until 2026-07-14) is built inline from config here.
 rule scan_all:
     input:
         manifest="work/manifests/all_genomes.tsv",
-        canonical="work/manifests/canonical_motifs.tsv",
         tara=["data/raw/tara/.fna.done", "data/raw/tara/.gff.done"],
         assemblies=ASSEMBLIES_DONE,
     output:
         loci="work/results/all_telotron_loci.tsv",
         introns="work/results/all_introns_scanned.tsv",
         summary="work/results/all_species_raw_summary.tsv",
+        canonical="work/manifests/canonical_motifs.tsv",
+    params:
+        by_genome=CANONICAL_BY_GENOME,
+        by_group=CANONICAL_BY_GROUP,
     threads: THREADS
     conda:
         ENV
     shell:
         r"""
-        mkdir -p results
+        python3 -c '
+import csv, sys
+by_genome = eval(sys.argv[1]); by_group = eval(sys.argv[2])
+with open("{input.manifest}") as f, open("{output.canonical}", "w", newline="") as out:
+    w = csv.writer(out, delimiter="\t")
+    w.writerow(["genome_id", "motif"])
+    for r in csv.DictReader(f, delimiter="\t"):
+        m = by_genome.get(r["genome_id"]) or by_group.get(r["group"], "")
+        w.writerow([r["genome_id"], m or ""])
+' "{params.by_genome}" "{params.by_group}"
+
         python scripts/scan_telotrons.py \
             --manifest {input.manifest} \
-            --canonical-motifs {input.canonical} \
+            --canonical-motifs {output.canonical} \
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
             --motifs {TELOMERE_MOTIFS} \
             --min-repeat-frac {SCAN_MIN_FRAC} --max-flank-repeat-frac {SCAN_MAX_FLANK_FRAC} \
@@ -385,27 +362,34 @@ rule analyze:
         """
 
 
-# Per-species, per-architecture FASTA + flanked-text extracts.
+# Per-species × architecture FASTA + flanked-text extracts. Wildcarded on
+# {set} (telotron | non_telotron); one rule, one script — the two extract
+# arms (was extract_telotron_fasta + extract_non_telotron_fasta) are the
+# same pipeline against different input tables.
 # Flanked lines: [LEFT100] [INTRON] [RIGHT100], or for linker archs
 # [LEFT100] [ARRAY1] [LINKER] [ARRAY2] [RIGHT100]. One subdir per species,
 # one file per architecture.
-rule extract_telotron_fasta:
+rule extract_fasta:
     input:
-        arch="work/results/final_telotron_set_architecture.tsv",
+        table=lambda w: ("work/results/final_telotron_set_architecture.tsv"
+                          if w.set == "telotron"
+                          else "work/results/non_telotron_controls.tsv"),
         tara=["data/raw/tara/.fna.done"],
         assemblies=ASSEMBLIES_DONE,
     output:
-        touch(EXTRACT_FASTA_SENTINEL),
+        touch("work/results/{set}_fasta/.done"),
+    wildcard_constraints:
+        set=r"telotron|non_telotron",
     conda:
         ENV
     shell:
         r"""
-        mkdir -p work/results/telotron_fasta work/results/telotron_flanked
+        mkdir -p work/results/{wildcards.set}_fasta work/results/{wildcards.set}_flanked
         python scripts/extract_telotron_fasta.py \
-            --final {input.arch} \
+            --final {input.table} \
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
-            --fasta-dir work/results/telotron_fasta \
-            --flanked-dir work/results/telotron_flanked
+            --fasta-dir work/results/{wildcards.set}_fasta \
+            --flanked-dir work/results/{wildcards.set}_flanked
         touch {output}
         """
 
@@ -521,13 +505,18 @@ _TELO_WITHIN_PANEL = ",".join(_TELO_ORTHO_FOCAL_IDS)
 _TELO_OUTGROUP_PANEL = ",".join([x for x in _TELO_ORTHO_PANEL_IDS if x not in set(_TELO_ORTHO_FOCAL_IDS)])
 
 
-rule telotron_ortholog_align:
+# Telotron-host-gene ortholog alignment: miniprot-map the ortholog in each
+# panel genome, protein-align it, DNA-align telotron vs orthologous intron to
+# resolve fill-vs-create. Emits the compiled per-locus PDF in the same rule
+# (was 2 rules: align + plot; merged 2026-07-14).
+rule telotron_orthologs:
     input:
         final="work/results/final_telotron_set_architecture.tsv",
         tara=["data/raw/tara/.fna.done"],
         assemblies=ASSEMBLIES_DONE,
     output:
-        touch(TELOTRON_ORTHO_SENTINEL),
+        sentinel=touch(TELOTRON_ORTHO_SENTINEL),
+        pdf=TELOTRON_ORTHO_LOCI_PDF,
     params:
         focal=_TELO_ORTHO_FOCAL,
         panel=_TELO_ORTHO_PANEL,
@@ -539,7 +528,7 @@ rule telotron_ortholog_align:
         ENV
     shell:
         r"""
-        mkdir -p work/results/telotron_orthologs
+        mkdir -p work/results/telotron_orthologs work/results/figures
         python scripts/telotron_ortholog_align.py \
             --final {input.final} \
             --focal-ids {params.focal} --ortholog-ids {params.panel} \
@@ -547,25 +536,10 @@ rule telotron_ortholog_align:
             --outdir work/results/telotron_orthologs \
             --min-array-bp {params.min_array} --min-ident {params.min_id} \
             --intron-tol {params.tol} --threads {threads}
-        touch {output}
-        """
-
-
-# Compiled per-locus figure: one page per telotron with the flanking-exon protein
-# alignment (zoomed to the intron) over the telotron-vs-orthologous-intron DNA alignment.
-rule plot_telotron_ortholog_loci:
-    input:
-        TELOTRON_ORTHO_SENTINEL,
-    output:
-        TELOTRON_ORTHO_LOCI_PDF,
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/figures
         python scripts/plot_telotron_ortholog_loci.py \
             --ortho-dir work/results/telotron_orthologs \
-            --out {output} --window 28 --max-rows 12
+            --out {output.pdf} --window 28 --max-rows 12
+        touch {output.sentinel}
         """
 
 
@@ -585,28 +559,6 @@ rule build_non_telotron_controls:
             --introns {input.introns} --final {input.final} \
             --out {output.tsv} --max-frac 0.01 --n-per-species 5000 \
             --all-genomes
-        """
-
-
-# Per-species and per-architecture FASTAs + flanked .txt for the control set,
-# under work/results/non_telotron_fasta and work/results/non_telotron_flanked (architecture
-# is always "control"). Reuses the telotron extractor.
-rule extract_non_telotron_fasta:
-    input:
-        controls="work/results/non_telotron_controls.tsv",
-        tara=["data/raw/tara/.fna.done"],
-        assemblies=ASSEMBLIES_DONE,
-    output:
-        touch(CTRL_FLANKED_SENTINEL),
-    conda: ENV
-    shell:
-        r"""
-        mkdir -p work/results/non_telotron_fasta work/results/non_telotron_flanked
-        python scripts/extract_telotron_fasta.py \
-            --final {input.controls} \
-            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
-            --fasta-dir work/results/non_telotron_fasta \
-            --flanked-dir work/results/non_telotron_flanked
         """
 
 
@@ -768,13 +720,16 @@ rule rnaseq_gene_coverage:
         """
 
 
-# Insertion-site composition / periodicity feature panel (telomere-masked
-# flanks, BH-FDR). One rule: builds per-locus flank FASTAs + control FASTAs,
-# then computes the composition / 10-bp WW periodicity / CpG panel. The old
-# NuPoP occupancy arm was retired 2026-07-14 (linker interpretation was
-# artifact per memory telotron_nucleosome_nupop_2026-06-08); the signals
-# reported here are the ones that held up.
-rule nucleosome_features:
+# Insertion-site composition / periodicity panel + within-gene control.
+# One rule: (1) build per-locus flank FASTAs + control FASTAs; (2) compute
+# composition / 10-bp WW periodicity / CpG panel with telomere-masked flanks
+# and BH-FDR; (3) run the within-gene control (telotron introns vs same-gene
+# sibling introns vs random non-host, separates gene-class confound from
+# local targeting). The old NuPoP occupancy arm was retired 2026-07-14
+# (linker interpretation was artifact per memory
+# telotron_nucleosome_nupop_2026-06-08); the signals here are the ones that
+# held up.
+rule nucleosome_analysis:
     input:
         arch=ARCH_TSV,
         controls="work/results/non_telotron_controls.tsv",
@@ -782,6 +737,7 @@ rule nucleosome_features:
         assemblies=ASSEMBLIES_DONE,
     output:
         summary="work/results/nucleosome/nucleosome_feature_summary.png",
+        withingene="work/results/nucleosome/withingene_control.txt",
         manifest="work/results/nucleosome/manifest.tsv",
         control_manifest="work/results/nucleosome/control_manifest.tsv",
     conda:
@@ -795,25 +751,7 @@ rule nucleosome_features:
             --controls {input.controls} --telo-manifest {output.manifest} \
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara --out work/results/nucleosome
         python scripts/nucleosome_features.py
-        """
-
-
-# Within-gene control: telotron introns vs same-gene sibling introns vs random
-# non-host introns (separates gene-class confound from local targeting). Prints
-# to stdout; we tee it to a log file so the rule has a concrete output.
-rule nucleosome_withingene:
-    input:
-        arch=ARCH_TSV,
-        controls="work/results/non_telotron_controls.tsv",
-        assemblies=ASSEMBLIES_DONE,
-        tara=["data/raw/tara/.fna.done"],
-    output:
-        "work/results/nucleosome/withingene_control.txt",
-    conda:
-        ENV
-    shell:
-        r"""
-        python scripts/nucleosome_withingene.py | tee {output}
+        python scripts/nucleosome_withingene.py | tee {output.withingene}
         """
 
 
@@ -883,8 +821,7 @@ rule telotron_gene_class:
 # Aggregate target for the wired analysis arm.
 rule analysis_arm:
     input:
-        rules.nucleosome_features.output,
-        rules.nucleosome_withingene.output,
+        rules.nucleosome_analysis.output,
         rules.telotron_gene_class.output,
         rules.length_distribution_by_arch.output,
         rules.telotron_expr_figures.output,
