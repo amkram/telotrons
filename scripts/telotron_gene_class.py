@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Telotron host-gene class: (A) host genes are more intron-rich and (B) longer than the disjoint
-non-host set (per-gene bias), but the per-intron dissection reveals that (C) telotron rate PEAKS at
-mid intron-count and FALLS with gene length (bias is trial-count opportunity, not per-intron
-preference) with (D) a genuine 5'-position preference. Eimeria RefSeq GFFs only (the closed panel
-where every mRNA has explicit exon lines). Host vs DISJOINT non-host MWU (avoids the set-vs-superset
-trap); the 5 assemblies share orthologues, so pooled p's are supplemented with a per-genome sign
-check (n=5 is the real replication unit)."""
+"""Telotron host-gene class: (A) intron-rich host genes and (B) longer host genes vs the disjoint
+non-host set (per-gene bias), but the per-intron dissection reveals (C) rate PEAKS at mid intron-count
+and FALLS with gene length (bias is trial-count opportunity, not per-intron preference) with
+(D) a genuine 5'-position preference. Iterates every genome in confident_species.tsv that has a
+resolvable RefSeq / GenBank GFF (species without a GFF just get skipped). Host vs DISJOINT non-host
+MWU. The confident-species set is the paper's central data-driven bearer set; downstream analyses
+key off it so new species flow through without editing this script."""
 import bisect as bs
 import csv
+import glob
+import os
 import re
-from collections import Counter, defaultdict
+from collections import defaultdict
 
 import matplotlib
 import numpy as np
@@ -17,23 +19,43 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.stats import mannwhitneyu, spearmanr
 
-GFF = {
-    "GCF_000499545.2": "data/raw/refseq/GCF_000499545.2/GCF_000499545.2_ETH001_genomic.gff",
-    "GCF_000499385.1": "data/raw/refseq/GCF_000499385.1/GCF_000499385.1_ENH001_genomic.gff",
-    "GCF_000499425.1": "data/raw/refseq/GCF_000499425.1/GCF_000499425.1_EAH001_genomic.gff",
-    "GCF_000499605.1": "data/raw/refseq/GCF_000499605.1/GCF_000499605.1_EMW001_genomic.gff",
-    "GCF_000499745.2": "data/raw/refseq/GCF_000499745.2/GCF_000499745.2_EMH001_genomic.gff",
-}
 ARCH_TSV = "work/results/final_telotron_set_architecture.tsv"
+CONFIDENT_TSV = "work/results/confident_species.tsv"
 
 
-def lin(o):
-    return "MAG" if "MAG" in o else ("Eimeria" if "Eimeria" in o else None)
+def resolve_gff(gid):
+    """Find the GFF for a genome id under data/raw/{refseq,genbank}/{gid}/."""
+    for root in ("data/raw/refseq", "data/raw/genbank"):
+        hits = glob.glob(f"{root}/{gid}/*_genomic.gff") + glob.glob(f"{root}/{gid}/*_genomic.gff.gz")
+        if hits:
+            return hits[0]
+    return None
+
+
+def open_gff(path):
+    if path.endswith(".gz"):
+        import gzip
+        return gzip.open(path, "rt")
+    return open(path)
+
+
+# Confident-species panel (all genomes with a resolvable GFF).
+GFF = {}
+for r in csv.DictReader(open(CONFIDENT_TSV), delimiter="\t"):
+    gid = r["genome_id"]
+    p = resolve_gff(gid)
+    if p:
+        GFF[gid] = p
+    else:
+        print(f"[skip: no GFF] {gid} ({r.get('organism','')})")
+print(f"panel: {len(GFF)} bearer genomes with GFF")
+
+if not GFF:
+    raise SystemExit("no confident bearers with resolvable GFFs — nothing to analyze")
 
 
 # Load telotron rows (per-gene count + per-(genome,seqid) intervals).
 telo_by_gene = defaultdict(int)
-telo_by_gene_lin = defaultdict(lambda: defaultdict(int))
 telo_intervals = defaultdict(list)
 for r in csv.DictReader(open(ARCH_TSV), delimiter="\t"):
     gid = r["genome_id"]
@@ -41,9 +63,6 @@ for r in csv.DictReader(open(ARCH_TSV), delimiter="\t"):
         continue
     g = r.get("gene_id") or r.get("tx_id")
     telo_by_gene[(gid, g)] += 1
-    L = lin(r["organism"])
-    if L:
-        telo_by_gene_lin[L][(gid, g)] += 1
     telo_intervals[(gid, r["seqid"])].append((int(r["start"]), int(r["end"])))
 for k in telo_intervals:
     telo_intervals[k].sort()
@@ -61,14 +80,13 @@ def is_telo(genome, seqid, s, e):
     return False
 
 
-# Walk each GFF once, collect per-gene stats + per-intron rows.
 per_gene = []   # (gid, gene, N_introns, gene_len, is_host)
 per_intron = []  # (gid, N, gene_len, pos_frac, is_telo)
 for gid, path in GFF.items():
     glen = {}
     mrna_gene = {}
     mrna_exons = defaultdict(list)
-    for line in open(path):
+    for line in open_gff(path):
         if line.startswith("#"):
             continue
         f = line.rstrip("\n").split("\t")
@@ -88,7 +106,6 @@ for gid, path in GFF.items():
             if pa:
                 mrna_exons[pa.group(1)].append((int(f[3]), int(f[4]), f[0], f[6]))
 
-    # Aggregate to unique introns per gene.
     gene_introns = defaultdict(set)
     gene_strand = {}
     for mr, exs in mrna_exons.items():
@@ -121,12 +138,11 @@ non_intr = np.array([N for *_, N, _, h in per_gene if not h])
 host_len = np.array([L for *_, _, L, h in per_gene if h and L])
 non_len = np.array([L for *_, _, L, h in per_gene if not h and L])
 
-p_intr = mannwhitneyu(host_intr, non_intr, alternative="greater").pvalue
-p_len = mannwhitneyu(host_len, non_len, alternative="greater").pvalue
+p_intr = mannwhitneyu(host_intr, non_intr, alternative="greater").pvalue if len(host_intr) and len(non_intr) else float("nan")
+p_len = mannwhitneyu(host_len, non_len, alternative="greater").pvalue if len(host_len) and len(non_len) else float("nan")
 print(f"[A] host introns/gene med {np.median(host_intr):.0f} (n={len(host_intr)}) vs non-host {np.median(non_intr):.0f} (n={len(non_intr)}); pooled MWU p={p_intr:.1e}")
 print(f"[B] host gene len med {np.median(host_len):.0f} vs non-host {np.median(non_len):.0f}; pooled MWU p={p_len:.1e}")
 
-# per-genome sign check (n=5 assemblies; the real replication unit)
 per_species_diff = []
 for gid in GFF:
     h_sp = [N for g, _, N, _, host in per_gene if g == gid and host]
@@ -140,7 +156,7 @@ N = np.array([r[1] for r in per_intron])
 GL = np.array([r[2] for r in per_intron], dtype=float)
 POS = np.array([r[3] for r in per_intron])
 Y = np.array([1 if r[4] else 0 for r in per_intron])
-print(f"\n[C/D] total Eimeria introns: {len(per_intron)}; telotron introns matched: {int(Y.sum())}")
+print(f"\n[C/D] total introns across bearers: {len(per_intron)}; telotron introns matched: {int(Y.sum())}")
 
 bins_n = [(1, 1), (2, 3), (4, 6), (7, 10), (11, 20), (21, 200)]
 rate_by_N = []
@@ -150,7 +166,6 @@ for lo, hi in bins_n:
     rate_by_N.append((f"{lo}-{hi}", 1e4 * pos / tot if tot else 0))
 print("[C] per-intron rate vs gene intron count:", rate_by_N)
 
-qs = np.quantile(GL, [0, 0.2, 0.4, 0.6, 0.8, 1.0])
 rate_by_pos = []
 for i in range(5):
     m = (POS >= i / 5) & (POS < (i + 1) / 5)
@@ -158,7 +173,6 @@ for i in range(5):
     rate_by_pos.append((f"{i/5:.1f}-{(i+1)/5:.1f}", 1e4 * pos / tot if tot else 0))
 print("[D] per-intron rate vs 5'->3' position:", rate_by_pos)
 
-# Logistic partialling (log N, log gene-len, position).
 X = np.column_stack([np.log(N), np.log(GL + 1), POS])
 Xz = (X - X.mean(0)) / X.std(0)
 try:
@@ -201,7 +215,8 @@ ax[3].set_xlabel("position within gene (5'->3')"); ax[3].set_ylabel("telotron ra
 ax[3].set_title("D  genuine 5' preference\n(logistic partialling out N + gene-len)", fontsize=10, weight="bold")
 [ax[3].spines[s].set_visible(False) for s in ("top", "right")]
 
-fig.suptitle("Telotron host-gene class (Eimeria RefSeq, 5 genomes) — intron-rich long host genes (A/B) but per-intron rate is opportunity (C) + 5' preference (D), not per-intron gene-size preference", fontsize=10.5, weight="bold", y=1.04)
+fig.suptitle(f"Telotron host-gene class ({len(GFF)} confident bearers, {int(Y.sum())} telotron introns) — intron-rich long host genes (A/B), per-intron rate is opportunity (C) + 5' preference (D)", fontsize=10.5, weight="bold", y=1.04)
 out = "work/results/figures/telotron_gene_class.png"
+os.makedirs(os.path.dirname(out), exist_ok=True)
 fig.tight_layout(); fig.savefig(out, dpi=150, bbox_inches="tight")
 print(f"wrote {out}")

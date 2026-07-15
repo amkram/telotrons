@@ -9,7 +9,14 @@ configfile: "config.yaml"
 
 TARA_BASE = config["tara_base"]
 REFSEQ_URL = config["refseq_url"]
+GENBANK_URL = config.get("genbank_url",
+    "https://ftp.ncbi.nlm.nih.gov/genomes/genbank/assembly_summary_genbank.txt")
 THREADS = int(config["threads"])
+
+# Downloaded assemblies: union sentinel = both dirs present. Rules that scan
+# genomes (scan_all, extract_telotron_fasta, telotron_ortholog_align, etc.)
+# require both so the union is a single input list.
+ASSEMBLIES_DONE = ["data/raw/refseq/.done", "data/raw/genbank/.done"]
 ENV = config["env"]
 REFSEQ_GROUPS = "|".join(config["refseq_groups"])
 ACCESSIONS = config.get("accessions") or []
@@ -90,12 +97,15 @@ rule orthologs:
         TELOTRON_ORTHO_TEXT,
 
 
-# Build the unified genome manifest from RefSeq assembly summary + Tara SMAGs index.
-# Keeps only annotated euk lineages (group, col 25) with a non-"na" FTP path (col 20).
-# If config["accessions"] is non-empty, subset to just those genome_ids.
+# Build the unified genome manifest from NCBI GenBank + RefSeq assembly
+# summaries + Tara SMAGs index. Every ANNOTATED eukaryote is included; RefSeq
+# (GCF_) wins where a genome has both a GCF_ and a GCA_ record (RefSeq
+# annotations are curated). If config["accessions"] is non-empty, subset to
+# just those genome_ids.
 rule manifests:
     output:
         refseq="work/manifests/refseq_euk.tsv",
+        genbank="work/manifests/genbank_euk.tsv",
         tara="work/manifests/tara_mags.tsv",
         all="work/manifests/all_genomes.tsv",
     params:
@@ -103,36 +113,40 @@ rule manifests:
     shell:
         r"""
         mkdir -p manifests
+        # RefSeq (curated) — group (col 25), ftp_path (col 20).
         curl -L --fail -s {REFSEQ_URL} \
           | awk -F'\t' 'BEGIN{{OFS="\t"}} NR==1 || /^#/ {{next}} \
               $25 ~ /^({REFSEQ_GROUPS})$/ && $20!="na" \
-              {{print $1,$8,$25,$20}}' \
+              {{print $1,$8,$25,$20,"refseq"}}' \
           > {output.refseq}
+
+        # GenBank (all annotated eukaryotes) — annotation_provider (col 33) != "na"
+        # ensures a GFF exists. Exclude rows that have a paired GCF (col 18): those
+        # are already represented in the RefSeq manifest.
+        curl -L --fail -s {GENBANK_URL} \
+          | awk -F'\t' 'BEGIN{{OFS="\t"}} NR==1 || /^#/ {{next}} \
+              $25 ~ /^({REFSEQ_GROUPS})$/ && $20!="na" && $33!="na" && ($18=="na" || $18=="") \
+              {{print $1,$8,$25,$20,"genbank"}}' \
+          > {output.genbank}
 
         curl -L --fail -s {TARA_BASE}/SMAGs_v1_individual.gff.tar.gz \
           | tar -tzf - \
           | sed -n 's#.*/\(TARA_.*MAG_[0-9][0-9]*\)\.gmove\.gff#\1#p' \
           | sort -u \
-          | awk 'BEGIN{{OFS="\t"}} {{print $1,"Tara Oceans MAG","tara","genoscope"}}' \
+          | awk 'BEGIN{{OFS="\t"}} {{print $1,"Tara Oceans MAG","tara","genoscope","tara"}}' \
           > {output.tara}
 
-        printf "genome_id\torganism\tgroup\tsource\n" > {output.all}
-        cat {output.refseq} {output.tara} >> {output.all}
+        printf "genome_id\torganism\tgroup\tftp_path\tsource\n" > {output.all}
+        cat {output.refseq} {output.genbank} {output.tara} >> {output.all}
 
         # Optional accession whitelist: keep header + matching genome_ids.
-
-        # (subset is applied below; canonical_motifs rule consumes the final {output.all})
         if [ -n "{params.accessions}" ]; then
             printf '%s\n' {params.accessions} > work/manifests/.accessions.txt
-            awk 'NR==FNR{{keep[$1];next}} FNR==1 || $1 in keep' \
-                work/manifests/.accessions.txt {output.all} > {output.all}.subset
-            mv {output.all}.subset {output.all}
-            awk 'NR==FNR{{keep[$1];next}} $1 in keep' \
-                work/manifests/.accessions.txt {output.refseq} > {output.refseq}.subset
-            mv {output.refseq}.subset {output.refseq}
-            awk 'NR==FNR{{keep[$1];next}} $1 in keep' \
-                work/manifests/.accessions.txt {output.tara} > {output.tara}.subset
-            mv {output.tara}.subset {output.tara}
+            for f in {output.all} {output.refseq} {output.genbank} {output.tara}; do
+                awk 'NR==FNR{{keep[$1];next}} FNR==1 || $1 in keep' \
+                    work/manifests/.accessions.txt "$f" > "$f".subset
+                mv "$f".subset "$f"
+            done
         fi
         """
 
@@ -167,38 +181,48 @@ rule tara_archives:
         """
 
 
-# Derive per-genome FNA and GFF URLs from the RefSeq FTP path.
-rule refseq_urls:
+# Derive per-genome FNA and GFF URLs from every assembly's FTP path. Union
+# writes: acc\tsource\tfna_url\tgff_url. Source-tagged so downloads land under
+# data/raw/refseq/ (GCF_) or data/raw/genbank/ (GCA_-only) as before.
+rule assembly_urls:
     input:
-        "work/manifests/refseq_euk.tsv",
+        refseq="work/manifests/refseq_euk.tsv",
+        genbank="work/manifests/genbank_euk.tsv",
     output:
-        "work/manifests/refseq_urls.tsv",
+        "work/manifests/assembly_urls.tsv",
     shell:
         r"""
-        awk -F'\t' 'BEGIN{{OFS="\t"}} {{
-          sub(/\/$/, "", $4);
-          n=split($4,a,"/"); base=a[n];
-          print $1, $4"/"base"_genomic.fna.gz", $4"/"base"_genomic.gff.gz"
-        }}' {input} > {output}
+        cat {input.refseq} {input.genbank} \
+          | awk -F'\t' 'BEGIN{{OFS="\t"}} {{
+              sub(/\/$/, "", $4);
+              n=split($4,a,"/"); base=a[n];
+              print $1, $5, $4"/"base"_genomic.fna.gz", $4"/"base"_genomic.gff.gz"
+            }}' > {output}
         """
 
 
-# Fan out per-genome curls. NCBI rate-limits aggressive parallel pulls, so cap the
-# inner pool at 8 regardless of THREADS. curl retries handle transient 503s.
-# `exit 255` aborts xargs on a persistent failure after retries.
-rule download_refseq:
+# Fan out per-genome curls. NCBI rate-limits aggressive parallel pulls, so
+# cap the inner pool at 8 regardless of THREADS. curl retries handle transient
+# 503s; `exit 255` aborts xargs on persistent failure. GCF_ accessions land in
+# data/raw/refseq/ (unchanged); GCA_-only in data/raw/genbank/.
+rule download_assemblies:
     input:
-        "work/manifests/refseq_urls.tsv",
+        "work/manifests/assembly_urls.tsv",
     output:
-        touch("data/raw/refseq/.done"),
+        refseq_done=touch("data/raw/refseq/.done"),
+        genbank_done=touch("data/raw/genbank/.done"),
     threads: 8
     shell:
         r"""
-        mkdir -p data/raw/refseq
-        awk -F'\t' '{{print $1"\t"$2"\n"$1"\t"$3}}' {input} \
-          | xargs -P 8 -n2 sh -c \
-              'mkdir -p data/raw/refseq/$0 && curl -L --fail --retry 5 --retry-delay 3 --retry-all-errors -s "$1" -o data/raw/refseq/$0/$(basename "$1") || exit 255'
-        touch {output}
+        mkdir -p data/raw/refseq data/raw/genbank
+        awk -F'\t' '{{
+            root=($2=="refseq"?"data/raw/refseq":"data/raw/genbank");
+            print root"\t"$1"\t"$3;
+            print root"\t"$1"\t"$4
+        }}' {input} \
+          | xargs -P 8 -n3 sh -c \
+              'mkdir -p $0/$1 && curl -L --fail --retry 5 --retry-delay 3 --retry-all-errors -s "$2" -o $0/$1/$(basename "$2") || exit 255'
+        touch {output.refseq_done} {output.genbank_done}
         """
 
 
@@ -236,7 +260,7 @@ rule scan_all:
         manifest="work/manifests/all_genomes.tsv",
         canonical="work/manifests/canonical_motifs.tsv",
         tara=["data/raw/tara/.fna.done", "data/raw/tara/.gff.done"],
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
     output:
         loci="work/results/all_telotron_loci.tsv",
         introns="work/results/all_introns_scanned.tsv",
@@ -292,7 +316,7 @@ rule dedup_telotrons:
     input:
         final="work/results/final_telotron_set.tsv",
         tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
     output:
         final="work/results/final_telotron_set_dedup.tsv",
         log="work/results/dedup_log.tsv",
@@ -317,7 +341,7 @@ rule classify_architecture:
     input:
         final="work/results/final_telotron_set_dedup.tsv",
         tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
     output:
         loci="work/results/final_telotron_set_architecture.tsv",
         kmers="work/results/boundary_kmers_by_architecture.tsv",
@@ -330,6 +354,27 @@ rule classify_architecture:
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
             --min-array {ARCH_MIN_ARRAY} \
             --out-loci {output.loci} --out-kmers {output.kmers}
+        """
+
+
+# Species-level confident-bearer set. A species is admitted when it either has
+# >=3 telotrons passing filter_final OR at least one bidirectional architecture
+# (GT-F-R-AG or a linker variant — a distinctive telomerase-mediated signature).
+# All downstream analyses (gene-class, expression, nucleosome, ortholog panels)
+# key off this file so new bearer species flow through automatically.
+rule confident_species:
+    input:
+        arch="work/results/final_telotron_set_architecture.tsv",
+        manifest="work/manifests/all_genomes.tsv",
+    output:
+        "work/results/confident_species.tsv",
+    conda:
+        ENV
+    shell:
+        r"""
+        python scripts/confident_species.py \
+            --arch {input.arch} --manifest {input.manifest} \
+            --min-n 3 --out {output}
         """
 
 
@@ -386,7 +431,7 @@ rule extract_telotron_fasta:
     input:
         arch="work/results/final_telotron_set_architecture.tsv",
         tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
     output:
         touch(EXTRACT_FASTA_SENTINEL),
     conda:
@@ -410,7 +455,7 @@ rule make_unannotated_masks:
     input:
         manifest="work/results/all_species_raw_summary.tsv",
         tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
     output:
         touch("work/results/masks/.done"),
     params:
@@ -438,7 +483,7 @@ rule find_interstitial_arrays:
     input:
         manifest="work/results/all_species_raw_summary.tsv",
         tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
         masks="work/results/masks/.done",
     output:
         "work/results/interstitial_arrays.tsv",
@@ -495,7 +540,7 @@ rule find_tert:
         seeds="work/results/tert_deep_homology/refs/tert_seeds.faa",
         trbd="work/results/tert_deep_homology/refs/PF12009.hmm",
         rt="work/results/tert_deep_homology/refs/PF00078.hmm",
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
         tara="data/raw/tara/.fna.done",
     output:
         tsv=TERT_DEEP_HOMOLOGY_TSV,
@@ -536,7 +581,7 @@ rule telotron_ortholog_align:
     input:
         final="work/results/final_telotron_set_architecture.tsv",
         tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
     output:
         touch(TELOTRON_ORTHO_SENTINEL),
     params:
@@ -666,7 +711,7 @@ rule extract_non_telotron_fasta:
     input:
         controls="work/results/non_telotron_controls.tsv",
         tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
     output:
         touch(CTRL_FLANKED_SENTINEL),
     conda: ENV
@@ -688,14 +733,13 @@ PACKAGE_INPUTS = [
     "work/results/final_telotron_set_architecture.tsv",
     "work/results/final_species_summary.tsv",
     "work/results/final_negative_controls.tsv",
+    "work/results/confident_species.tsv",
     "work/results/boundary_kmer_enrichment.tsv",
     "work/results/boundary_kmers_by_architecture.tsv",
     "work/results/distance_to_end.tsv",
     "work/results/architecture_summary.tsv",
     "work/results/dedup_log.tsv",
     "work/results/interstitial_arrays.tsv",
-    "work/results/linker_blast_hits_own_genome.tsv",
-    "work/results/linker_blast_hits_all_genomes.tsv",
     *FIGURES,
     "work/manifests/all_genomes.tsv",
 ]
@@ -739,7 +783,7 @@ V2_LOCUS_TEXT = TELOTRON_ORTHO_TEXT   # textdump sentinel; the scripts read the 
 rule interstitial_ortholog_textdump:
     input:
         "work/results/interstitial_arrays.tsv",
-        "data/raw/refseq/.done",
+        *ASSEMBLIES_DONE,
     output:
         directory("work/results/interstitial_orthologs/locus_text"),
     threads: THREADS
@@ -857,7 +901,7 @@ rule nucleosome_inputs:
         arch="work/results/final_telotron_set_architecture.tsv",
         controls="work/results/non_telotron_controls.tsv",
         tara=["data/raw/tara/.fna.done"],
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
     output:
         manifest="work/results/nucleosome/manifest.tsv",
         control_manifest="work/results/nucleosome/control_manifest.tsv",
@@ -899,7 +943,7 @@ rule rnaseq_gene_coverage:
     input:
         genome=lambda w: _RNASEQ_SP[w.species]["genome"],
         gff=lambda w: _RNASEQ_SP[w.species]["gff"],
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
     output:
         "work/results/rnaseq/{species}_gene_cov.tsv",
     params:
@@ -941,7 +985,7 @@ rule nucleosome_withingene:
     input:
         arch=ARCH_TSV,
         controls="work/results/non_telotron_controls.tsv",
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
         tara=["data/raw/tara/.fna.done"],
     output:
         "work/results/nucleosome/withingene_control.txt",
@@ -984,7 +1028,7 @@ rule telotron_expr_figures:
         eten="work/results/rnaseq/eten_gene_cov.tsv",
         necatrix="work/results/rnaseq/necatrix_gene_cov.tsv",
         arch=ARCH_TSV,
-        refseq="data/raw/refseq/.done",
+        assemblies=ASSEMBLIES_DONE,
     output:
         "work/results/figures/telotron_expression.png",
     conda:
@@ -1003,7 +1047,8 @@ rule telotron_expr_figures:
 rule telotron_gene_class:
     input:
         arch=ARCH_TSV,
-        refseq="data/raw/refseq/.done",
+        confident="work/results/confident_species.tsv",
+        assemblies=ASSEMBLIES_DONE,
     output:
         "work/results/figures/telotron_gene_class.png",
     conda:

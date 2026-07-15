@@ -1,15 +1,15 @@
 # Telotron pipeline — Snakefile rule reference
 
-This pipeline surveys eukaryotic genomes (NCBI RefSeq + Tara Oceans SMAGs) for **telotrons** — introns composed of tandem telomeric repeats, hypothesized to form when telomerase heals a double-strand break inside coding sequence and the inserted repeat array is then spliced out. A scan/filter core (`scan_telotrons` → `filter_final` → `dedup_telotrons` → `classify_architecture`) fans out into independent analysis arms (architecture, motif discovery, TERT deep homology, interstitial-array comparison, MSA, ortholog alignment, nucleosome features, RNA-seq expression, long-read Telogator2). Everything is orchestrated by a single Snakefile with ~56 rules; each rule shells out to one script under `scripts/`.
+This pipeline surveys eukaryotic genomes (all annotated NCBI RefSeq + all annotated GenBank + all Tara Oceans SMAGs) for **telotrons** — introns composed of tandem telomeric repeats, hypothesized to form when telomerase heals a double-strand break inside coding sequence and the inserted repeat array is then spliced out. A scan/filter core (`scan_all` → `filter_final` → `dedup_telotrons` → `classify_architecture` → `confident_species`) produces a species-level confident-bearer set that drives every downstream analysis (architecture, TERT deep homology, interstitial-array comparison, ortholog alignment, nucleosome features, RNA-seq expression, host-gene class). One Snakefile, ~41 rules; each rule shells out to one script under `scripts/`.
 
 ## 1. Genome-manifest + download
 
 | Rule | Purpose | Key inputs | Key outputs | Script |
 |---|---|---|---|---|
-| manifests | Build unified genome_id manifest from RefSeq assembly summary + Tara SMAGs index, optionally subset to a whitelist | RefSeq assembly summary + Tara tarball index (streamed) | work/manifests/all_genomes.tsv + refseq_euk.tsv | n/a (inline shell) |
-| refseq_urls | Derive per-genome FNA + GFF download URLs from RefSeq FTP paths | work/manifests/refseq_euk.tsv | work/manifests/refseq_urls.tsv | n/a (awk) |
+| manifests | Union of RefSeq (curated GCF_) + GenBank (annotated eukaryotes without paired GCF_) + Tara SMAGs into one manifest with a `source` column | RefSeq + GenBank assembly summaries + Tara tarball index (streamed) | work/manifests/all_genomes.tsv + refseq_euk + genbank_euk + tara_mags | n/a (inline shell) |
+| assembly_urls | Derive per-genome FNA + GFF download URLs from every assembly's FTP path (source-tagged so downloads land in the right dir) | refseq_euk.tsv + genbank_euk.tsv | work/manifests/assembly_urls.tsv | n/a (awk) |
 | tara_archives | Stream-extract only the wanted MAGs from the two ~50 GB Tara tarballs so disk doesn't blow up | work/manifests/tara_mags.tsv | data/raw/tara/.fna.done + .gff.done | n/a (curl/tar) |
-| download_refseq | Fan out per-genome curls with `xargs -P 8` capped to avoid NCBI rate limits | work/manifests/refseq_urls.tsv | data/raw/refseq/.done | n/a (xargs curl) |
+| download_assemblies | Fan out per-genome curls with `xargs -P 8`; RefSeq lands in data/raw/refseq/, GenBank-only in data/raw/genbank/ | work/manifests/assembly_urls.tsv | data/raw/refseq/.done + data/raw/genbank/.done | n/a (xargs curl) |
 | canonical_motifs | Emit curated per-genome/per-group telomere-motif TSV so scan uses literature motif rather than inferring from contig ends | work/manifests/all_genomes.tsv + config `canonical_telomere_motifs` | work/manifests/canonical_motifs.tsv | n/a (inline Python `run:`) |
 
 ## 2. Core survey path
@@ -21,6 +21,7 @@ This pipeline surveys eukaryotic genomes (NCBI RefSeq + Tara Oceans SMAGs) for *
 | dedup_telotrons | Collapse doubly-assembled exons / close paralogs by within-species flank blastn union-find, keeping longest-intron representative | final_telotron_set.tsv + refseq/tara FASTAs | final_telotron_set_dedup.tsv + dedup_log.tsv | scripts/dedup_telotrons.py |
 | classify_architecture | Assign each locus to one of GT-F-AG / GT-R-AG / linker architectures and dump boundary 6-mers by class | final_telotron_set_dedup.tsv + refseq/tara FASTAs | final_telotron_set_architecture.tsv + boundary_kmers_by_architecture.tsv | scripts/classify_telotron_architecture.py |
 | analyze | Boundary k-mer enrichment vs controls, length-matched distance-to-end test, architecture summary | final_telotron_set_dedup.tsv + final_species_summary.tsv | boundary_kmer_enrichment.tsv + distance_to_end.tsv | scripts/analyze_telotrons.py |
+| confident_species | Emit the paper's confident-bearer species set (≥3 telotrons OR ≥1 bidirectional). All downstream analyses key off this file so new bearers flow through automatically | final_telotron_set_architecture.tsv + all_genomes.tsv | work/results/confident_species.tsv | scripts/confident_species.py |
 | figures | Four headline figures — counts, orientation, boundary k-mers, distance scatter | final_species_summary.tsv + analyze outputs | work/results/figures/telotron_counts.png (+ siblings) | scripts/plot_telotrons.py |
 | package | Bundle final TSVs + headline figures + manifest into a single zip for sharing | PACKAGE_INPUTS list | work/results/telotron_pipeline_outputs.zip | n/a (zip) |
 

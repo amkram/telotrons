@@ -54,6 +54,7 @@ env: envs/telotrons.yaml
 
 tara_base: https://www.genoscope.cns.fr/tara/localdata/data/SMAGs-v1
 refseq_url: https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_refseq.txt
+genbank_url: https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt
 
 # RefSeq taxonomic groups to include
 refseq_groups:

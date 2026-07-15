@@ -53,17 +53,18 @@ There are no tests or lints — iterate by running a stage directly with the sam
 args the rule uses (or `snakemake -n --rulegraph` for DAG inspection).
 
 ### Core survey path
-1. `manifests` / `refseq_urls` / `tara_archives` / `download_refseq` — build
-   `work/manifests/all_genomes.tsv` (`genome_id, organism, group, source`) and
-   download FASTAs+GFFs (RefSeq via `xargs -P`).
+1. `manifests` / `assembly_urls` / `tara_archives` / `download_assemblies` —
+   build `work/manifests/all_genomes.tsv` (columns:
+   `genome_id, organism, group, ftp_path, source`) from three streams:
+   **RefSeq** (curated GCF_), **GenBank** (annotated eukaryotes without a
+   paired GCF_, `annotation_provider != "na"`), and **Tara SMAGs v1**. RefSeq
+   downloads land in `data/raw/refseq/`; GenBank-only in `data/raw/genbank/`.
 2. `canonical_motifs` — emit the curated per-genome/per-group telomere-motif
    table from config (overrides contig-end motif inference where set).
 3. `scan_all` → [scripts/scan_telotrons.py](scripts/scan_telotrons.py) — derive
    introns (`gt gff3 -addintrons`) and scan each for the configured motifs
    (rotations + reverse complements) via `seqkit locate`; emit three TSVs
-   (per-intron, candidate loci, per-species summary). Python only composes the
-   per-locus record (orientation, splice signals, terminal-motif inference with
-   canonical override, flank fraction).
+   (per-intron, candidate loci, per-species summary).
 4. `filter_final` → [scripts/filter_final_set.py](scripts/filter_final_set.py) —
    two admission pathways (single-array `filter.min_repeat_frac`=0.85;
    bidirectional `bidir_min_repeat_frac`=0.40 + `bidir_min_hits`=3) plus
@@ -75,7 +76,14 @@ args the rule uses (or `snakemake -n --rulegraph` for DAG inspection).
 6. `analyze` → [scripts/analyze_telotrons.py](scripts/analyze_telotrons.py) —
    boundary k-mer enrichment vs control introns, distance-to-contig-end test,
    architecture summary.
-7. `figures` → [scripts/plot_telotrons.py](scripts/plot_telotrons.py) — counts +
+7. `confident_species` → [scripts/confident_species.py](scripts/confident_species.py)
+   — emit `work/results/confident_species.tsv`, the paper's central bearer set.
+   A species is admitted when it has **≥3 telotrons passing filter_final** OR
+   **≥1 bidirectional architecture** (GT-F-R-AG or a linker variant, a
+   distinctive telomerase-mediated signature). **Every downstream analysis
+   keys off this file** — new bearer species flow through automatically
+   without touching Python.
+8. `figures` → [scripts/plot_telotrons.py](scripts/plot_telotrons.py) — counts +
    per-species panels. `package` — zip final TSVs + figures.
 
 ### Downstream analysis arms (mutually independent)
@@ -154,15 +162,15 @@ Config (threads, `refseq_groups`, `accessions` whitelist, `telomere_motifs`,
 - **Repeat type is species-specific.** TTAGGG (vertebrates/fungi) vs TTTAGGG
   (plants, Apicomplexa) vs TTAGG (insects), etc. The curated list is in
   `config.yaml` (`telomere_motifs`) — searching only TTAGGG misses major lineages.
-- **NCBI download concurrency.** `download_refseq` fans out with `xargs -P`; keep
+- **NCBI download concurrency.** `download_assemblies` fans out with `xargs -P`; keep
   threads ≤ ~8 against NCBI to avoid rate limiting.
 - **Human intronic telomeric insertions are passengers, not telotrons.** CCCTAA
   lacks GT/AG, so reverse-strand insertions can't create splice signals — they
   land inside pre-existing introns.
 
 ## External data sources
-- **NCBI RefSeq** assembly summary and **Tara Oceans SMAGs v1** — URLs in
-  `config.yaml` (`refseq_url`, `tara_base`).
+- **NCBI RefSeq + GenBank** assembly summaries and **Tara Oceans SMAGs v1** —
+  URLs in `config.yaml` (`refseq_url`, `genbank_url`, `tara_base`).
 
 ## work/old/
 Reference archive only; don't import from it. Aggressive-prune pass on
