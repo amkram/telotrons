@@ -22,6 +22,18 @@ Surveys eukaryotic genomes (**all annotated RefSeq + all annotated GenBank + all
 | confident_species | **Paper's central bearer set** — species admitted when ≥3 telotrons pass filter OR ≥1 bidirectional architecture. Every downstream analysis keys off this file | final_telotron_set_architecture.tsv + all_genomes.tsv | work/results/confident_species.tsv | scripts/confident_species.py |
 | package | Bundle final TSVs + confident-species set + manifest into a single deliverable zip | PACKAGE_INPUTS list | work/results/telotron_pipeline_outputs.zip | n/a (zip) |
 
+## 2b. Broad any-repeat scan (curation companion)
+
+| Rule | Purpose | Key inputs | Key outputs | Script |
+|---|---|---|---|---|
+| scan_repeat_introns | For every annotated intron, report the dominant short tandem-repeat unit (k=4-10 by default) and flag whether it matches a known telomere motif. Does NOT restrict to telomere motifs — intended for manual curation of repeat-composed introns beyond the telomere set. | all_genomes.tsv + FASTAs/GFFs | work/results/all_repeat_introns.tsv (cols: dominant_unit, dominant_canonical, unit_len, unit_frac, telomere_match, telomere_match_name) | scripts/scan_repeat_introns.py |
+
+Config: `repeat_scan.{k_min, k_max, min_frac, min_intron_len}` in
+`config.yaml`. `min_frac` (default 0.5) is the noise floor — introns whose
+dominant k-mer covers less are dropped. Rotations and reverse-complements
+of the same unit collapse to `dominant_canonical` (lex-min rotation) so
+TTAGGG, TAGGGT and CCCTAA all group together.
+
 ## 3. Extraction + control
 
 | Rule | Purpose | Key inputs | Key outputs | Script |

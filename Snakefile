@@ -330,6 +330,83 @@ rule scan_all:
                         continue
 
 
+# ── Broad any-repeat scan ─────────────────────────────────────────────────
+# Sibling of scan_all: finds introns dominated by ANY short tandem repeat
+# unit (k=4..10 by default), not just the configured telomere motifs.
+# Flags matches to config telomere motifs for downstream curation. Reuses
+# the scan_list checkpoint so slurm fans out one sbatch per genome.
+REPEAT_SCAN = config.get("repeat_scan", {}) or {}
+REPEAT_K_MIN = int(REPEAT_SCAN.get("k_min", 4))
+REPEAT_K_MAX = int(REPEAT_SCAN.get("k_max", 10))
+REPEAT_MIN_FRAC = float(REPEAT_SCAN.get("min_frac", 0.5))
+REPEAT_MIN_INTRON_LEN = int(REPEAT_SCAN.get("min_intron_len", 30))
+
+
+rule scan_repeat_introns_one:
+    input:
+        manifest="work/manifests/all_genomes.tsv",
+        tara=["data/raw/tara/.fna.done", "data/raw/tara/.gff.done"],
+        assemblies=ASSEMBLIES_DONE,
+    output:
+        tsv=temp("work/results/repeat_scan/per_genome/{gid}.tsv"),
+    threads: 4
+    conda:
+        ENV
+    shell:
+        r"""
+        mkdir -p work/results/repeat_scan/per_genome
+        python scripts/scan_repeat_introns.py \
+            --manifest {input.manifest} \
+            --single-genome {wildcards.gid} \
+            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
+            --telomere-motifs {TELOMERE_MOTIFS} \
+            --k-min {REPEAT_K_MIN} --k-max {REPEAT_K_MAX} \
+            --min-frac {REPEAT_MIN_FRAC} --min-intron-len {REPEAT_MIN_INTRON_LEN} \
+            --threads {threads} \
+            --out {output.tsv}
+        """
+
+
+def _repeat_scan_per_genome_outputs(wildcards):
+    with open(checkpoints.scan_list.get().output[0]) as fh:
+        gids = [line.strip() for line in fh if line.strip()]
+    return expand("work/results/repeat_scan/per_genome/{gid}.tsv", gid=gids)
+
+
+# Aggregator: concat per-genome any-repeat TSVs. Uses the same header-safe
+# concat as scan_all to survive empty shards from zero-intron genomes.
+rule scan_repeat_introns:
+    input:
+        parts=_repeat_scan_per_genome_outputs,
+    output:
+        tsv="work/results/all_repeat_introns.tsv",
+    threads: 1
+    run:
+        os.makedirs("work/results", exist_ok=True)
+        header = None
+        for p in input.parts:
+            try:
+                with open(p) as fin:
+                    header = fin.readline()
+                    if header:
+                        break
+            except FileNotFoundError:
+                continue
+        with open(output.tsv, "w") as fout:
+            if header:
+                fout.write(header)
+            for p in input.parts:
+                try:
+                    with open(p) as fin:
+                        first = fin.readline()
+                        if first and first != header:
+                            fout.write(first)
+                        for line in fin:
+                            fout.write(line)
+                except FileNotFoundError:
+                    continue
+
+
 # Tighten candidates → final set. --require-terminal-motif-match enforces that
 # the intronic motif matches the genome's actual telomere motif (kills cross-motif noise).
 rule filter_final:

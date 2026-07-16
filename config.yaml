@@ -196,6 +196,17 @@ interstitial:
   min_array_len: 30
   min_its_units: 4
 
+# Broad any-repeat scan (scan_repeat_introns rule). Searches every intron for
+# the dominant short tandem repeat unit (any k in [k_min, k_max]) and flags
+# whether the discovered unit matches a config telomere motif. Intended as a
+# curation-friendly companion to the telomere-motif-restricted scan_all —
+# does NOT feed filter_final or the confident-species set.
+repeat_scan:
+  k_min: 4
+  k_max: 10
+  min_frac: 0.5          # emit introns whose dominant unit covers this frac
+  min_intron_len: 30
+
 # Species-level confident-bearer admission. See scripts/confident_species.py
 # for the two-path admission logic.
 confident_species:

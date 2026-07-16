@@ -108,6 +108,7 @@ def results_html():
         "final_telotron_set_architecture.tsv",
         "final_species_summary.tsv",
         "all_species_raw_summary.tsv",
+        "all_repeat_introns.tsv",
         "distance_to_end.tsv",
         "boundary_kmer_enrichment.tsv",
         "candidates_preview.html",
