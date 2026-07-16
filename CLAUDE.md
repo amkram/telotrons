@@ -78,11 +78,17 @@ args the rule uses (or `snakemake -n --rulegraph` for DAG inspection).
    architecture summary.
 6. `confident_species` → [scripts/confident_species.py](scripts/confident_species.py)
    — emit `work/results/confident_species.tsv`, the paper's central bearer set.
-   A species is admitted when it has **≥3 telotrons passing filter_final** OR
-   **≥1 bidirectional architecture** (GT-F-R-AG or a linker variant, a
-   distinctive telomerase-mediated signature). **Every downstream analysis
-   keys off this file** — new bearer species flow through automatically
-   without touching Python.
+   A species is admitted when it has **≥3 telotrons passing filter_final**
+   (`confident_species.min_n`) OR **≥2 bidirectional architectures**
+   (`confident_species.min_bidir`; GT-F-R-AG, a linker variant, or
+   Multi-junction — a distinctive telomerase-mediated signature). Both
+   thresholds live in `config.yaml` and are wired through the Snakefile;
+   `min_bidir` is 2 rather than 1 because motif rotations alone can
+   occasionally hit both strands at `bidir_min_repeat_frac`=0.40, and
+   noise-driven singletons must not seed downstream figures at the
+   RefSeq+GenBank ~50k-assembly scale. **Every downstream analysis keys off
+   this file** — new bearer species flow through automatically without
+   touching Python.
 7. `package` — zip final TSVs + confident-species set + manifest into the
    deliverable at `work/results/telotron_pipeline_outputs.zip`.
 

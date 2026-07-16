@@ -43,6 +43,48 @@ def _canonical_unit(unit: str) -> str:
     return min(both)
 
 
+def _merged_bp(intervals):
+    """Total bp covered by [start, end) intervals after merging overlaps.
+
+    ULTRA can emit overlapping records for the same intron (subrepeat splits,
+    multiple periods over the same span). Summing raw record lengths would
+    double-count and push telomeric_frac past 1.0 — and past filter_final's
+    0.85 single-array admission gate.
+    """
+    if not intervals:
+        return 0
+    ivs = sorted(intervals)
+    total = 0
+    cur_s, cur_e = ivs[0]
+    for s, e in ivs[1:]:
+        if s > cur_e:
+            total += cur_e - cur_s
+            cur_s, cur_e = s, e
+        elif e > cur_e:
+            cur_e = e
+    total += cur_e - cur_s
+    return total
+
+
+def _min_hamming(cons, rot_set):
+    """Min Hamming distance from `cons` to any EQUAL-LENGTH member of rot_set.
+
+    Length-mismatched rotations are skipped rather than zip()-truncated: zip
+    silently stops at the shorter string, so comparing a period-10 consensus
+    against a 7-mer rotation would score only the first 7 bases and could
+    report a spuriously good match. Returns a large sentinel when no
+    same-length rotation exists.
+    """
+    best = 1 << 30
+    for x in rot_set:
+        if len(x) != len(cons):
+            continue
+        d = sum(a != b for a, b in zip(cons, x))
+        if d < best:
+            best = d
+    return best
+
+
 def _build_telomere_lookup(motifs):
     """Build:
       canon_to_name   : canonical(motif) -> original motif string
@@ -394,11 +436,37 @@ def compute_intron_motif_metrics_ultra(introns_df, seqs, contig_lens, tmp_dir,
             best_rows.append({"row": row, "motif": "", "telomeric_bases": 0, "telomeric_frac": 0.0})
             strand_rows.append({"row": row, "fwd_hits": 0, "rev_hits": 0})
             continue
-        # Dominant repeat = ULTRA record with the largest covered_bp; ties by score.
+        # `dominant_*` describes the LARGEST repeat in the intron — a curation
+        # signal only. It deliberately does NOT gate the telomere columns:
+        # ULTRA frequently merges adjacent degenerate telomere arrays into one
+        # longer higher-period chimeric consensus (real E. tenella example:
+        # period-19 'AGGGCAGGGCTTAGGGTTT') which matches no config motif. If
+        # that chimera wins the "dominant" contest while the SAME intron also
+        # carries clean 'AAACCCT' / 'AGGGTTT' records, gating on the dominant
+        # would discard a textbook bidirectional telotron. Measured on
+        # E. tenella: gating on dominant lost 475 bidirectional loci (37%).
         dom = max(recs, key=lambda x: (x["end"] - x["start"], x["score"]))
         dom_canon = _canonical_unit(dom["consensus"])
-        telo_name = canon_to_name.get(dom_canon, "")
         cover_frac = (dom["end"] - dom["start"]) / ilen if ilen else 0.0
+
+        # Telomere columns come from EVERY telomere-matching record in the
+        # intron (the seqkit path counted motif hits anywhere in the intron;
+        # this preserves that semantics).
+        telo_recs = []
+        for r in recs:
+            nm = canon_to_name.get(_canonical_unit(r["consensus"]), "")
+            if nm:
+                telo_recs.append((nm, r))
+        # Pick the motif contributing the most merged bp (an intron can carry
+        # both TTAGGG and TTTAGGG — see the within-locus motif-mixing result).
+        telo_name = ""
+        if telo_recs:
+            by_name = {}
+            for nm, r in telo_recs:
+                by_name.setdefault(nm, []).append(r)
+            telo_name = max(by_name,
+                            key=lambda k: _merged_bp([(r["start"], r["end"]) for r in by_name[k]]))
+
         ultra_rows.append({
             "row": row,
             "dominant_consensus": dom["consensus"],
@@ -414,56 +482,57 @@ def compute_intron_motif_metrics_ultra(introns_df, seqs, contig_lens, tmp_dir,
             "telomere_match_name": telo_name,
         })
 
-        # Telomere-matching aggregate: `motif` and the paper's telomeric_frac/
-        # bases columns only populate when the dominant unit is a known
-        # telomere. Non-telomere repeat introns keep zero here — filter_final
-        # will drop them; downstream curation reads dominant_consensus.
         if telo_name:
-            telo_recs = [r for r in recs if canon_to_name.get(_canonical_unit(r["consensus"])) == telo_name]
-            total_bp = sum(r["end"] - r["start"] for r in telo_recs)
+            keep = [r for nm, r in telo_recs if nm == telo_name]
+            # MERGED coverage, not a raw sum: ULTRA can emit overlapping
+            # records for the same intron, and summing them would push
+            # telomeric_frac above 1.0 and past filter_final's 0.85 gate.
+            total_bp = _merged_bp([(r["start"], r["end"]) for r in keep])
             best_rows.append({"row": row, "motif": telo_name,
                               "telomeric_bases": total_bp,
-                              "telomeric_frac": total_bp / ilen if ilen else 0.0})
-            # Strand classification per ULTRA record → sum of `copies`.
+                              "telomeric_frac": min(1.0, total_bp / ilen) if ilen else 0.0})
             fwd = rev = 0.0
-            for tr in telo_recs:
+            for tr in keep:
                 cons = tr["consensus"]
-                # Substring test against pre-built rotation sets is O(1).
                 if cons in fwd_rot:
                     fwd += tr["copies"]
                 elif cons in rev_rot:
                     rev += tr["copies"]
                 else:
-                    # ULTRA consensus with subs/indels won't hit either set
-                    # exactly; classify by which set the canonical maps to.
-                    if _canonical_unit(cons) == _canonical_unit(telo_name):
-                        # rotation of a G-rich or C-rich variant — decide by
-                        # closer edit distance to any exact rotation of each.
-                        if any(sum(a != b for a, b in zip(cons, x)) <= tr["subs"] for x in fwd_rot):
-                            fwd += tr["copies"]
-                        else:
-                            rev += tr["copies"]
+                    # Degenerate consensus: nearest exact rotation wins. Compare
+                    # only against rotations of the SAME length — zip() would
+                    # silently truncate to the shorter string and score a
+                    # length mismatch as a good hit.
+                    fd = _min_hamming(cons, fwd_rot)
+                    rd = _min_hamming(cons, rev_rot)
+                    if fd <= rd:
+                        fwd += tr["copies"]
+                    else:
+                        rev += tr["copies"]
             strand_rows.append({"row": row, "fwd_hits": int(round(fwd)),
                                 "rev_hits": int(round(rev))})
         else:
             best_rows.append({"row": row, "motif": "", "telomeric_bases": 0, "telomeric_frac": 0.0})
             strand_rows.append({"row": row, "fwd_hits": 0, "rev_hits": 0})
 
-    # 4. Flank telomere coverage — only count telomere-matching ULTRA records.
-    flank_cov = {}   # row -> covered_bp
+    # 4. Flank telomere coverage — merged over telomere-matching ULTRA records.
+    flank_iv = {}    # row -> list of (start, end) in a per-row concatenated space
     flank_tot = {}
     for (row, side), flen in flank_lens.items():
-        flank_tot[row] = flank_tot.get(row, 0) + flen
+        base = flank_tot.get(row, 0)
+        flank_tot[row] = base + flen
         recs = by_flank.get(f"f{row}.{side}") or []
         for r in recs:
             if canon_to_name.get(_canonical_unit(r["consensus"])):
-                flank_cov[row] = flank_cov.get(row, 0) + (r["end"] - r["start"])
+                # Offset by `base` so the two flanks occupy disjoint intervals
+                # and merging can't collapse a left-flank hit into a right one.
+                flank_iv.setdefault(row, []).append((base + r["start"], base + r["end"]))
     flank_records = []
     for row in ilen_by_row:
         total = flank_tot.get(row, 0)
-        cov = flank_cov.get(row, 0)
+        cov = _merged_bp(flank_iv.get(row, []))
         flank_records.append({"row": row,
-                              "flank_telomeric_frac": (cov / total) if total else 0.0})
+                              "flank_telomeric_frac": min(1.0, cov / total) if total else 0.0})
 
     best_motif = pd.DataFrame(best_rows)
     strand = pd.DataFrame(strand_rows)
