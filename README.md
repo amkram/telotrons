@@ -82,3 +82,41 @@ snakemake --use-conda -j 8 --forcerun scan_all   # single-stage rerun
 # Test on a subset: set `accessions: [...]` in config.yaml or:
 snakemake -j 8 --config 'accessions=["GCF_000499545.2","GCF_000499605.1"]'
 ```
+
+## Running on slurm (multi-node)
+
+The heavy fanout rules — `scan_all` (one sbatch per genome, ~11k jobs on a
+full RefSeq+GenBank+Tara run) and `telotron_orthologs` (one sbatch per
+confident bearer species) — are wildcarded via snakemake checkpoints, so
+slurm scatters the shards across whatever nodes are free. No need to
+reserve a whole node up front.
+
+```bash
+# Edit site-specific defaults once:
+$EDITOR slurm/site.sh          # SLURM_PARTITION, SLURM_ACCOUNT, mail, etc.
+
+# Submit the full pipeline. Every rule becomes its own sbatch job.
+./slurm/submit.sh                          # default target: `all`
+./slurm/submit.sh scan_all                 # single stage
+./slurm/submit.sh all -- --dry-run         # extra flags after `--`
+
+# Per-rule cpus/mem/time live in profiles/slurm/config.yaml
+# (set-threads: / set-resources:). Big vertebrate genomes get bumped there.
+
+# Watch progress:
+./slurm/monitor.sh                         # squeue + rule tallies + log tail
+./slurm/monitor.sh -f                      # tail -F newest driver log
+./slurm/monitor.sh scan_one_genome         # sacct history for a rule
+```
+
+**Notes.**
+- The driver `snakemake` process stays alive to coordinate — run it under
+  `tmux`/`screen` on the login node, or wrap `slurm/submit.sh` in its own
+  small sbatch job for long unattended runs.
+- `find_tert` stays monolithic (single sbatch, ~16 cpus): its `--iterate 3`
+  strategy expands the seed set from cross-genome hits between rounds, so
+  per-genome shards would lose the iteration. Target set is small (~15–25
+  confident bearers + outgroups), wall-clock ~ 60 min.
+- Slurm cluster-status polling uses `sacct` (falls back to `squeue`) via
+  `profiles/slurm/status.py` — no cluster-specific edits required.
+- Logs land under `work/logs/slurm/{rule}.{jobid}.{out,err}`.

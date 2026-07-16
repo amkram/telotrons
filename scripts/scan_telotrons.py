@@ -679,6 +679,9 @@ def main():
     ap.add_argument("--loci", required=True)
     ap.add_argument("--introns", required=True)
     ap.add_argument("--summary", required=True)
+    ap.add_argument("--single-genome", default="",
+                    help="If set, scan ONLY this genome_id from the manifest and emit "
+                         "just its rows (one-genome-per-sbatch pattern for slurm fanout).")
     args = ap.parse_args()
 
     for tool in ("gt", "seqkit", "bedtools", "sort"):
@@ -689,7 +692,11 @@ def main():
     rows = []
     with open(args.manifest) as f:
         for r in csv.DictReader(f, delimiter="\t"):
+            if args.single_genome and r["genome_id"] != args.single_genome:
+                continue
             rows.append([r["genome_id"], r["organism"], r["group"], r["source"]])
+    if args.single_genome and not rows:
+        sys.exit(f"--single-genome={args.single_genome!r} not present in manifest {args.manifest}")
 
     canonical = {}
     if args.canonical_motifs:

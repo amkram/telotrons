@@ -458,7 +458,10 @@ def run_msa_job(job):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--final", required=True, help="final_telotron_set.tsv")
-    ap.add_argument("--focal-ids", required=True, help="comma telotron-positive genome_ids")
+    ap.add_argument("--focal-ids", default="",
+                    help="comma telotron-positive genome_ids (optional if --confident-species given)")
+    ap.add_argument("--confident-species", default="",
+                    help="TSV from confident_species rule; genome_id column becomes the focal set")
     ap.add_argument("--ortholog-ids", required=True, help="comma genome_ids to search for orthologs")
     ap.add_argument("--refseq-dir", required=True)
     ap.add_argument("--tara-dir", required=True)
@@ -508,7 +511,15 @@ def main():
     args = ap.parse_args()
     ensure_tool_on_path("miniprot", "mafft")
 
-    focal_ids = [x for x in args.focal_ids.split(",") if x]
+    import csv as _csv0
+    focal_ids = set(x for x in args.focal_ids.split(",") if x)
+    if args.confident_species and os.path.exists(args.confident_species):
+        for r in _csv0.DictReader(open(args.confident_species), delimiter="\t"):
+            focal_ids.add(r["genome_id"])
+    focal_ids = sorted(focal_ids)
+    if not focal_ids:
+        raise SystemExit("no focal_ids (use --focal-ids and/or --confident-species)")
+    print(f"telotron_ortholog_align: {len(focal_ids)} focal species", flush=True)
     ortho_ids = [x for x in args.ortholog_ids.split(",") if x]
     os.makedirs(args.outdir, exist_ok=True)
     pmsa_dir = os.path.join(args.outdir, "protein_msa")

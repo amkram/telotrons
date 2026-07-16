@@ -196,45 +196,70 @@ rule download_assemblies:
         """
 
 
-# Core scan: per-intron motif coverage, splice signals, orientation,
-# distance-to-end. Broad sieve (low --min-repeat-frac) so linker-architecture
-# loci survive into the TSV; strict cutoffs live in filter_final.
-# --max-flank-repeat-frac 0.25 + --min-intron-len 30 reject misannotated
-# subtelomere introns (flanks themselves telomeric) and 1-bp degenerate GFF
-# intron annotations. The canonical per-genome motif TSV (was a separate
-# `canonical_motifs` rule until 2026-07-14) is built inline from config here.
-rule scan_all:
+# Canonical per-genome telomere motif TSV, built once from config.
+# Consumed by scan_one_genome (and downstream length/interstitial arms).
+rule canonical_motifs:
     input:
         manifest="work/manifests/all_genomes.tsv",
-        tara=["data/raw/tara/.fna.done", "data/raw/tara/.gff.done"],
-        assemblies=ASSEMBLIES_DONE,
     output:
-        loci="work/results/all_telotron_loci.tsv",
-        introns="work/results/all_introns_scanned.tsv",
-        summary="work/results/all_species_raw_summary.tsv",
-        canonical="work/manifests/canonical_motifs.tsv",
+        "work/manifests/canonical_motifs.tsv",
     params:
         by_genome=CANONICAL_BY_GENOME,
         by_group=CANONICAL_BY_GROUP,
-    threads: THREADS
+    run:
+        import csv
+        with open(input.manifest) as fh, open(output[0], "w", newline="") as out:
+            w = csv.writer(out, delimiter="\t")
+            w.writerow(["genome_id", "motif"])
+            for r in csv.DictReader(fh, delimiter="\t"):
+                m = params.by_genome.get(r["genome_id"]) or params.by_group.get(r["group"], "")
+                w.writerow([r["genome_id"], m or ""])
+
+
+# Checkpoint: emit the genome list from the manifest so downstream rules can
+# fan out one sbatch job per genome. Snakemake re-plans the DAG once this
+# completes.
+checkpoint scan_list:
+    input:
+        manifest="work/manifests/all_genomes.tsv",
+    output:
+        "work/results/scan/scan_list.txt",
+    run:
+        import csv
+        os.makedirs(os.path.dirname(output[0]), exist_ok=True)
+        with open(input.manifest) as fh, open(output[0], "w") as out:
+            for r in csv.DictReader(fh, delimiter="\t"):
+                out.write(r["genome_id"] + "\n")
+
+
+# Per-genome scan — one sbatch job per genome under slurm; slurm scatters
+# them across nodes. 4 CPUs / 8 GB mem per genome by default; big vertebrate
+# genomes get bumped via set-resources in profiles/slurm/config.yaml.
+# Intron motif coverage, splice signals, orientation, distance-to-end.
+# Broad sieve (low --min-repeat-frac) so linker-architecture loci survive;
+# strict cutoffs live in filter_final. --max-flank-repeat-frac 0.25 +
+# --min-intron-len 30 reject misannotated subtelomere introns and 1-bp
+# degenerate GFF intron annotations.
+rule scan_one_genome:
+    input:
+        manifest="work/manifests/all_genomes.tsv",
+        canonical="work/manifests/canonical_motifs.tsv",
+        tara=["data/raw/tara/.fna.done", "data/raw/tara/.gff.done"],
+        assemblies=ASSEMBLIES_DONE,
+    output:
+        loci=temp("work/results/scan/per_genome/{gid}.loci.tsv"),
+        introns=temp("work/results/scan/per_genome/{gid}.introns.tsv"),
+        summary=temp("work/results/scan/per_genome/{gid}.summary.tsv"),
+    threads: 4
     conda:
         ENV
     shell:
         r"""
-        python3 -c '
-import csv, sys
-by_genome = eval(sys.argv[1]); by_group = eval(sys.argv[2])
-with open("{input.manifest}") as f, open("{output.canonical}", "w", newline="") as out:
-    w = csv.writer(out, delimiter="\t")
-    w.writerow(["genome_id", "motif"])
-    for r in csv.DictReader(f, delimiter="\t"):
-        m = by_genome.get(r["genome_id"]) or by_group.get(r["group"], "")
-        w.writerow([r["genome_id"], m or ""])
-' "{params.by_genome}" "{params.by_group}"
-
+        mkdir -p work/results/scan/per_genome
         python scripts/scan_telotrons.py \
             --manifest {input.manifest} \
-            --canonical-motifs {output.canonical} \
+            --single-genome {wildcards.gid} \
+            --canonical-motifs {input.canonical} \
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
             --motifs {TELOMERE_MOTIFS} \
             --min-repeat-frac {SCAN_MIN_FRAC} --max-flank-repeat-frac {SCAN_MAX_FLANK_FRAC} \
@@ -243,6 +268,50 @@ with open("{input.manifest}") as f, open("{output.canonical}", "w", newline="") 
             --threads {threads} \
             --loci {output.loci} --introns {output.introns} --summary {output.summary}
         """
+
+
+def _scan_per_genome_outputs(wildcards):
+    """Post-checkpoint aggregation: list every per-genome TSV to expand over."""
+    with open(checkpoints.scan_list.get().output[0]) as fh:
+        gids = [line.strip() for line in fh if line.strip()]
+    return {
+        "loci":    expand("work/results/scan/per_genome/{gid}.loci.tsv",    gid=gids),
+        "introns": expand("work/results/scan/per_genome/{gid}.introns.tsv", gid=gids),
+        "summary": expand("work/results/scan/per_genome/{gid}.summary.tsv", gid=gids),
+    }
+
+
+# Aggregator: concat the per-genome TSVs into the pipeline-level TSVs.
+# Runs on the driver node; cheap (< 1 min for ~11k genomes). Uses a Python
+# run-block so snakemake's dry-run doesn't try to expand {input.loci[0]}
+# before the scan_list checkpoint materialises.
+rule scan_all:
+    input:
+        unpack(_scan_per_genome_outputs),
+    output:
+        loci="work/results/all_telotron_loci.tsv",
+        introns="work/results/all_introns_scanned.tsv",
+        summary="work/results/all_species_raw_summary.tsv",
+    threads: 1
+    run:
+        os.makedirs("work/results", exist_ok=True)
+        for key, out in [("loci", output.loci),
+                         ("introns", output.introns),
+                         ("summary", output.summary)]:
+            parts = input[key]
+            if not parts:
+                open(out, "w").close()
+                continue
+            with open(out, "w") as fout, open(parts[0]) as fin0:
+                header = fin0.readline()
+                fout.write(header)
+                for line in fin0:
+                    fout.write(line)
+            for p in parts[1:]:
+                with open(p) as fin, open(out, "a") as fout:
+                    fin.readline()  # skip header
+                    for line in fin:
+                        fout.write(line)
 
 
 # Tighten candidates → final set. --require-terminal-motif-match enforces that
@@ -449,13 +518,15 @@ STREME_ARGS = "--dna --minw 4 --maxw 12 --nmotifs 10 --thresh 0.05 --seed 1"
 # miniprot with apicomplexan TERT seeds, confirmed by RBD (PF12009) UPSTREAM of
 # RT (PF00078) -- rules out Eimeria retroelement RTs. Iterative re-seeding from
 # confirmed proteins. Toxo gondii = positive control (sister; TERT unannotated).
-TERT_GENOME_IDS = config.get("tert_genome_ids") or [
-    "GCF_000499385.1",   # Eimeria necatrix
-    "GCF_000499425.1",   # Eimeria acervulina
-    "GCF_000499545.2",   # Eimeria tenella
-    "GCF_000499605.1",   # Eimeria maxima
-    "GCF_000499745.2",   # Eimeria mitis
-    "GCF_000006565.2",   # Toxoplasma gondii (sister-taxon positive control)
+# Outgroup / control targets (telotron-negative sisters). Union'd with
+# work/results/confident_species.tsv at rule runtime so ALL confident bearers
+# get searched for TERT, not just a hardcoded panel.
+TERT_OUTGROUP_IDS = config.get("tert_outgroup_ids") or [
+    "GCF_000006565.2",   # Toxoplasma gondii
+    "GCF_000208865.1",   # Neospora caninum
+    "GCF_002999335.1",   # Cyclospora cayetanensis
+    "GCF_002563875.1",   # Besnoitia besnoiti
+    "GCF_002600585.1",   # Cystoisospora suis
 ]
 
 
@@ -472,24 +543,34 @@ rule fetch_tert_seeds_hmms:
 
 
 rule find_tert:
+    # Kept monolithic (single sbatch, ~16 cpus) — iterate 3 expands the seed
+    # set from cross-genome hits between rounds, so per-genome shards would
+    # lose the iteration. Target set is small (~15-25 confident bearers +
+    # outgroups) so single-node is fine; wall-clock ~ 60 min at 16 cpus.
+    # If a shardable variant is ever needed use `find_tert_deep_homology.py
+    # --single-genome {gid} --iterate 1` (flag already wired).
     input:
         seeds="work/results/tert_deep_homology/refs/tert_seeds.faa",
         trbd="work/results/tert_deep_homology/refs/PF12009.hmm",
         rt="work/results/tert_deep_homology/refs/PF00078.hmm",
+        confident="work/results/confident_species.tsv",
         assemblies=ASSEMBLIES_DONE,
         tara="data/raw/tara/.fna.done",
     output:
         tsv=TERT_DEEP_HOMOLOGY_TSV,
         faa="work/results/tert_deep_homology/all_confirmed.faa",
     params:
-        gids=",".join(TERT_GENOME_IDS),
-    threads: THREADS
+        outgroups=",".join(TERT_OUTGROUP_IDS),
+    threads: 16
     conda:
         ENV
     shell:
         r"""
+        # Target set = every confident bearer species + fixed outgroup panel.
+        # Auto-scales with the confident-species set — no hardcoded per-species list.
         python scripts/find_tert_deep_homology.py \
-            --genome-ids {params.gids} \
+            --confident-species {input.confident} \
+            --outgroup-ids {params.outgroups} \
             --seeds {input.seeds} --trbd-hmm {input.trbd} --rt-hmm {input.rt} \
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
             --outdir work/results/tert_deep_homology \
@@ -517,39 +598,85 @@ _TELO_OUTGROUP_PANEL = ",".join([x for x in _TELO_ORTHO_PANEL_IDS if x not in se
 # panel genome, protein-align it, DNA-align telotron vs orthologous intron to
 # resolve fill-vs-create. Emits the compiled per-locus PDF in the same rule
 # (was 2 rules: align + plot; merged 2026-07-14).
-rule telotron_orthologs:
+# Focal-species list is derived from confident_species.tsv; wrap in a
+# checkpoint so the DAG can fan out one sbatch per bearer.
+checkpoint telotron_ortho_focal_list:
+    input:
+        confident="work/results/confident_species.tsv",
+    output:
+        "work/results/telotron_orthologs/focal_list.txt",
+    run:
+        import csv, os
+        os.makedirs(os.path.dirname(output[0]), exist_ok=True)
+        with open(input.confident) as fh, open(output[0], "w") as out:
+            for r in csv.DictReader(fh, delimiter="\t"):
+                out.write(r["genome_id"] + "\n")
+
+
+# Per-focal-species ortholog run — one sbatch per bearer, iterates the
+# config-driven ortholog panel and produces a per-focal directory of
+# alignments/text-dumps under `work/results/telotron_orthologs/per_focal/`.
+rule telotron_orthologs_one:
     input:
         final="work/results/final_telotron_set_architecture.tsv",
         tara=["data/raw/tara/.fna.done"],
         assemblies=ASSEMBLIES_DONE,
     output:
-        sentinel=touch(TELOTRON_ORTHO_SENTINEL),
-        pdf=TELOTRON_ORTHO_LOCI_PDF,
+        sentinel=touch("work/results/telotron_orthologs/per_focal/{fid}/.done"),
     params:
-        focal=_TELO_ORTHO_FOCAL,
         panel=_TELO_ORTHO_PANEL,
         min_array=_TELO_ORTHO.get("min_array_bp", 50),
-        # Bumped 2026-07-14 from 0.20 -> 0.40: below 0.40 is the twilight zone
-        # that reopens ABS-bucket leakage (see memory locus_text_patterns_2026-06-03).
+        # See main-rule comment: 0.40 kills ABS-bucket leakage.
         min_id=_TELO_ORTHO.get("min_identity", 0.40),
         tol=_TELO_ORTHO.get("intron_tol", 8),
-    threads: THREADS
+    threads: 8
+    conda:
+        ENV
+    shell:
+        r"""
+        mkdir -p work/results/telotron_orthologs/per_focal/{wildcards.fid}
+        python scripts/telotron_ortholog_align.py \
+            --final {input.final} \
+            --focal-ids {wildcards.fid} \
+            --ortholog-ids {params.panel} \
+            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
+            --outdir work/results/telotron_orthologs/per_focal/{wildcards.fid} \
+            --min-array-bp {params.min_array} --min-ident {params.min_id} \
+            --intron-tol {params.tol} --threads {threads}
+        """
+
+
+def _telotron_ortho_focal_outputs(wildcards):
+    with open(checkpoints.telotron_ortho_focal_list.get().output[0]) as fh:
+        fids = [line.strip() for line in fh if line.strip()]
+    return expand("work/results/telotron_orthologs/per_focal/{fid}/.done", fid=fids)
+
+
+# Aggregator: merge every per-focal output into the flat directory layout
+# downstream rules expect (`work/results/telotron_orthologs/<...>`), then
+# render the combined PDF.
+rule telotron_orthologs:
+    input:
+        per_focal=_telotron_ortho_focal_outputs,
+    output:
+        sentinel=touch(TELOTRON_ORTHO_SENTINEL),
+        pdf=TELOTRON_ORTHO_LOCI_PDF,
+    threads: 2
     conda:
         ENV
     shell:
         r"""
         mkdir -p work/results/telotron_orthologs work/results/figures
-        python scripts/telotron_ortholog_align.py \
-            --final {input.final} \
-            --focal-ids {params.focal} --ortholog-ids {params.panel} \
-            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
-            --outdir work/results/telotron_orthologs \
-            --min-array-bp {params.min_array} --min-ident {params.min_id} \
-            --intron-tol {params.tol} --threads {threads}
+        # Flatten per-focal subdirs into the top-level dir. Each per_focal
+        # subdir is disjoint (keyed by focal genome_id inside the filenames),
+        # so a plain cp -rn preserves outputs from prior runs.
+        for d in work/results/telotron_orthologs/per_focal/*/; do
+            [ -d "$d" ] || continue
+            cp -rn "$d"/* work/results/telotron_orthologs/ 2>/dev/null || true
+        done
         python scripts/plot_telotron_ortholog_loci.py \
             --ortho-dir work/results/telotron_orthologs \
             --out {output.pdf} --window 28 --max-rows 12
-        touch {output.sentinel}
         """
 
 

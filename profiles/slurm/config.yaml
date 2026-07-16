@@ -1,0 +1,106 @@
+# Snakemake --profile config for a slurm HPC.
+#
+# Usage:
+#   snakemake --profile profiles/slurm --config accessions='[...]' <target>
+# Or via the top-level wrapper:
+#   ./slurm/submit.sh <target> [-- <extra snakemake args>]
+#
+# Site-specific bits (partition, account, mail) live in one place:
+# slurm/site.sh (sourced by submit.sh). Edit that file, not this one.
+
+# Wall-clock scheduling limits from the outer snakemake invocation.
+cores: 512
+jobs: 96                    # max concurrent slurm jobs snakemake will submit
+latency-wait: 90            # seconds to wait for NFS metadata after job completion
+keep-going: true            # don't halt the whole DAG on one rule failure
+rerun-incomplete: true
+use-conda: false            # tools come from a preloaded env module (see slurm/site.sh)
+restart-times: 2            # auto-retry transient sbatch failures (2 retries)
+printshellcmds: true
+show-failed-logs: true
+
+# Submit each rule as its own sbatch job. Per-rule resources come from the
+# rule's `threads:` / `resources:` block; defaults below apply when a rule
+# doesn't override.
+default-resources:
+  mem_mb: 4000
+  runtime: 240              # minutes
+  slurm_partition: "$SLURM_PARTITION"    # replaced from env at submit time
+  slurm_account: "$SLURM_ACCOUNT"
+
+# Classic v6 cluster template. --job-name embeds the rule + wildcards so
+# squeue output is readable; -o/-e route logs into work/logs/slurm/.
+cluster: >-
+  sbatch
+  --parsable
+  --job-name=telo.{rule}.{wildcards}
+  --partition={resources.slurm_partition}
+  --account={resources.slurm_account}
+  --cpus-per-task={threads}
+  --mem={resources.mem_mb}M
+  --time={resources.runtime}
+  --output=work/logs/slurm/{rule}.{jobid}.out
+  --error=work/logs/slurm/{rule}.{jobid}.err
+cluster-status: profiles/slurm/status.py
+cluster-cancel: scancel
+
+# Snakemake respects these when a rule declares them; unset falls back to
+# default-resources above. The concrete numbers here are tuned to the
+# telotron pipeline profile — see `scripts/*.py` runtime budgets.
+set-threads:
+  scan_all: 32
+  dedup_telotrons: 16
+  telotron_orthologs: 24
+  find_tert: 16
+  linker_analysis: 8
+  nucleosome_analysis: 8
+
+set-resources:
+  scan_all:
+    mem_mb: 200000            # scans decompress + hold multi-GB genomes
+    runtime: 480
+  dedup_telotrons:
+    mem_mb: 32000
+    runtime: 180
+  telotron_orthologs:
+    mem_mb: 32000
+    runtime: 480
+  find_tert:
+    mem_mb: 32000
+    runtime: 240
+  find_interstitial_arrays:
+    mem_mb: 16000
+    runtime: 240
+  filter_final:
+    mem_mb: 32000             # loads all_introns_scanned.tsv (~4 GB)
+    runtime: 60
+  linker_analysis:
+    mem_mb: 8000
+    runtime: 120
+  mask_telotron_arrays:
+    mem_mb: 8000
+    runtime: 60
+  nucleosome_analysis:
+    mem_mb: 32000
+    runtime: 240
+  telotron_gene_class:
+    mem_mb: 16000
+    runtime: 60
+  length_distribution_by_arch:
+    mem_mb: 8000
+    runtime: 30
+  rnaseq_gene_coverage:
+    mem_mb: 32000             # sra download + minimap alignment
+    runtime: 720
+  telotron_expr_figures:
+    mem_mb: 8000
+    runtime: 30
+  manifests:
+    mem_mb: 4000
+    runtime: 30
+  download_assemblies:
+    mem_mb: 4000
+    runtime: 720              # ~10 h for a full RefSeq+GenBank pull
+  tara_archives:
+    mem_mb: 4000
+    runtime: 240

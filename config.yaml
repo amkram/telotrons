@@ -136,6 +136,12 @@ canonical_telomere_motifs:
     # ── Telomerase-loss / non-canonical (leave blank → scan)
     GCF_000001215.4: ""        # Drosophila melanogaster (HeT-A/TART retrotransposons, no canonical TR)
     GCF_000146045.2: ""        # Saccharomyces cerevisiae (irregular TG1-3 repeats; not in our motif set)
+    # ── 10-GenBank test-run sample (2026-07-15): motif validation disabled per
+    # user request; the 8 fungi + invertebrate species already hit the empty
+    # by_group default. Explicit overrides only for the two that would
+    # otherwise pick up group defaults.
+    GCA_002928715.1: ""        # Gossypium barbadense (would default to TTTAGGG)
+    GCA_013390105.1: ""        # Tichodroma muraria (would default to TTAGGG)
   # Group-level defaults applied when no per-genome entry above. Empty string = scan.
   by_group:
     vertebrate_mammalian: TTAGGG

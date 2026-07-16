@@ -162,8 +162,14 @@ def write_faa(records, path):
 # ── main ──────────────────────────────────────────────────────────────────────
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--genome-ids", required=True,
-                    help="comma-separated genome_ids to search")
+    ap.add_argument("--genome-ids", default="",
+                    help="comma-separated genome_ids to search (optional if --confident-species given)")
+    ap.add_argument("--confident-species", default="",
+                    help="TSV from confident_species rule; genome_id column becomes part of the target set")
+    ap.add_argument("--outgroup-ids", default="",
+                    help="comma-separated telotron-negative outgroup genome_ids (union with confident set)")
+    ap.add_argument("--single-genome", default="",
+                    help="If set, restrict the whole search to just this genome_id (slurm fanout mode).")
     ap.add_argument("--seeds", required=True, help="apicomplexan TERT seed proteins (FASTA)")
     ap.add_argument("--trbd-hmm", required=True, help="Pfam PF12009 Telomerase_RBD HMM")
     ap.add_argument("--rt-hmm", required=True, help="Pfam PF00078 RVT_1 HMM")
@@ -194,7 +200,30 @@ def main():
     miniprot = _resolve("miniprot", args.miniprot, [])
     hmmsearch = _resolve("hmmsearch", args.hmmsearch, ["/usr/bin/hmmsearch"])
 
-    gids = [g.strip() for g in args.genome_ids.split(",") if g.strip()]
+    # Union of --genome-ids + --confident-species TSV + --outgroup-ids.
+    gids = set(g.strip() for g in args.genome_ids.split(",") if g.strip())
+    if args.confident_species and os.path.exists(args.confident_species):
+        import csv
+        with open(args.confident_species) as _fh:
+            for _r in csv.DictReader(_fh, delimiter="\t"):
+                gids.add(_r["genome_id"])
+    if args.outgroup_ids:
+        for g in args.outgroup_ids.split(","):
+            if g.strip():
+                gids.add(g.strip())
+    if args.single_genome:
+        # slurm fanout: restrict to just this genome (must be in the target set).
+        if args.single_genome not in gids and not (args.genome_ids or args.confident_species or args.outgroup_ids):
+            # No target set given but --single-genome is; accept it standalone.
+            gids = {args.single_genome}
+        elif args.single_genome not in gids:
+            raise SystemExit(f"--single-genome={args.single_genome} not in the union of --genome-ids/--confident-species/--outgroup-ids")
+        else:
+            gids = {args.single_genome}
+    gids = sorted(gids)
+    if not gids:
+        raise SystemExit("no genomes specified (use --genome-ids and/or --confident-species and/or --outgroup-ids)")
+    print(f"TERT search targets: {len(gids)} genomes", flush=True)
     os.makedirs(args.outdir, exist_ok=True)
     gff_dir = os.path.join(args.outdir, "gff")
     prot_dir = os.path.join(args.outdir, "tert_proteins")
