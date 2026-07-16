@@ -27,6 +27,20 @@ if [[ $# -gt 0 ]] && [[ "$1" != -* ]]; then
 fi
 if [[ "${1-}" == "--" ]]; then shift; EXTRA=("$@"); fi
 
+# Global resource caps: env-var overrides that translate into snakemake flags
+# and prepend to EXTRA. Set via slurm/site.sh, exported before the call, or
+# passed by the web UI when it invokes this script.
+CAP_ARGS=()
+if [[ -n "${TELO_MAX_JOBS:-}" ]]; then
+  CAP_ARGS+=("--jobs" "$TELO_MAX_JOBS")
+fi
+if [[ -n "${TELO_MAX_MEM_MB:-}" ]]; then
+  CAP_ARGS+=("--resources" "mem_mb=$TELO_MAX_MEM_MB")
+fi
+if [[ -n "${TELO_MAX_CORES:-}" ]]; then
+  CAP_ARGS+=("--cores" "$TELO_MAX_CORES")
+fi
+
 mkdir -p work/logs/slurm
 
 # Rewrite $VAR placeholders in the profile from live env (partition, account).
@@ -48,11 +62,13 @@ echo "=== telotron slurm submit ==="
 echo "  target:    $TARGET"
 echo "  partition: $SLURM_PARTITION"
 echo "  account:   ${SLURM_ACCOUNT:-(none)}"
+echo "  caps:      ${CAP_ARGS[*]:-(profile defaults)}"
 echo "  extra:     ${EXTRA[*]:-(none)}"
 echo "  logs:      work/logs/slurm/{rule}.{jobid}.{out,err}"
 echo "============================="
 
 exec snakemake \
   --profile "$tmp_profile" \
+  "${CAP_ARGS[@]}" \
   "${EXTRA[@]}" \
   "$TARGET"

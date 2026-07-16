@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
-"""Per-genome scan: derive introns via GenomeTools, motif hits via seqkit, compose final TSV.
+"""Per-genome scan: derive introns via GenomeTools, run ULTRA per intron for
+tandem-repeat detection, compose final TSV.
 
 Heavy lifting is delegated:
-  - intron coordinates from GFF       : `gt gff3 -retainids -addintrons`
-  - telomeric motif occurrences (BED) : `seqkit locate --bed --pattern-file`
-Project-specific composition (orientation, splice signals, terminal-motif inference) stays here.
+  - intron coordinates from GFF        : `gt gff3 -retainids -addintrons`
+  - per-intron tandem repeats          : `ultra --tsv` (Olson & Wheeler 2024)
+  - genome-wide telomere hits at contig
+    ends (for terminal_motif detection): `seqkit locate --bed --pattern-file`
+Per-intron motif metrics (`motif`, `telomeric_frac`, `fwd_hits`, `rev_hits`,
+`flank_telomeric_frac`) are DERIVED from ULTRA output — an ULTRA record
+whose consensus canonical matches a config telomere motif contributes to
+the telomere columns; the discovered consensus, period, and degeneracy
+counts are also emitted so downstream can curate non-telomere repeat
+introns from the same table. Splice signals and distance-to-end remain
+independent of the repeat scan.
 """
 import argparse
 import csv
@@ -18,7 +27,43 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import pandas as pd
 
-from _common import revcomp, rotations, open_maybe_gz, read_fasta, tqdm
+from _common import revcomp, rotations, rc, open_maybe_gz, read_fasta, tqdm
+
+
+def _canonical_unit(unit: str) -> str:
+    """Lex-min rotation of unit and of its reverse complement.
+
+    Collapses every rotation and both strands of the same tandem unit to a
+    single identifier — TTAGGG, TAGGGT, GGGTTA, CCCTAA all → AACCCT.
+    """
+    u = (unit or "").upper()
+    if not u:
+        return ""
+    both = rotations(u) + rotations(rc(u))
+    return min(both)
+
+
+def _build_telomere_lookup(motifs):
+    """Build:
+      canon_to_name   : canonical(motif) -> original motif string
+      fwd_rotations   : set of rotations of the original motif (G-rich orientation)
+      rev_rotations   : set of rotations of the motif's revcomp (C-rich orientation)
+    Used to classify each ULTRA record as forward/reverse-strand w.r.t. the
+    known telomere motif.
+    """
+    canon_to_name = {}
+    fwd_rot = set()
+    rev_rot = set()
+    for m in motifs or []:
+        m = str(m).upper().strip()
+        if not m:
+            continue
+        canon_to_name.setdefault(_canonical_unit(m), m)
+        for r in rotations(m):
+            fwd_rot.add(r)
+        for r in rotations(rc(m)):
+            rev_rot.add(r)
+    return canon_to_name, fwd_rot, rev_rot
 
 LOCI_HEADER = [
     "genome_id", "organism", "group", "source",
@@ -32,6 +77,12 @@ LOCI_HEADER = [
     "first40", "last40",
     "terminal_motif", "terminal_motif_bases", "contig_both_ends_capped",
     "terminal_motif_method", "terminal_motif_max_end_frac", "exon_source",
+    # ULTRA columns (populated for every intron with a detected tandem
+    # repeat, regardless of telomere match — filter on telomere_match for
+    # the paper-standard subset, or dominant_canonical for curation).
+    "dominant_consensus", "dominant_canonical", "period",
+    "ultra_score", "copies", "substitutions", "insertions", "deletions",
+    "cover_frac", "telomere_match", "telomere_match_name",
 ]
 SUMMARY_HEADER = [
     "genome_id", "organism", "group", "source",
@@ -199,6 +250,226 @@ def _read_intersect(path):
 
 def _sort_bed_inplace(path):
     subprocess.run(["sort", "-k1,1", "-k2,2n", "-o", path, path], check=True)
+
+
+def _run_ultra_on_fasta(fa_path, out_tsv, ultra_bin, threads, opts):
+    """Run ULTRA and dump TSV to out_tsv. Returns dict[seqid -> list[record]]."""
+    cmd = [
+        ultra_bin, "--tsv", "-c",
+        "--min_unit", str(opts.get("ultra_min_units", 3)),
+        "--min_length", str(opts.get("ultra_min_length", 15)),
+        "-p", str(opts.get("ultra_max_period", 20)),
+        "-s", str(opts.get("ultra_min_score", 0.0)),
+        "-t", str(max(1, int(threads))),
+        fa_path,
+    ]
+    with open(out_tsv, "w") as fh:
+        proc = subprocess.run(cmd, stdout=fh, stderr=subprocess.PIPE, text=True)
+    if proc.returncode != 0:
+        tail = (proc.stderr or "")[-500:].replace("\n", " | ")
+        raise RuntimeError(f"ULTRA exit {proc.returncode}: {tail}")
+    return _parse_ultra_tsv(out_tsv)
+
+
+def _parse_ultra_tsv(path):
+    """ULTRA --tsv output → dict[seqid -> list[record]].
+
+    Header (v1.2.1): SeqID, Start, End, Period, Score, Consensus, #copies,
+    #substitutions, #insertions, #deletions, #Subrepeats, SubrepeatStarts,
+    SubrepeatConsensi[, Sequence].
+    """
+    by_seq = {}
+    header = None
+    with open(path) as fh:
+        for line in fh:
+            line = line.rstrip("\n")
+            if not line or line[0] in "#=*":
+                continue
+            if line.startswith("SeqID"):
+                header = line.split("\t")
+                continue
+            if header is None:
+                continue
+            parts = line.split("\t")
+            if len(parts) < len(header):
+                continue
+            r = dict(zip(header, parts))
+            try:
+                rec = {
+                    "start": int(r["Start"]),
+                    "end": int(r["End"]),
+                    "period": int(r["Period"]),
+                    "score": float(r["Score"]),
+                    "consensus": r.get("Consensus", "").upper(),
+                    "copies": float(r.get("#copies", "0") or 0),
+                    "subs": int(float(r.get("#substitutions", "0") or 0)),
+                    "ins": int(float(r.get("#insertions", "0") or 0)),
+                    "dels": int(float(r.get("#deletions", "0") or 0)),
+                }
+            except (KeyError, ValueError):
+                continue
+            by_seq.setdefault(r["SeqID"], []).append(rec)
+    return by_seq
+
+
+def compute_intron_motif_metrics_ultra(introns_df, seqs, contig_lens, tmp_dir,
+                                       motifs, ultra_bin, threads=1,
+                                       flank_bp=200, opts=None):
+    """ULTRA-driven replacement for the seqkit-locate / bedtools pipeline.
+
+    Returns (best_motif_df, flank_df, strand_df, ultra_df) all keyed by `row`.
+    - best_motif_df: motif (telomere name if match else discovered consensus),
+                     telomeric_bases (covered bp when telomere_match),
+                     telomeric_frac (covered bp / intron_len when telomere_match)
+    - flank_df:      flank_telomeric_frac (covered bp / total flank len,
+                     counting ONLY telomere-matching ULTRA records — same
+                     misannotation-trap semantics as before)
+    - strand_df:     fwd_hits, rev_hits — sum of `copies` from telomere-
+                     matching ULTRA records classified by consensus rotation
+                     (G-rich = fwd, C-rich = rev). Direct analog of the old
+                     seqkit hit counts; filter_final's `>=3` gate transfers.
+    - ultra_df:      full ULTRA fields (dominant_consensus, dominant_canonical,
+                     period, ultra_score, copies, subs/ins/del, cover_frac,
+                     telomere_match, telomere_match_name)
+    """
+    opts = opts or {}
+    canon_to_name, fwd_rot, rev_rot = _build_telomere_lookup(motifs)
+
+    # 1. Emit intron FASTA (strand-corrected → transcript orientation) and
+    #    flank FASTA (single record per flank, keyed as "<row>.L"/"<row>.R").
+    intron_fa = os.path.join(tmp_dir, "introns.fa")
+    flank_fa = os.path.join(tmp_dir, "flanks.fa")
+    flank_lens = {}   # (row, side) -> len
+    with open(intron_fa, "w") as ifh, open(flank_fa, "w") as ffh:
+        for r in introns_df.itertuples(index=False):
+            contig = seqs.get(r.seqid, "")
+            if not contig:
+                continue
+            s0 = int(r.start) - 1
+            e0 = int(r.end)
+            if e0 > len(contig):
+                continue
+            raw = contig[s0:e0]
+            seq = raw if r.strand != "-" else revcomp(raw)
+            ifh.write(f">i{int(r.row)}\n{seq}\n")
+            # Flanks are strand-corrected too so the same consensus rules apply.
+            L_start = max(0, s0 - flank_bp)
+            L_end = s0
+            R_start = e0
+            R_end = min(len(contig), e0 + flank_bp)
+            L_seq = contig[L_start:L_end]
+            R_seq = contig[R_start:R_end]
+            if r.strand == "-":
+                # flip: upstream of a -strand intron sits at higher contig coord
+                L_seq, R_seq = revcomp(R_seq), revcomp(L_seq)
+            if L_seq:
+                ffh.write(f">f{int(r.row)}.L\n{L_seq}\n")
+                flank_lens[(int(r.row), "L")] = len(L_seq)
+            if R_seq:
+                ffh.write(f">f{int(r.row)}.R\n{R_seq}\n")
+                flank_lens[(int(r.row), "R")] = len(R_seq)
+
+    # 2. Run ULTRA on both FASTAs. Empty inputs → empty by_seq.
+    by_intron = {}
+    by_flank = {}
+    if os.path.getsize(intron_fa) > 0:
+        by_intron = _run_ultra_on_fasta(intron_fa, os.path.join(tmp_dir, "ultra_i.tsv"),
+                                        ultra_bin, threads, opts)
+    if os.path.getsize(flank_fa) > 0:
+        by_flank = _run_ultra_on_fasta(flank_fa, os.path.join(tmp_dir, "ultra_f.tsv"),
+                                       ultra_bin, threads, opts)
+
+    # 3. Per-intron aggregation.
+    ilen_by_row = dict(zip(introns_df.row.astype(int), introns_df.intron_len.astype(int)))
+    best_rows = []
+    strand_rows = []
+    ultra_rows = []
+    for row, ilen in ilen_by_row.items():
+        recs = by_intron.get(f"i{row}") or []
+        if not recs:
+            ultra_rows.append({"row": row, "dominant_consensus": "", "dominant_canonical": "",
+                               "period": 0, "ultra_score": 0.0, "copies": 0.0,
+                               "substitutions": 0, "insertions": 0, "deletions": 0,
+                               "cover_frac": 0.0, "telomere_match": False, "telomere_match_name": ""})
+            best_rows.append({"row": row, "motif": "", "telomeric_bases": 0, "telomeric_frac": 0.0})
+            strand_rows.append({"row": row, "fwd_hits": 0, "rev_hits": 0})
+            continue
+        # Dominant repeat = ULTRA record with the largest covered_bp; ties by score.
+        dom = max(recs, key=lambda x: (x["end"] - x["start"], x["score"]))
+        dom_canon = _canonical_unit(dom["consensus"])
+        telo_name = canon_to_name.get(dom_canon, "")
+        cover_frac = (dom["end"] - dom["start"]) / ilen if ilen else 0.0
+        ultra_rows.append({
+            "row": row,
+            "dominant_consensus": dom["consensus"],
+            "dominant_canonical": dom_canon,
+            "period": dom["period"],
+            "ultra_score": round(dom["score"], 3),
+            "copies": round(dom["copies"], 3),
+            "substitutions": dom["subs"],
+            "insertions": dom["ins"],
+            "deletions": dom["dels"],
+            "cover_frac": round(cover_frac, 4),
+            "telomere_match": bool(telo_name),
+            "telomere_match_name": telo_name,
+        })
+
+        # Telomere-matching aggregate: `motif` and the paper's telomeric_frac/
+        # bases columns only populate when the dominant unit is a known
+        # telomere. Non-telomere repeat introns keep zero here — filter_final
+        # will drop them; downstream curation reads dominant_consensus.
+        if telo_name:
+            telo_recs = [r for r in recs if canon_to_name.get(_canonical_unit(r["consensus"])) == telo_name]
+            total_bp = sum(r["end"] - r["start"] for r in telo_recs)
+            best_rows.append({"row": row, "motif": telo_name,
+                              "telomeric_bases": total_bp,
+                              "telomeric_frac": total_bp / ilen if ilen else 0.0})
+            # Strand classification per ULTRA record → sum of `copies`.
+            fwd = rev = 0.0
+            for tr in telo_recs:
+                cons = tr["consensus"]
+                # Substring test against pre-built rotation sets is O(1).
+                if cons in fwd_rot:
+                    fwd += tr["copies"]
+                elif cons in rev_rot:
+                    rev += tr["copies"]
+                else:
+                    # ULTRA consensus with subs/indels won't hit either set
+                    # exactly; classify by which set the canonical maps to.
+                    if _canonical_unit(cons) == _canonical_unit(telo_name):
+                        # rotation of a G-rich or C-rich variant — decide by
+                        # closer edit distance to any exact rotation of each.
+                        if any(sum(a != b for a, b in zip(cons, x)) <= tr["subs"] for x in fwd_rot):
+                            fwd += tr["copies"]
+                        else:
+                            rev += tr["copies"]
+            strand_rows.append({"row": row, "fwd_hits": int(round(fwd)),
+                                "rev_hits": int(round(rev))})
+        else:
+            best_rows.append({"row": row, "motif": "", "telomeric_bases": 0, "telomeric_frac": 0.0})
+            strand_rows.append({"row": row, "fwd_hits": 0, "rev_hits": 0})
+
+    # 4. Flank telomere coverage — only count telomere-matching ULTRA records.
+    flank_cov = {}   # row -> covered_bp
+    flank_tot = {}
+    for (row, side), flen in flank_lens.items():
+        flank_tot[row] = flank_tot.get(row, 0) + flen
+        recs = by_flank.get(f"f{row}.{side}") or []
+        for r in recs:
+            if canon_to_name.get(_canonical_unit(r["consensus"])):
+                flank_cov[row] = flank_cov.get(row, 0) + (r["end"] - r["start"])
+    flank_records = []
+    for row in ilen_by_row:
+        total = flank_tot.get(row, 0)
+        cov = flank_cov.get(row, 0)
+        flank_records.append({"row": row,
+                              "flank_telomeric_frac": (cov / total) if total else 0.0})
+
+    best_motif = pd.DataFrame(best_rows)
+    strand = pd.DataFrame(strand_rows)
+    flank_df = pd.DataFrame(flank_records)
+    ultra_df = pd.DataFrame(ultra_rows)
+    return best_motif, flank_df, strand, ultra_df
 
 
 def compute_intron_motif_metrics(introns_df, hits_bed_path, contig_lens, tmp_dir,
@@ -496,11 +767,19 @@ def scan_one(args):
             introns = introns.reset_index(drop=True)
             introns["row"] = introns.index
 
-            # One bedtools intersect → coverage, flank coverage, strand counts. Replaces
-            # three per-intron Python loops; ~30-100× faster on big genomes.
-            best_motif, flank_df, strand_df = compute_intron_motif_metrics(
-                introns, hits_bed, contig_lens, tmp,
+            # ULTRA per-intron: replaces the old seqkit-locate + bedtools
+            # pipeline. Returns the same (best_motif, flank, strand) plus an
+            # extra ultra_df carrying dominant_consensus/period/subs/…/
+            # cover_frac/telomere_match. The genome-wide seqkit-locate above
+            # (hits_bed) is now used ONLY for terminal_motif (contig-end
+            # telomere detection); intron-side metrics come from ULTRA.
+            best_motif, flank_df, strand_df, ultra_df = compute_intron_motif_metrics_ultra(
+                introns, seqs, contig_lens, tmp,
+                motifs=opts["motifs"],
+                ultra_bin=opts.get("ultra_bin", "ultra"),
+                threads=1,   # per-genome parallelism is at the ProcessPool level
                 flank_bp=opts.get("flank_bp", 200),
+                opts=opts,
             )
 
         introns = introns.merge(best_motif, on="row", how="left")
@@ -518,6 +797,17 @@ def scan_one(args):
         )
         introns["fwd_hits"] = introns.fwd_hits.astype(int)
         introns["rev_hits"] = introns.rev_hits.astype(int)
+
+        # ULTRA extras: emit as-is; downstream consumers can pull curation
+        # rows on (telomere_match=False) or filter by (cover_frac, subs, …).
+        introns = introns.merge(ultra_df, on="row", how="left")
+        for col, default in [("dominant_consensus", ""), ("dominant_canonical", ""),
+                             ("period", 0), ("ultra_score", 0.0), ("copies", 0.0),
+                             ("substitutions", 0), ("insertions", 0), ("deletions", 0),
+                             ("cover_frac", 0.0),
+                             ("telomere_match", False), ("telomere_match_name", "")]:
+            if col in introns.columns:
+                introns[col] = introns[col].fillna(default)
         _bmh = opts.get("bidir_min_hits", 3)
         introns["orientation"] = [
             classify_orientation(f, r, bidir_min_hits=_bmh)
@@ -693,9 +983,17 @@ def main():
     ap.add_argument("--single-genome", default="",
                     help="If set, scan ONLY this genome_id from the manifest and emit "
                          "just its rows (one-genome-per-sbatch pattern for slurm fanout).")
+    ap.add_argument("--ultra-bin", default="ultra",
+                    help="ULTRA binary path/name (default: on PATH). "
+                         "conda install -c bioconda ultra")
+    ap.add_argument("--ultra-min-units", type=int, default=3)
+    ap.add_argument("--ultra-min-length", type=int, default=15)
+    ap.add_argument("--ultra-max-period", type=int, default=20,
+                    help="max repeat unit length ULTRA will consider (bp)")
+    ap.add_argument("--ultra-min-score", type=float, default=0.0)
     args = ap.parse_args()
 
-    for tool in ("gt", "seqkit", "bedtools", "sort"):
+    for tool in ("gt", "seqkit", "bedtools", "sort", args.ultra_bin):
         if not shutil.which(tool):
             sys.exit(f"required tool not on PATH: {tool}")
 
@@ -726,6 +1024,11 @@ def main():
         "min_intron_len": args.min_intron_len,
         "bidir_min_hits": args.bidir_min_hits,
         "canonical": canonical,
+        "ultra_bin": args.ultra_bin,
+        "ultra_min_units": args.ultra_min_units,
+        "ultra_min_length": args.ultra_min_length,
+        "ultra_max_period": args.ultra_max_period,
+        "ultra_min_score": args.ultra_min_score,
     }
 
     os.makedirs(os.path.dirname(args.loci), exist_ok=True)

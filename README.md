@@ -22,23 +22,30 @@ Surveys eukaryotic genomes (**all annotated RefSeq + all annotated GenBank + all
 | confident_species | **Paper's central bearer set** — species admitted when ≥3 telotrons pass filter OR ≥1 bidirectional architecture. Every downstream analysis keys off this file | final_telotron_set_architecture.tsv + all_genomes.tsv | work/results/confident_species.tsv | scripts/confident_species.py |
 | package | Bundle final TSVs + confident-species set + manifest into a single deliverable zip | PACKAGE_INPUTS list | work/results/telotron_pipeline_outputs.zip | n/a (zip) |
 
-## 2b. Broad any-repeat scan (curation companion)
+### Any-repeat curation view (same table, different filter)
 
-| Rule | Purpose | Key inputs | Key outputs | Script |
-|---|---|---|---|---|
-| scan_repeat_introns | For every annotated intron, run **ULTRA** (Olson & Wheeler 2024) to find the dominant tandem repeat WITH substitution + small-indel tolerance. Reports the discovered consensus, period, degeneracy counts (subs/ins/del), coverage, and whether the unit matches a known telomere motif. Does NOT restrict to telomere motifs — intended for manual curation. | all_genomes.tsv + FASTAs/GFFs | work/results/all_repeat_introns.tsv (cols: dominant_consensus, dominant_canonical, period, score, copies, substitutions, insertions, deletions, covered_bp, cover_frac, telomere_match, telomere_match_name) | scripts/scan_repeat_introns.py |
+`scan_all` (via [scripts/scan_telotrons.py](scripts/scan_telotrons.py)) runs
+**ULTRA** (Olson & Wheeler 2024) per intron for tandem-repeat detection,
+handling substitutions and small indels that a motif-restricted scan misses.
+Every scanned intron gets these extra columns in
+`all_introns_scanned.tsv`: `dominant_consensus`, `dominant_canonical`
+(lex-min rotation collapsing `TTAGGG`/`CCCTAA`/all rotations), `period`,
+`ultra_score`, `copies`, `substitutions`, `insertions`, `deletions`,
+`cover_frac`, `telomere_match`, `telomere_match_name`.
 
-Config: `repeat_scan.{min_length, min_units, max_period, min_score,
-min_frac, min_intron_len}` in `config.yaml`. Defaults are permissive
-(`min_score: 0.0`, `min_frac: 0.5`) — curate downstream. Rotations and
-reverse-complements of the same unit collapse to `dominant_canonical`
-(lex-min rotation) so `TTAGGG`, `TAGGGT` and `CCCTAA` all group together.
+- Paper-standard telotron set: `telomere_match=True` + downstream
+  `filter_final` thresholds (already how the pipeline flows).
+- **Curation query**: filter `all_introns_scanned.tsv` on
+  `telomere_match=False` (or on `dominant_canonical`) to review any-repeat
+  introns the paper doesn't touch.
 
-**Degenerate-array handling**: on a synthetic `TTAGGG` array with 8/60 bp
-substitutions, ULTRA still reports the correct 6-bp period with 8 subs,
-so the row still flags `telomere_match=TTAGGG` (a naive k-mer scan drops
-below 0.5 coverage). The `substitutions`/`insertions`/`deletions` columns
-carry the degeneracy signal for downstream filtering.
+Degeneracy handling: a synthetic `TTAGGG` array with 8/60 bp substitutions
+still returns `period=6` + `substitutions=8` + `telomere_match=TTAGGG`,
+where a naive k-mer scan drops below 0.5 coverage.
+
+Config: `repeat_scan.{min_length, min_units, max_period, min_score}`
+(ULTRA-native knobs). Requires `ultra>=1.2` from bioconda (already in
+[envs/telotrons.yaml](envs/telotrons.yaml)).
 
 ## 3. Extraction + control
 

@@ -265,6 +265,10 @@ rule scan_one_genome:
             --min-repeat-frac {SCAN_MIN_FRAC} --max-flank-repeat-frac {SCAN_MAX_FLANK_FRAC} \
             --min-intron-len {SCAN_MIN_INTRON_LEN} \
             --bidir-min-hits {FILTER_BIDIR_HITS} \
+            --ultra-min-units {REPEAT_MIN_UNITS} \
+            --ultra-min-length {REPEAT_MIN_LENGTH} \
+            --ultra-max-period {REPEAT_MAX_PERIOD} \
+            --ultra-min-score {REPEAT_MIN_SCORE} \
             --threads {threads} \
             --loci {output.loci} --introns {output.introns} --summary {output.summary}
         """
@@ -330,86 +334,16 @@ rule scan_all:
                         continue
 
 
-# ── Broad any-repeat scan (ULTRA) ─────────────────────────────────────────
-# Sibling of scan_all: runs ULTRA (Olson & Wheeler 2024) per intron to find
-# the dominant tandem repeat WITH substitution + small-indel tolerance —
-# catches degenerate telomere arrays (TTGGGG/TCAGGG/… interspersed) and
-# mixed-length units (TTAGG + TTAGGG) that a naive k-mer scan drops. Flags
-# matches to config telomere motifs for downstream curation. Reuses the
-# scan_list checkpoint so slurm fans out one sbatch per genome.
+# scan_all's per-intron ULTRA columns are already the "broad any-repeat"
+# view: dominant_consensus / dominant_canonical / period / substitutions /
+# insertions / deletions / cover_frac / telomere_match live in
+# all_introns_scanned.tsv. Curation query = filter that TSV on
+# telomere_match=False. No separate scan_repeat_introns rule needed.
 REPEAT_SCAN = config.get("repeat_scan", {}) or {}
-REPEAT_MIN_LENGTH = int(REPEAT_SCAN.get("min_length", 20))
+REPEAT_MIN_LENGTH = int(REPEAT_SCAN.get("min_length", 15))
 REPEAT_MIN_UNITS = int(REPEAT_SCAN.get("min_units", 3))
 REPEAT_MAX_PERIOD = int(REPEAT_SCAN.get("max_period", 20))
 REPEAT_MIN_SCORE = float(REPEAT_SCAN.get("min_score", 0.0))
-REPEAT_MIN_FRAC = float(REPEAT_SCAN.get("min_frac", 0.5))
-REPEAT_MIN_INTRON_LEN = int(REPEAT_SCAN.get("min_intron_len", 30))
-
-
-rule scan_repeat_introns_one:
-    input:
-        manifest="work/manifests/all_genomes.tsv",
-        tara=["data/raw/tara/.fna.done", "data/raw/tara/.gff.done"],
-        assemblies=ASSEMBLIES_DONE,
-    output:
-        tsv=temp("work/results/repeat_scan/per_genome/{gid}.tsv"),
-    threads: 4
-    conda:
-        ENV
-    shell:
-        r"""
-        mkdir -p work/results/repeat_scan/per_genome
-        python scripts/scan_repeat_introns.py \
-            --manifest {input.manifest} \
-            --single-genome {wildcards.gid} \
-            --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
-            --telomere-motifs {TELOMERE_MOTIFS} \
-            --min-length {REPEAT_MIN_LENGTH} --min-units {REPEAT_MIN_UNITS} \
-            --max-period {REPEAT_MAX_PERIOD} --min-score {REPEAT_MIN_SCORE} \
-            --min-frac {REPEAT_MIN_FRAC} --min-intron-len {REPEAT_MIN_INTRON_LEN} \
-            --threads {threads} \
-            --out {output.tsv}
-        """
-
-
-def _repeat_scan_per_genome_outputs(wildcards):
-    with open(checkpoints.scan_list.get().output[0]) as fh:
-        gids = [line.strip() for line in fh if line.strip()]
-    return expand("work/results/repeat_scan/per_genome/{gid}.tsv", gid=gids)
-
-
-# Aggregator: concat per-genome any-repeat TSVs. Uses the same header-safe
-# concat as scan_all to survive empty shards from zero-intron genomes.
-rule scan_repeat_introns:
-    input:
-        parts=_repeat_scan_per_genome_outputs,
-    output:
-        tsv="work/results/all_repeat_introns.tsv",
-    threads: 1
-    run:
-        os.makedirs("work/results", exist_ok=True)
-        header = None
-        for p in input.parts:
-            try:
-                with open(p) as fin:
-                    header = fin.readline()
-                    if header:
-                        break
-            except FileNotFoundError:
-                continue
-        with open(output.tsv, "w") as fout:
-            if header:
-                fout.write(header)
-            for p in input.parts:
-                try:
-                    with open(p) as fin:
-                        first = fin.readline()
-                        if first and first != header:
-                            fout.write(first)
-                        for line in fin:
-                            fout.write(line)
-                except FileNotFoundError:
-                    continue
 
 
 # Tighten candidates → final set. --require-terminal-motif-match enforces that

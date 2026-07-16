@@ -108,7 +108,7 @@ def results_html():
         "final_telotron_set_architecture.tsv",
         "final_species_summary.tsv",
         "all_species_raw_summary.tsv",
-        "all_repeat_introns.tsv",
+        "all_introns_scanned.tsv",
         "distance_to_end.tsv",
         "boundary_kmer_enrichment.tsv",
         "candidates_preview.html",
@@ -207,8 +207,14 @@ DASHBOARD_TEMPLATE = """\
   a {{ color:var(--accent); text-decoration:none; }}
   a:hover {{ text-decoration:underline; }}
   form {{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }}
-  select, button {{ background:var(--card); color:var(--fg); border:1px solid var(--border);
-    border-radius:6px; padding:6px 12px; font:inherit; cursor:pointer; }}
+  form.launch label {{ display:inline-flex; gap:4px; align-items:center;
+    color:var(--muted); font-size:12px; text-transform:uppercase;
+    letter-spacing:.04em; }}
+  select, button, input {{ background:var(--card); color:var(--fg);
+    border:1px solid var(--border); border-radius:6px; padding:6px 10px;
+    font:inherit; }}
+  select, button {{ cursor:pointer; padding:6px 12px; }}
+  input[type=number] {{ font-family:var(--mono); width:5em; }}
   button {{ background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600; }}
   button.warn {{ background:var(--err); border-color:var(--err); }}
   button:hover {{ opacity:.9; }}
@@ -221,8 +227,11 @@ DASHBOARD_TEMPLATE = """\
     <div class='meta'>user={user} · {now} · <a href='/' class='refresh'>refresh</a> ·
       auto-refresh in <span id='r'>30</span>s</div>
   </div>
-  <form method='post' action='/run'>
+  <form method='post' action='/run' class='launch'>
     <select name='target'>{rules}</select>
+    <label>jobs <input type='number' name='jobs'  min='1'  max='2048' placeholder='96'   size='4'></label>
+    <label>cores <input type='number' name='cores' min='1'  max='8192' placeholder='512' size='4'></label>
+    <label>mem GB <input type='number' name='mem_gb' min='1' max='16384' placeholder='auto' size='5'></label>
     <button type='submit'>run</button>
   </form>
 </header>
@@ -356,15 +365,40 @@ class Handler(BaseHTTPRequestHandler):
         # Whitelist: only rules discovered from the Snakefile can be launched.
         if target not in RULES:
             return self._send(400, f"unknown target: {target!r}\n", "text/plain")
+
+        # Global resource caps → env vars that slurm/submit.sh translates to
+        # `--jobs / --cores / --resources mem_mb=…`. Bounded integer parse
+        # rejects garbage (empty string / non-digits / negatives) instead of
+        # forwarding it to the shell.
+        def _cap(name, mx):
+            v = (form.get(name) or [""])[0].strip()
+            if not v:
+                return None
+            try:
+                n = int(v)
+            except ValueError:
+                return None
+            return n if 1 <= n <= mx else None
+
+        jobs   = _cap("jobs",   2048)
+        cores  = _cap("cores",  8192)
+        mem_gb = _cap("mem_gb", 16384)
+
         # Detach: run submit.sh in the background so the driver survives the
         # HTTP round-trip. Each launch gets its own timestamped log so multi
         # driver instances don't stomp each other.
         stamp = time.strftime("%Y%m%d-%H%M%S")
         out = LOG_DIR / f"driver.{target}.{stamp}.out"
+        env = os.environ.copy()
+        if jobs   is not None: env["TELO_MAX_JOBS"]   = str(jobs)
+        if cores  is not None: env["TELO_MAX_CORES"]  = str(cores)
+        if mem_gb is not None: env["TELO_MAX_MEM_MB"] = str(mem_gb * 1000)
         cmd = f"nohup ./slurm/submit.sh {shlex.quote(target)} > {shlex.quote(str(out))} 2>&1 &"
-        subprocess.Popen(["bash", "-lc", cmd], cwd=str(REPO), start_new_session=True)
+        subprocess.Popen(["bash", "-lc", cmd], cwd=str(REPO), env=env, start_new_session=True)
+
+        caps_note = " ".join(f"{k}={v}" for k, v in env.items() if k.startswith("TELO_MAX_")) or "(profile defaults)"
         with open(WEB_LOG, "a") as fh:
-            fh.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} LAUNCH {target} log={out.name}\n")
+            fh.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} LAUNCH {target} caps={caps_note} log={out.name}\n")
         return self._redirect("/")
 
     def _post_cancel(self):

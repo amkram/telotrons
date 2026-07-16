@@ -55,7 +55,6 @@ cluster-cancel: scancel
 # vertebrate-scale shards silently OOM at the 4 GB default.
 set-threads:
   scan_one_genome: 4
-  scan_repeat_introns_one: 4
   telotron_orthologs_one: 8
   dedup_telotrons: 16
   find_tert: 16
@@ -67,12 +66,6 @@ set-resources:
     mem_mb: 16000             # vertebrate + polyploid plant genomes need headroom
     runtime: 240
   scan_all:                   # aggregator: cheap concat on the driver
-    mem_mb: 4000
-    runtime: 30
-  scan_repeat_introns_one:
-    mem_mb: 16000             # same profile as scan_one_genome
-    runtime: 240
-  scan_repeat_introns:        # aggregator
     mem_mb: 4000
     runtime: 30
   telotron_orthologs_one:
