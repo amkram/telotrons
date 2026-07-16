@@ -26,13 +26,19 @@ Surveys eukaryotic genomes (**all annotated RefSeq + all annotated GenBank + all
 
 | Rule | Purpose | Key inputs | Key outputs | Script |
 |---|---|---|---|---|
-| scan_repeat_introns | For every annotated intron, report the dominant short tandem-repeat unit (k=4-10 by default) and flag whether it matches a known telomere motif. Does NOT restrict to telomere motifs — intended for manual curation of repeat-composed introns beyond the telomere set. | all_genomes.tsv + FASTAs/GFFs | work/results/all_repeat_introns.tsv (cols: dominant_unit, dominant_canonical, unit_len, unit_frac, telomere_match, telomere_match_name) | scripts/scan_repeat_introns.py |
+| scan_repeat_introns | For every annotated intron, run **ULTRA** (Olson & Wheeler 2024) to find the dominant tandem repeat WITH substitution + small-indel tolerance. Reports the discovered consensus, period, degeneracy counts (subs/ins/del), coverage, and whether the unit matches a known telomere motif. Does NOT restrict to telomere motifs — intended for manual curation. | all_genomes.tsv + FASTAs/GFFs | work/results/all_repeat_introns.tsv (cols: dominant_consensus, dominant_canonical, period, score, copies, substitutions, insertions, deletions, covered_bp, cover_frac, telomere_match, telomere_match_name) | scripts/scan_repeat_introns.py |
 
-Config: `repeat_scan.{k_min, k_max, min_frac, min_intron_len}` in
-`config.yaml`. `min_frac` (default 0.5) is the noise floor — introns whose
-dominant k-mer covers less are dropped. Rotations and reverse-complements
-of the same unit collapse to `dominant_canonical` (lex-min rotation) so
-TTAGGG, TAGGGT and CCCTAA all group together.
+Config: `repeat_scan.{min_length, min_units, max_period, min_score,
+min_frac, min_intron_len}` in `config.yaml`. Defaults are permissive
+(`min_score: 0.0`, `min_frac: 0.5`) — curate downstream. Rotations and
+reverse-complements of the same unit collapse to `dominant_canonical`
+(lex-min rotation) so `TTAGGG`, `TAGGGT` and `CCCTAA` all group together.
+
+**Degenerate-array handling**: on a synthetic `TTAGGG` array with 8/60 bp
+substitutions, ULTRA still reports the correct 6-bp period with 8 subs,
+so the row still flags `telomere_match=TTAGGG` (a naive k-mer scan drops
+below 0.5 coverage). The `substitutions`/`insertions`/`deletions` columns
+carry the degeneracy signal for downstream filtering.
 
 ## 3. Extraction + control
 

@@ -23,3 +23,5 @@ dependencies:
   - logomaker>=0.8
   - blast>=2.13
   - biopython>=1.85
+  - ultra>=1.2                # tandem-repeat detection for scan_repeat_introns
+

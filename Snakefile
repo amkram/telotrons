@@ -330,14 +330,18 @@ rule scan_all:
                         continue
 
 
-# ── Broad any-repeat scan ─────────────────────────────────────────────────
-# Sibling of scan_all: finds introns dominated by ANY short tandem repeat
-# unit (k=4..10 by default), not just the configured telomere motifs.
-# Flags matches to config telomere motifs for downstream curation. Reuses
-# the scan_list checkpoint so slurm fans out one sbatch per genome.
+# ── Broad any-repeat scan (ULTRA) ─────────────────────────────────────────
+# Sibling of scan_all: runs ULTRA (Olson & Wheeler 2024) per intron to find
+# the dominant tandem repeat WITH substitution + small-indel tolerance —
+# catches degenerate telomere arrays (TTGGGG/TCAGGG/… interspersed) and
+# mixed-length units (TTAGG + TTAGGG) that a naive k-mer scan drops. Flags
+# matches to config telomere motifs for downstream curation. Reuses the
+# scan_list checkpoint so slurm fans out one sbatch per genome.
 REPEAT_SCAN = config.get("repeat_scan", {}) or {}
-REPEAT_K_MIN = int(REPEAT_SCAN.get("k_min", 4))
-REPEAT_K_MAX = int(REPEAT_SCAN.get("k_max", 10))
+REPEAT_MIN_LENGTH = int(REPEAT_SCAN.get("min_length", 20))
+REPEAT_MIN_UNITS = int(REPEAT_SCAN.get("min_units", 3))
+REPEAT_MAX_PERIOD = int(REPEAT_SCAN.get("max_period", 20))
+REPEAT_MIN_SCORE = float(REPEAT_SCAN.get("min_score", 0.0))
 REPEAT_MIN_FRAC = float(REPEAT_SCAN.get("min_frac", 0.5))
 REPEAT_MIN_INTRON_LEN = int(REPEAT_SCAN.get("min_intron_len", 30))
 
@@ -360,7 +364,8 @@ rule scan_repeat_introns_one:
             --single-genome {wildcards.gid} \
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
             --telomere-motifs {TELOMERE_MOTIFS} \
-            --k-min {REPEAT_K_MIN} --k-max {REPEAT_K_MAX} \
+            --min-length {REPEAT_MIN_LENGTH} --min-units {REPEAT_MIN_UNITS} \
+            --max-period {REPEAT_MAX_PERIOD} --min-score {REPEAT_MIN_SCORE} \
             --min-frac {REPEAT_MIN_FRAC} --min-intron-len {REPEAT_MIN_INTRON_LEN} \
             --threads {threads} \
             --out {output.tsv}
