@@ -1,12 +1,13 @@
 # Snakemake --profile config for a slurm HPC.
 #
-# Usage:
-#   snakemake --profile profiles/slurm --config accessions='[...]' <target>
-# Or via the top-level wrapper:
-#   ./slurm/submit.sh <target> [-- <extra snakemake args>]
+# ALWAYS INVOKE VIA slurm/submit.sh — the $SLURM_PARTITION/$SLURM_ACCOUNT
+# placeholders below are literal strings; submit.sh sed-substitutes them
+# from env at run time. Calling `snakemake --profile profiles/slurm` directly
+# will submit `sbatch --partition=$SLURM_PARTITION`, which fails.
 #
-# Site-specific bits (partition, account, mail) live in one place:
-# slurm/site.sh (sourced by submit.sh). Edit that file, not this one.
+# Usage:
+#   ./slurm/submit.sh <target> [-- <extra snakemake args>]   # recommended
+# Site-specific bits (partition, account, mail) live in slurm/site.sh.
 
 # Wall-clock scheduling limits from the outer snakemake invocation.
 cores: 512
@@ -47,24 +48,35 @@ cluster-cancel: scancel
 # Snakemake respects these when a rule declares them; unset falls back to
 # default-resources above. The concrete numbers here are tuned to the
 # telotron pipeline profile — see `scripts/*.py` runtime budgets.
+# NB after the 2026-07-16 slurm refactor: scan_all and telotron_orthologs are
+# CHEAP AGGREGATORS. The real workers are scan_one_genome (one sbatch per
+# genome, ~11k jobs on a full run) and telotron_orthologs_one (one per
+# confident bearer). Resource overrides MUST target the workers or the
+# vertebrate-scale shards silently OOM at the 4 GB default.
 set-threads:
-  scan_all: 32
+  scan_one_genome: 4
+  telotron_orthologs_one: 8
   dedup_telotrons: 16
-  telotron_orthologs: 24
   find_tert: 16
   linker_analysis: 8
   nucleosome_analysis: 8
 
 set-resources:
-  scan_all:
-    mem_mb: 200000            # scans decompress + hold multi-GB genomes
+  scan_one_genome:
+    mem_mb: 16000             # vertebrate + polyploid plant genomes need headroom
+    runtime: 240
+  scan_all:                   # aggregator: cheap concat on the driver
+    mem_mb: 4000
+    runtime: 30
+  telotron_orthologs_one:
+    mem_mb: 32000
     runtime: 480
+  telotron_orthologs:         # aggregator: cp + plot only
+    mem_mb: 4000
+    runtime: 30
   dedup_telotrons:
     mem_mb: 32000
     runtime: 180
-  telotron_orthologs:
-    mem_mb: 32000
-    runtime: 480
   find_tert:
     mem_mb: 32000
     runtime: 240

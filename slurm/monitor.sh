@@ -25,10 +25,11 @@ fi
 
 if [[ $# -gt 0 && "$1" != -* ]]; then
     rule="$1"
-    echo "recent sacct rows matching name=snakemake-$rule*"
+    # profiles/slurm/config.yaml sets --job-name=telo.{rule}.{wildcards}
+    echo "recent sacct rows matching name=telo.$rule.*"
     sacct -u "$USER_ID" --format=JobID,JobName%40,State,Elapsed,MaxRSS,NodeList%20,End \
           --starttime="$(date -d '2 days ago' +%Y-%m-%d)" \
-        | awk -v r="snakemake-$rule" 'NR<=2 || $2 ~ r'
+        | awk -v r="^telo\\.$rule(\\.|$)" 'NR<=2 || $2 ~ r'
     exit 0
 fi
 

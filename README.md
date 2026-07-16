@@ -77,7 +77,10 @@ snakemake --use-conda -j 16
 snakemake -j 16
 
 snakemake -n                                     # dry run
-snakemake --use-conda -j 8 --forcerun scan_all   # single-stage rerun
+# Single-stage rerun: --forcerun on the wildcarded WORKER (scan_one_genome),
+# not the aggregator (scan_all) — aggregator alone would republish stale
+# per-genome TSVs. Same principle for telotron_orthologs_one.
+snakemake --use-conda -j 8 --forcerun scan_one_genome scan_all
 
 # Test on a subset: set `accessions: [...]` in config.yaml or:
 snakemake -j 8 --config 'accessions=["GCF_000499545.2","GCF_000499605.1"]'
@@ -108,6 +111,23 @@ $EDITOR slurm/site.sh          # SLURM_PARTITION, SLURM_ACCOUNT, mail, etc.
 ./slurm/monitor.sh -f                      # tail -F newest driver log
 ./slurm/monitor.sh scan_one_genome         # sacct history for a rule
 ```
+
+### Web UI (optional)
+
+Single-file stdlib server, no Flask. Discovers rules from the Snakefile,
+launches runs through `slurm/submit.sh` (whitelist enforced), tails logs,
+serves result files.
+
+```bash
+./slurm/webui.py --port 8765     # bind 0.0.0.0:8765, log to work/logs/webui.log
+```
+
+Dashboard shows: current `squeue`, DAG rows that still need work, key result
+files with sizes/mtimes, recent slurm log listing, a rule dropdown + `run`
+button, and a `scancel telo.*` control. Auto-refreshes every 30 s.
+
+Bind to `127.0.0.1` and SSH-forward the port on shared clusters:
+`ssh -L 8765:localhost:8765 login-node`.
 
 **Notes.**
 - The driver `snakemake` process stays alive to coordinate — run it under

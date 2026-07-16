@@ -109,10 +109,14 @@ def dedup_one_species(gid, sub, chrom_seqs, tmpdir, threads):
 
     sp.run(["makeblastdb", "-in", fa_path, "-dbtype", "nucl", "-out", db_prefix],
            check=True, stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+    # Drop -max_target_seqs: for species with several thousand loci
+    # (E. tenella ~3000; TARA_PSW_86_MAG_00284 ~3100) a per-query hit list
+    # exceeding the cap silently loses the true duplicate partner AND
+    # biases which hits win (BLAST's cap is order-of-encounter, not by
+    # e-value). We downstream-filter by pident/len anyway.
     sp.run(["blastn", "-query", fa_path, "-db", db_prefix, "-out", out_blast,
             "-outfmt", "6 qseqid sseqid pident length",
             "-evalue", "1e-10", "-word_size", "11", "-dust", "no",
-            "-max_target_seqs", "1000",
             "-num_threads", str(threads)],
            check=True, stdout=sp.DEVNULL, stderr=sp.DEVNULL)
 

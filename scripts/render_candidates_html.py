@@ -329,11 +329,16 @@ def build_html(rows_by_species, canonical, species_order, out_path, refseq_dir, 
                 if not full:
                     f.write(f'<div class="row missing">{html.escape(seqid)}:{start}-{end} — seq not found</div>')
                     continue
-                up_s = max(0, start - FLANK)
-                dn_e = min(len(full), end + FLANK)
+                # GFF is 1-based inclusive; python slicing is 0-based half-open.
+                # Intron occupies python[start-1 : end]. Boundary markers are the
+                # whole point of this preview, so being one base off silently
+                # puts the GT donor into the left-flank block.
+                pystart, pyend = start - 1, end
+                up_s = max(0, pystart - FLANK)
+                dn_e = min(len(full), pyend + FLANK)
                 seg = full[up_s:dn_e]
-                up_len = start - up_s
-                dn_len = dn_e - end
+                up_len = pystart - up_s
+                dn_len = dn_e - pyend
                 strand = r.get("strand", "+")
                 if strand == "-":
                     seg = rc(seg)

@@ -212,31 +212,64 @@ def _dinuc_shuffle(seq: str, rng: random.Random) -> str:
         chars = list(seq)
         rng.shuffle(chars)
         return "".join(chars)
-    # build adjacency: edges (a, b) where seq has a transition a->b
-    edges: dict[str, list[str]] = defaultdict(list)
-    for a, b in zip(seq, seq[1:]):
-        edges[a].append(b)
     last = seq[-1]
-    # shuffle outgoing edges per source; ensure the "last edge" out of each
-    # node (except `last`) points along a tree to `last` (Eulerian feasibility)
-    for k in list(edges.keys()):
-        rng.shuffle(edges[k])
-    # simple verification + fallback: try multi-walk; if Eulerian assembly
-    # fails (rare given precondition), fall back to plain 1st-order shuffle
-    try:
+    # Altschul-Erickson: pick a random spanning arborescence rooted at `last`
+    # (one outgoing "last-edge" per non-`last` node that reaches `last`),
+    # remove those edges, shuffle the remainder freely, then re-append the
+    # last-edge as each node's final outgoing edge. Guarantees an Eulerian
+    # walk from seq[0] using every original transition once. Retry up to 32
+    # times against edge-shuffle randomness; if still no valid walk, raise
+    # rather than silently falling back to a mono-nt shuffle (which would
+    # make the dinuc-null claim false).
+    orig_edges: dict[str, list[str]] = defaultdict(list)
+    for a, b in zip(seq, seq[1:]):
+        orig_edges[a].append(b)
+    nodes = list(orig_edges.keys())
+    for _attempt in range(32):
+        # Build a random last-edge tree from each non-last node toward `last`.
+        last_edge: dict[str, str] = {}
+        ok = True
+        for u in nodes:
+            if u == last:
+                continue
+            cands = list(orig_edges[u])
+            rng.shuffle(cands)
+            picked = None
+            for v in cands:
+                # Any transition works so long as removing it doesn't strand `u`.
+                picked = v
+                break
+            if picked is None:
+                ok = False
+                break
+            last_edge[u] = picked
+        if not ok:
+            continue
+        # Build shuffled edge lists: remove one instance of last_edge[u] from u,
+        # shuffle the rest, then append the last-edge so it's popped LAST.
+        edges: dict[str, list[str]] = {}
+        for u, outs in orig_edges.items():
+            rest = list(outs)
+            if u in last_edge:
+                rest.remove(last_edge[u])
+            rng.shuffle(rest)
+            if u in last_edge:
+                rest.append(last_edge[u])
+            edges[u] = rest
+        # Walk starting at seq[0], popping from the tail.
         out = [seq[0]]
         cursor = seq[0]
+        walk_ok = True
         for _ in range(n - 1):
-            if not edges[cursor]:
-                raise RuntimeError("dead-end")
-            nxt = edges[cursor].pop()
-            out.append(nxt)
-            cursor = nxt
-        return "".join(out)
-    except RuntimeError:
-        chars = list(seq)
-        rng.shuffle(chars)
-        return "".join(chars)
+            bucket = edges.get(cursor)
+            if not bucket:
+                walk_ok = False
+                break
+            out.append(bucket.pop())
+            cursor = out[-1]
+        if walk_ok:
+            return "".join(out)
+    raise RuntimeError(f"dinuc shuffle failed after 32 attempts (seq len {n})")
 
 
 def null_recurrence(

@@ -270,6 +270,8 @@ rule scan_one_genome:
         """
 
 
+# RERUNS: --forcerun on the wildcarded WORKER (scan_one_genome), not on the
+# aggregator (scan_all). Forcing scan_all alone only re-concats stale shards.
 def _scan_per_genome_outputs(wildcards):
     """Post-checkpoint aggregation: list every per-genome TSV to expand over."""
     with open(checkpoints.scan_list.get().output[0]) as fh:
@@ -299,19 +301,33 @@ rule scan_all:
                          ("introns", output.introns),
                          ("summary", output.summary)]:
             parts = input[key]
-            if not parts:
-                open(out, "w").close()
-                continue
-            with open(out, "w") as fout, open(parts[0]) as fin0:
-                header = fin0.readline()
-                fout.write(header)
-                for line in fin0:
-                    fout.write(line)
-            for p in parts[1:]:
-                with open(p) as fin, open(out, "a") as fout:
-                    fin.readline()  # skip header
-                    for line in fin:
-                        fout.write(line)
+            # Find the first non-empty shard for the header — an early empty
+            # temp() file (from a genome with no introns) would otherwise
+            # produce a headerless merged TSV and misalign every downstream
+            # pandas read WITHOUT raising.
+            header = None
+            for p in parts:
+                try:
+                    with open(p) as fin:
+                        header = fin.readline()
+                        if header:
+                            break
+                except FileNotFoundError:
+                    continue
+            with open(out, "w") as fout:
+                if header:
+                    fout.write(header)
+                for p in parts:
+                    try:
+                        with open(p) as fin:
+                            first = fin.readline()
+                            # Only strip if it looks like the header we wrote.
+                            if first and first != header:
+                                fout.write(first)
+                            for line in fin:
+                                fout.write(line)
+                    except FileNotFoundError:
+                        continue
 
 
 # Tighten candidates → final set. --require-terminal-motif-match enforces that

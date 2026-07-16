@@ -65,7 +65,11 @@ def _boundary_one(args):
         ctrl_counts = Counter(ctrl[column].map(str).map(slicer))
         telo_total = sum(telo_counts.values()) or 1
         ctrl_total = sum(ctrl_counts.values())
-        for mer, n in telo_counts.most_common(10):
+        # Emit every telotron-side k-mer, not just top-10. Selecting the
+        # top-10-by-count then running Fisher+BH across the survivors is
+        # select-then-test and makes p/q values anti-conservative even
+        # ignoring the definitional-circularity flag below.
+        for mer, n in telo_counts.items():
             cf = ctrl_counts.get(mer, 0)
             tf = n / telo_total
             cfq = cf / ctrl_total if ctrl_total else 0
@@ -145,24 +149,39 @@ def _distance_one(args):
     n = len(group)
     if not n:
         return [genome_id, 0, 0, "", "", "", "", ""]
-    obs = group.distance_to_end.astype(float).to_numpy()
-    free = (group.contig_len.astype(float)
-            - group.intron_len.astype(float)).clip(lower=1.0).to_numpy()
-    obs_med = float(np.median(obs))
-    # Sign test: is each telotron closer to its contig end than that contig's
-    # null median (free/4)?  Binomial vs 0.5, one-sided (closer than chance).
-    closer = int(np.count_nonzero(obs < free / 4.0))
-    sign_p = (binomtest(closer, n, 0.5, alternative="greater").pvalue
-              if binomtest else "")
-    # Monte-Carlo: null distribution of the median distance under random placement.
+    # Contig-level aggregation: telotrons on the SAME contig are physically
+    # dependent (subtelomeric blocks cluster many loci within a few kb) — a
+    # per-locus null underestimates variance and inflates significance. Take
+    # one summary per contig (contig-median distance) for both the observed
+    # statistic AND the null; the sign test is likewise per-contig.
+    df = group.copy()
+    df["_free"] = (df.contig_len.astype(float) - df.intron_len.astype(float)).clip(lower=1.0)
+    df["_dist"] = df.distance_to_end.astype(float)
+    per_contig = df.groupby("seqid").agg(_dist=("_dist", "median"),
+                                         _free=("_free", "median"))
+    contig_dist = per_contig._dist.to_numpy()
+    contig_free = per_contig._free.to_numpy()
+    n_contigs = len(per_contig)
+    obs_med = float(np.median(contig_dist)) if n_contigs else float(np.median(df._dist))
+    # Sign test at the CONTIG level: is the contig's median distance closer
+    # than free/4 (the expected median under uniform placement)?
+    closer = int(np.count_nonzero(contig_dist < contig_free / 4.0)) if n_contigs else 0
+    sign_p = (binomtest(closer, n_contigs, 0.5, alternative="greater").pvalue
+              if (binomtest and n_contigs) else "")
+    # Monte-Carlo null: draw one placement per CONTIG and take the median.
     rng = np.random.default_rng(seed)
-    null_meds = np.empty(n_perm)
-    for i in range(n_perm):
-        u = rng.uniform(0.0, free)
-        null_meds[i] = np.median(np.minimum(u, free - u))
-    mc_p = (np.count_nonzero(null_meds <= obs_med) + 1) / (n_perm + 1)
+    if n_contigs:
+        null_meds = np.empty(n_perm)
+        for i in range(n_perm):
+            u = rng.uniform(0.0, contig_free)
+            null_meds[i] = np.median(np.minimum(u, contig_free - u))
+        mc_p = (np.count_nonzero(null_meds <= obs_med) + 1) / (n_perm + 1)
+        null_med = float(np.median(null_meds))
+    else:
+        mc_p = ""
+        null_med = ""
     return [genome_id, n, int(group.seqid.nunique()), obs_med,
-            float(np.median(null_meds)), closer / n, sign_p, mc_p]
+            null_med, closer / n_contigs if n_contigs else "", sign_p, mc_p]
 
 
 def distance_to_end(final, out_path, threads=1, capped_only=True, n_perm=2000, seed=1):

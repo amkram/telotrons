@@ -74,8 +74,12 @@ def is_telo(genome, seqid, s, e):
         return False
     i = bs.bisect_right([x[0] for x in ivs], e)
     for ts, te in ivs[max(0, i - 30) : i + 1]:
-        ov = min(e, te) - max(s, ts)
-        if ov > 0 and ov / min(e - s, te - ts + 1) > 0.5:
+        # Both (s, e) and (ts, te) are 1-based inclusive GFF coords, so
+        # length is `end - start + 1` and overlap is `min(e,te) - max(s,ts) + 1`.
+        # The previous mix of 0-based and 1-based length flipped the 50%
+        # overlap call at boundary cases.
+        ov = min(e, te) - max(s, ts) + 1
+        if ov > 0 and ov / min(e - s + 1, te - ts + 1) > 0.5:
             return True
     return False
 

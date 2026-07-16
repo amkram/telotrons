@@ -210,9 +210,16 @@ def classify(seq, motif, bv=None):
     if len(real_linkers) == 1:
         gs, ge, gl, prev_kind, next_kind = real_linkers[0]
         gap_seq = seq[gs:ge]
-        if prev_kind == "F" and next_kind == "R":
-            return "GT-F-linker-R-AG", gap_seq, gl, gs, ge
-        return "GT-R-linker-F-AG", gap_seq, gl, gs, ge
+        # A single real linker is only a bidirectional-with-linker call if the
+        # locus is exactly two arms (one flanking each side of the linker). If
+        # additional arms exist beyond the linker the true structure is a
+        # multi-junction, not a linker architecture.
+        arm_kinds = [a[2] for a in arrs]
+        if len(arm_kinds) == 2:
+            if prev_kind == "F" and next_kind == "R":
+                return "GT-F-linker-R-AG", gap_seq, gl, gs, ge
+            return "GT-R-linker-F-AG", gap_seq, gl, gs, ge
+        return "Multi-junction", gap_seq, gl, gs, ge
 
     # No real linker passed; collapse to convergent or Other.
     if all_transitions and first_kind == "F" and last_kind == "R":

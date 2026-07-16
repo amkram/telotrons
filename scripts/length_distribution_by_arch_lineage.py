@@ -71,7 +71,10 @@ for lin in ['PSW_MAG', 'Eimeria']:
         x = sub['intron_len'].astype(float).values
         med = float(np.median(x)); q25, q75 = float(np.percentile(x,25)), float(np.percentile(x,75))
         mn, mx = float(np.min(x)), float(np.max(x))
-        mean, std = float(np.mean(x)), float(np.std(x, ddof=1)) if n>1 else 0.0
+        # Operator precedence: `A, B if n>1 else 0.0` parses as `A, (B if n>1 else 0.0)`
+        # which is a tuple, then a tuple/float mix on unpack; guard the whole line.
+        mean = float(np.mean(x))
+        std = float(np.std(x, ddof=1)) if n > 1 else 0.0
         # Hartigan dip on log10(len) to be scale-insensitive when distributions span orders
         # but report on raw too; choose raw because biological lengths are bounded short.
         if n >= 4:

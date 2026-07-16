@@ -136,7 +136,11 @@ def load_introns(gt_gff_path):
                     gene_of[tid] = attrs.get("Parent", "")
             elif ftype == "intron":
                 parent = attrs.get("Parent", "").split(",")[0]
-                intron_rows.append([seqid, int(start), int(end), strand or transcripts.get(parent, "."),
+                # gt sometimes emits `.` for unstranded introns; fall back to
+                # the parent transcript's strand. `"."` is truthy in Python so
+                # `strand or ...` never fires — check membership explicitly.
+                s = strand if strand in ("+", "-") else transcripts.get(parent, ".")
+                intron_rows.append([seqid, int(start), int(end), s,
                                     parent, gene_of.get(parent, "")])
     if not intron_rows:
         return pd.DataFrame(columns=["seqid", "start", "end", "strand", "tx_id", "gene_id",
@@ -353,13 +357,20 @@ def terminal_motif(hits, contig_lens, window=500, min_frac=0.5):
     h["clen"] = h["clen"].astype(int)
 
     # Left end: hit overlaps [0, window). Right end: hit overlaps [clen-window, clen).
+    # On contigs shorter than 2*window the two windows would overlap and a single
+    # hit would be counted into BOTH ends (and both merged_bp values would sum
+    # into terminal_motif_bases). Partition instead: right end starts at
+    # max(clen-window, window) so left/right never overlap. On contigs <= window
+    # the right end is empty and only the left is scored.
     left = h[h.start < window].copy()
     left["end_lo"] = 0
-    left["end_hi"] = window
+    left["end_hi"] = left.clen.clip(upper=window)
     left["end_id"] = left.seqid.astype(str) + ":L"
 
-    right = h[h.end > (h.clen - window)].copy()
-    right["end_lo"] = (right.clen - window).clip(lower=0).astype(int)
+    r_lo = h.clen.sub(window).clip(lower=0)
+    r_lo = pd.concat([r_lo, pd.Series([window] * len(h), index=h.index)], axis=1).max(axis=1)
+    right = h[(h.end > (h.clen - window)) & (h.clen > window)].copy()
+    right["end_lo"] = r_lo.loc[right.index].astype(int)
     right["end_hi"] = right.clen
     right["end_id"] = right.seqid.astype(str) + ":R"
 
