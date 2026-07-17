@@ -19,7 +19,7 @@ drafts, ED figures, audit notes, `pan_euk_telotrons/`, `tara_oceans_euk_mags/`,
 from or add code.
 
 **Layout (post-2026-06-05 deslop).** Exactly four root subdirs:
-- `scripts/` — pipeline source (~74 files). Every Snakefile rule shells out to
+- `scripts/` — pipeline source (31 files). Every Snakefile rule shells out to
   one of these. `_common.py` and `telomere_mask.py` are shared helpers
   (the latter closes the telomere-rotation contamination trap — always import
   before any composition/motif/logo analysis on telomere-adjacent sequence).
@@ -40,10 +40,12 @@ tracked files at root. No shell orchestrators — invoke via `snakemake`.
 
 ## Pipeline (Snakefile + scripts/ + config.yaml)
 
-One Snakemake workflow (~1700 lines, 67 rules) configured by
+One Snakemake workflow (~1050 lines, 31 rules incl. 3 checkpoints) configured by
 [config.yaml](config.yaml) (`configfile:`). It is **not** linear: a scan/filter
 core fans out into many independent analysis and plotting arms. `scripts/` holds
-~70 standalone Python CLIs; each rule shells out to one. **The Snakefile is
+31 standalone Python CLIs; each rule shells out to one (except the shared
+helpers `_common.py`, `_render.py`, `telomere_mask.py`, and the two
+report renderers, which are invoked ad hoc). **The Snakefile is
 canonical** — all prior shell orchestrators (`run_full_survey.sh`,
 `run_test_survey.sh`, `_survey_env.sh`, `blast_by_arch.sh`,
 `restriction_factor_sweep.sh`, `apply_good_orthologs.sh`) were retired in the
@@ -141,8 +143,10 @@ Config (threads, `refseq_groups`, `accessions` whitelist, `telomere_motifs`,
 
 - **Misannotation is the dominant false positive.** Gene predictors split long
   telomeric arrays into fake exon/intron structure. `scan_telotrons.py` rejects
-  loci with `flank_telomeric_frac > scan.max_flank_repeat_frac` (default 0.50).
-  Don't loosen without thinking.
+  loci with `flank_telomeric_frac > scan.max_flank_repeat_frac` (**0.25**, not
+  0.50 — tightened because misannotated subtelomere introns, e.g.
+  Monocercomonoides and Brugia, sit exactly at 0.50). Don't loosen without
+  thinking.
 - **`require_terminal_motif_match` is doing real work** — it forces the intronic
   motif to equal the motif dominating that genome's contig ends (the real
   telomere), killing cross-motif noise.

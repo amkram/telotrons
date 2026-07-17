@@ -210,10 +210,22 @@ rule canonical_motifs:
         import csv
         with open(input.manifest) as fh, open(output[0], "w", newline="") as out:
             w = csv.writer(out, delimiter="\t")
-            w.writerow(["genome_id", "motif"])
+            # `source` distinguishes literature curation from a kingdom-wide
+            # guess; scan_telotrons treats them very differently (see below).
+            w.writerow(["genome_id", "motif", "source"])
             for r in csv.DictReader(fh, delimiter="\t"):
-                m = params.by_genome.get(r["genome_id"]) or params.by_group.get(r["group"], "")
-                w.writerow([r["genome_id"], m or ""])
+                gid, grp = r["genome_id"], r["group"]
+                # Membership test, NOT `or`: an explicit per-genome "" means
+                # "no curated motif — scan for it", and "" is falsy, so
+                # `by_genome.get(gid) or by_group.get(grp)` silently reversed
+                # exactly the overrides config.yaml sets to disable motif
+                # validation (Drosophila, S. cerevisiae, and the two GenBank
+                # test genomes), handing them their group default instead.
+                if gid in params.by_genome:
+                    m, src = params.by_genome[gid], "by_genome"
+                else:
+                    m, src = params.by_group.get(grp, ""), "by_group"
+                w.writerow([gid, m or "", src if m else ""])
 
 
 # Checkpoint: emit the genome list from the manifest so downstream rules can
@@ -931,6 +943,12 @@ rule nucleosome_analysis:
     input:
         arch=ARCH_TSV,
         controls="work/results/non_telotron_controls.tsv",
+        # Declared so the analysis set actually tracks the bearer set. Without
+        # this input (and the --confident-species flag below) nucleosome_inputs
+        # fell back to 6 hardcoded genome IDs, so admitting a new confident
+        # bearer changed these figures by nothing — contradicting the
+        # "everything is confident-species-driven" contract in CLAUDE.md.
+        confident="work/results/confident_species.tsv",
         tara=["data/raw/tara/.fna.done"],
         assemblies=ASSEMBLIES_DONE,
     output:
@@ -944,6 +962,7 @@ rule nucleosome_analysis:
         r"""
         python scripts/nucleosome_inputs.py \
             --table {input.arch} --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
+            --confident-species {input.confident} \
             --out work/results/nucleosome
         python scripts/nucleosome_control_inputs.py \
             --controls {input.controls} --telo-manifest {output.manifest} \

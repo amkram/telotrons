@@ -57,7 +57,7 @@ def lineage(row):
 df['lineage'] = df.apply(lineage, axis=1)
 
 # Focus architectures
-ARCHS = ['GT-F-AG', 'GT-R-AG', 'GT-F-R-AG', 'GT-R-linker-F-AG', 'GT-F-linker-R-AG', 'Other', 'Multi-junction']
+ARCHS = ['GT-F-AG', 'GT-R-AG', 'GT-F-R-AG', 'GT-R-F-AG', 'GT-R-linker-F-AG', 'GT-F-linker-R-AG', 'Multi-junction', 'Other']
 
 # ===== Per-bucket summary =====
 rows = []
@@ -169,7 +169,10 @@ print(linker_offset.to_string(index=False))
 # ===== Figures =====
 # 2x1 panel: histogram per (lineage, arch). Log-x.
 def plot_histograms():
-    archs_plot = ['GT-F-AG','GT-R-AG','GT-F-R-AG','GT-R-linker-F-AG','GT-F-linker-R-AG','Other']
+    # Multi-junction + GT-R-F-AG included: both are bidirectional classes that can
+    # single-handedly admit a confident bearer, and omitting them made these
+    # figures read as a complete architecture census when they were not.
+    archs_plot = ['GT-F-AG','GT-R-AG','GT-F-R-AG','GT-R-F-AG','GT-R-linker-F-AG','GT-F-linker-R-AG','Multi-junction','Other']
     lineages = ['PSW_MAG','Eimeria']
     fig, axes = plt.subplots(2, len(archs_plot), figsize=(3.3*len(archs_plot), 6), sharey=False)
     for i, lin in enumerate(lineages):
@@ -197,7 +200,7 @@ def plot_histograms():
 
 # Overlaid KDE/hist comparison: PSW vs Eimeria for each architecture
 def plot_overlay():
-    archs_plot = ['GT-F-AG','GT-R-AG','GT-F-R-AG','GT-R-linker-F-AG','GT-F-linker-R-AG']
+    archs_plot = ['GT-F-AG','GT-R-AG','GT-F-R-AG','GT-R-F-AG','GT-R-linker-F-AG','GT-F-linker-R-AG','Multi-junction']
     fig, axes = plt.subplots(1, len(archs_plot), figsize=(3.3*len(archs_plot), 3.2), sharey=False)
     for j, arch in enumerate(archs_plot):
         ax = axes[j]

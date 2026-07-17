@@ -34,11 +34,38 @@ def main():
     ap.add_argument("--out", default="work/results/nucleosome")
     ap.add_argument("--fmin", type=int, default=1000)
     ap.add_argument("--fmax", type=int, default=5000)
-    # genomes to analyse (5 Eimeria + the Tara MAG; singleton lineages are not at expansion scale)
-    ap.add_argument("--genomes", nargs="*", default=[
-        "GCF_000499545.2","GCF_000499385.1","GCF_000499745.2","GCF_000499425.1","GCF_000499605.1",
-        "TARA_PSW_86_MAG_00284"])
+    # Genomes to analyse. Default = EVERY confident bearer species, read from
+    # confident_species.tsv — not a hardcoded panel.
+    #
+    # This used to default to 6 literal IDs (5 Eimeria + the Tara MAG) and the
+    # Snakefile passed no --genomes, so the default always won. That silently
+    # falsified two claims: CLAUDE.md's "Every downstream analysis keys off
+    # this file — new bearer species flow through automatically without
+    # touching Python", and nucleosome_features' own "cluster count comes from
+    # the actual manifest ... so new bearer species scale correctly". The
+    # manifest could only ever contain those 6, so N_GENOMES_T was permanently
+    # {Eimeria: 5, MAG: 1}, MIN_CLUSTERS=3 permanently suppressed the MAG
+    # p-value, and admitting a new bearer (e.g. Monocercomonoides exilis)
+    # changed the figure by exactly nothing.
+    ap.add_argument("--confident-species", default="work/results/confident_species.tsv",
+                    help="TSV from the confident_species rule; its genome_id column is "
+                         "the default analysis set.")
+    ap.add_argument("--genomes", nargs="*", default=None,
+                    help="explicit genome_ids, overriding --confident-species "
+                         "(use only for debugging a specific panel)")
     a=ap.parse_args()
+    if not a.genomes:
+        if not os.path.exists(a.confident_species):
+            sys.exit(f"--confident-species {a.confident_species!r} not found and no "
+                     f"--genomes given: refusing to fall back to a hardcoded panel. "
+                     f"Run the confident_species rule first.")
+        import csv as _csv
+        with open(a.confident_species) as _fh:
+            a.genomes = [r["genome_id"] for r in _csv.DictReader(_fh, delimiter="\t")]
+        if not a.genomes:
+            sys.exit(f"{a.confident_species}: no confident bearer species — nothing to analyse.")
+        print(f"nucleosome inputs: {len(a.genomes)} confident bearer species "
+              f"from {a.confident_species}", file=sys.stderr)
     FMAX,FMIN=a.fmax,a.fmin
     def gapfree(chrom,s,e):
         up=chrom[:s]; m=list(re.finditer("N{5,}",up)); left=s-(m[-1].end() if m else 0)

@@ -113,7 +113,27 @@ canonical_telomere_motifs:
     GCF_000499385.1: TTTAGGG   # Eimeria necatrix
     GCF_000499425.1: TTTAGGG   # Eimeria acervulina
     GCF_000499545.2: TTTAGGG   # Eimeria tenella
-    GCF_000499605.1: TTTAGGG   # Eimeria maxima
+    # Eimeria maxima is TTAGGG, NOT TTTAGGG like its Eimeria sisters — corrected
+    # 2026-07-16. Four independent lines of evidence:
+    #  1. The long-read T2T assemblies (13-14/14 telomere-capped) show TTAGGG
+    #     (memory: eimeria_longread_t2t_assemblies_2026-05-30). A capped T2T
+    #     assembly is the only place a telomere motif can be read cleanly.
+    #  2. This file already said so at telomere_boundaries.assemblies.Emaxima
+    #     (motif: TTAGGG) — the config contradicted itself.
+    #  3. Telogator2 decontamination found E. maxima's motif "identical to
+    #     chicken" (= TTAGGG), which is why host carryover masqueraded as
+    #     Eimeria alleles (memory: telogator2_decontamination_2026-06-05).
+    #  4. Measured directly on this RefSeq assembly: 20 contig termini carry a
+    #     perfect TTAGGG array (median 54 bp), where E. tenella carries exactly
+    #     ZERO. The TTTAGGG terminal arrays here (36, median 35 bp) are the
+    #     short interstitial arrays Eimeria is full of, sitting near assembly
+    #     breaks in this fragmented short-read assembly — many-and-short is the
+    #     interstitial signature, few-and-long is the telomere.
+    # The old TTTAGGG value was actively harmful: with
+    # require_terminal_motif_match, every REAL TTAGGG telotron in E. maxima was
+    # deleted by the motif gate, and contig_both_ends_capped used the wrong
+    # motif so the species contributed ~no capped contigs to distance-to-end.
+    GCF_000499605.1: TTAGGG    # Eimeria maxima  (NOT TTTAGGG — see above)
     GCF_000499745.2: TTTAGGG   # Eimeria mitis
     GCF_000006565.2: TTTAGGG   # Toxoplasma gondii ME49
     # ── Plants: TTTAGGG (Arabidopsis-type; Richards 1988)

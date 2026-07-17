@@ -1004,7 +1004,28 @@ def scan_one(args):
         # {canonical, scanned_high_conf, scanned_low_conf, none} and the maximum
         # per-end coverage (review: do not silently drop low-coverage genomes).
         canonical = opts.get("canonical", {}).get(gid, "")
+        canonical_src = opts.get("canonical_src", {}).get(gid, "by_genome")
         scan_motif, scan_bases, max_end_frac = terminal_motif(hits, contig_lens)
+
+        # A by_group default is a PRIOR over a whole NCBI kingdom, not a curated
+        # fact — it must never beat this genome's own high-confidence scan.
+        # Applying it as a hard override made 5 of the 18 curated motifs
+        # structurally unfindable: `plant: TTTAGGG` overwrote the terminal motif
+        # of EVERY plant, so a genuine Allium (CTCGGTTATGGG), Chlamydomonas
+        # (TTTTAGGG), Cestrum (TTTTTTAGGG) or Chrysobalanaceae (TTTATTAGGG)
+        # telotron was found by the scan and then deleted by
+        # require_terminal_motif_match, and those species reported telotrons=0.
+        # That is CLAUDE.md's "hardcoding TTAGGG is a bug" trap at kingdom
+        # granularity — the pipeline could not find a telotron in the very
+        # lineages the motif list was curated to cover.
+        # by_genome entries are literature-curated and stay authoritative (but
+        # are validated against the genome below).
+        if canonical and canonical_src == "by_group" and scan_motif and scan_motif != canonical:
+            print(f"[INFO] {gid}: group-default motif {canonical!r} overridden by this "
+                  f"genome's own high-confidence scan {scan_motif!r} "
+                  f"(max_end_frac={max_end_frac:.3f}).", file=sys.stderr, flush=True)
+            canonical = ""      # fall through to the scanned value below
+
         if canonical:
             term_motif = canonical
             # Bases = how many bp of this motif actually appear within 500 bp of
@@ -1036,6 +1057,23 @@ def scan_one(args):
                     merged_c = _merged_coverage_per_group(near_c, ["end_id", "motif"])
                     term_bases = int(merged_c["merged_bp"].sum()) if not merged_c.empty else 0
             term_method = "canonical"
+            # VALIDATE the curated assertion against the genome itself. The scan
+            # already computes the disconfirming evidence; previously it was
+            # recorded and never acted on, so a wrong curated motif silently
+            # deleted every real telotron in that species via
+            # require_terminal_motif_match while leaving
+            # terminal_motif_method="canonical" and terminal_motif_bases=0 in
+            # the output as an unread contradiction. (This is exactly how
+            # config.yaml carried TTTAGGG for E. maxima, whose telomere is
+            # TTAGGG, until 2026-07-16.)
+            if scan_motif and scan_motif != canonical and term_bases == 0:
+                term_method = "canonical_CONTRADICTED_by_scan"
+                print(f"[WARN] {gid}: curated canonical motif {canonical!r} has ZERO bp at "
+                      f"contig ends, but the scan finds {scan_motif!r} at high confidence "
+                      f"(max_end_frac={max_end_frac:.3f}). The curated value is probably "
+                      f"wrong; with --require-terminal-motif-match every real telotron in "
+                      f"this genome will be dropped. Fix canonical_telomere_motifs in "
+                      f"config.yaml.", file=sys.stderr, flush=True)
         else:
             term_motif, term_bases = scan_motif, scan_bases
             if term_motif:
@@ -1160,11 +1198,15 @@ def main():
         sys.exit(f"--single-genome={args.single_genome!r} not present in manifest {args.manifest}")
 
     canonical = {}
+    canonical_src = {}
     if args.canonical_motifs:
         with open(args.canonical_motifs) as f:
             for r in csv.DictReader(f, delimiter="\t"):
                 if r["motif"]:
                     canonical[r["genome_id"]] = r["motif"]
+                    # `source` is absent in pre-2026-07-16 files; default to the
+                    # strict interpretation so an old file behaves as before.
+                    canonical_src[r["genome_id"]] = r.get("source") or "by_genome"
 
     opts = {
         "refseq_dir": args.refseq_dir,
@@ -1176,6 +1218,7 @@ def main():
         "min_intron_len": args.min_intron_len,
         "bidir_min_hits": args.bidir_min_hits,
         "canonical": canonical,
+        "canonical_src": canonical_src,
         "ultra_bin": args.ultra_bin,
         "ultra_min_units": args.ultra_min_units,
         "ultra_min_length": args.ultra_min_length,
