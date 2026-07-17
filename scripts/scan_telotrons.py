@@ -43,6 +43,74 @@ def _canonical_unit(unit: str) -> str:
     return min(both)
 
 
+def _kmer_sets(motif):
+    """(fwd_rotations, rev_rotations) for a base motif.
+
+    fwd = every rotation of the motif (G-rich strand); rev = every rotation of
+    its reverse complement (C-rich strand). A k-mer reachable from both (a
+    palindromic motif) is dropped from both so a base is never credited to
+    two arms at once.
+    """
+    fwd = set(rotations(motif))
+    rev = set(rotations(rc(motif)))
+    both = fwd & rev
+    return fwd - both, rev - both
+
+
+_KMER_CACHE = {}
+
+
+def telomere_coverage(seq, motif):
+    """(covered_bp, fwd_bp, rev_bp) of `seq` covered by EXACT rotations of `motif`.
+
+    Measures the SEQUENCE directly rather than trusting a repeat-caller's
+    consensus. This is deliberate: ULTRA routinely reports a chimeric or
+    higher-order consensus over a real telomeric array (e.g. the period-19
+    'AGGGCAGGGCTTAGGGTTT' seen in E. tenella), and deciding "is this
+    telomeric?" by matching that consensus against the config motif list
+    scores such an array as 0 bp telomeric — silently discarding real
+    telotrons (measured: a 120 bp intron that is 120/120 telomeric scored
+    frac=0.25 and failed even the 0.30 sieve). Sliding the motif's own
+    rotations over the bases cannot be fooled that way.
+
+    EXACT rotations only, no mismatch tolerance — this is a deliberate,
+    empirically-forced choice. A 1-mismatch allowance was tried and had to be
+    reverted: for a 5-bp motif (TTAGG) the 1-mismatch neighbourhood covers
+    ~15% of all 5-mers, so in 77%-AT E. tenella nearly any sequence scores
+    telomeric. Measured on the real genome, 1-mismatch pushed telomere_match
+    to 28697/29965 introns (96%) and the bidirectional gate to 19705 loci vs
+    1649 for exact matching. Exact rotations also keep telomeric_frac on the
+    same scale the config thresholds (filter.min_repeat_frac=0.85,
+    scan.min_repeat_frac=0.30) were calibrated against.
+
+    Degeneracy tolerance lives in the ULTRA curation columns
+    (dominant_consensus / substitutions / ...), which is what ULTRA is for and
+    where a false positive costs a manual review rather than a wrong telotron.
+
+    Coverage is merged, so overlapping rotation matches cannot push the
+    fraction past 1.0.
+    """
+    L = len(motif)
+    n = len(seq)
+    if L == 0 or n < L:
+        return 0, 0, 0
+    if motif not in _KMER_CACHE:
+        _KMER_CACHE[motif] = _kmer_sets(motif)
+    fwd_e, rev_e = _KMER_CACHE[motif]
+
+    fwd_iv, rev_iv = [], []
+    for i in range(n - L + 1):
+        km = seq[i:i + L]
+        if km in fwd_e:
+            fwd_iv.append((i, i + L))
+        elif km in rev_e:
+            rev_iv.append((i, i + L))
+    fwd_bp = _merged_bp(fwd_iv)
+    rev_bp = _merged_bp(rev_iv)
+    covered = _merged_bp(fwd_iv + rev_iv)
+    return covered, fwd_bp, rev_bp
+
+
 def _merged_bp(intervals):
     """Total bp covered by [start, end) intervals after merging overlaps.
 
@@ -134,14 +202,37 @@ SUMMARY_HEADER = [
 ]
 
 
+# Minimum tandem units before an intron's telomere columns are populated at
+# all. Below this a "hit" is chance sequence, not an array.
+MIN_TELO_UNITS = 2
+
+# Separator between a pattern's base motif and its rotation index in the
+# seqkit pattern-file FASTA headers. Chosen to never occur in a DNA motif.
+_ROT_SEP = "__rot"
+
+
 def write_pattern_file(path, motifs):
-    """seqkit --pattern-file: each forward rotation gets its own line, all named after the base motif.
-    seqkit searches both strands by default, so revcomps are handled implicitly."""
+    """seqkit --pattern-file: every forward rotation, each under a UNIQUE name.
+
+    seqkit searches both strands by default, so revcomps are handled implicitly.
+
+    The rotation index in the name is load-bearing: seqkit locate silently
+    keeps only the LAST record per duplicate FASTA name. Naming every rotation
+    after its base motif (as this did until 2026-07-16) therefore searched
+    exactly ONE rotation per motif with no warning — measured on (TTAGGG)10,
+    9 hits from the last rotation alone versus 55 with unique names. Callers
+    must map the BED name column back with `base_motif_from_pattern()`.
+    """
     with open(path, "w") as f:
         for m in motifs:
             m = m.upper()
             for i, rot in enumerate(rotations(m)):
-                f.write(f">{m}\n{rot}\n")
+                f.write(f">{m}{_ROT_SEP}{i}\n{rot}\n")
+
+
+def base_motif_from_pattern(name):
+    """'TTAGGG__rot3' -> 'TTAGGG'. Inverse of write_pattern_file's naming."""
+    return str(name).split(_ROT_SEP, 1)[0]
 
 
 def run_gt_introns(gff_path, out_path):
@@ -357,22 +448,41 @@ def _parse_ultra_tsv(path):
 def compute_intron_motif_metrics_ultra(introns_df, seqs, contig_lens, tmp_dir,
                                        motifs, ultra_bin, threads=1,
                                        flank_bp=200, opts=None):
-    """ULTRA-driven replacement for the seqkit-locate / bedtools pipeline.
+    """Per-intron repeat metrics. Replaces the seqkit-locate / bedtools pipeline.
 
-    Returns (best_motif_df, flank_df, strand_df, ultra_df) all keyed by `row`.
-    - best_motif_df: motif (telomere name if match else discovered consensus),
-                     telomeric_bases (covered bp when telomere_match),
-                     telomeric_frac (covered bp / intron_len when telomere_match)
-    - flank_df:      flank_telomeric_frac (covered bp / total flank len,
-                     counting ONLY telomere-matching ULTRA records — same
-                     misannotation-trap semantics as before)
-    - strand_df:     fwd_hits, rev_hits — sum of `copies` from telomere-
-                     matching ULTRA records classified by consensus rotation
-                     (G-rich = fwd, C-rich = rev). Direct analog of the old
-                     seqkit hit counts; filter_final's `>=3` gate transfers.
-    - ultra_df:      full ULTRA fields (dominant_consensus, dominant_canonical,
-                     period, ultra_score, copies, subs/ins/del, cover_frac,
-                     telomere_match, telomere_match_name)
+    TWO INDEPENDENT MEASUREMENTS, deliberately kept separate:
+
+    1. TELOMERE columns (paper-critical; feed filter_final's calibrated gates)
+       come from telomere_coverage() — a direct 1-mismatch-tolerant scan of the
+       intron BASES for rotations of the config motifs. They do NOT depend on
+       ULTRA at all. Earlier revisions derived these from ULTRA's consensus and
+       were wrong twice over: gating on the single largest ("dominant") record
+       silently dropped 475 bidirectional loci (37%) on real E. tenella data,
+       and even after using every record, a chimeric consensus like the
+       period-19 'AGGGCAGGGCTTAGGGTTT' still contributed 0 bp — a 120 bp intron
+       that is 120/120 telomeric scored frac=0.25 and failed even the 0.30
+       sieve. Measuring bases instead of consensi cannot fail that way.
+
+    2. CURATION columns (dominant_consensus / period / substitutions / …) come
+       from ULTRA, which is what ULTRA is genuinely good at: finding the
+       dominant tandem repeat of ANY unit with substitution and indel
+       tolerance. These are for manual review of non-telomeric repeat introns
+       and never gate the telotron set.
+
+    Returns (best_motif_df, flank_df, strand_df, ultra_df) keyed by `row`.
+    - best_motif_df: motif, telomeric_bases, telomeric_frac  (merged coverage,
+                     so frac cannot exceed 1.0)
+    - flank_df:      flank_telomeric_frac  (misannotation trap: a flank that is
+                     itself telomeric means the "intron" is a mis-split array)
+    - strand_df:     fwd_hits / rev_hits = merged G-rich / C-rich bp divided by
+                     the motif length, i.e. the number of repeat UNITS per arm.
+                     This is the scale filter_final's bidir_min_hits=3 gate was
+                     calibrated against (the old seqkit path effectively
+                     counted units, because a pattern-file bug meant only one
+                     rotation ever matched — see write_pattern_file).
+    - ultra_df:      dominant_consensus, dominant_canonical, period,
+                     ultra_score, copies, substitutions, insertions, deletions,
+                     cover_frac, telomere_match, telomere_match_name
     """
     opts = opts or {}
     canon_to_name, fwd_rot, rev_rot = _build_telomere_lookup(motifs)
@@ -380,9 +490,9 @@ def compute_intron_motif_metrics_ultra(introns_df, seqs, contig_lens, tmp_dir,
     # 1. Emit intron FASTA (strand-corrected → transcript orientation) and
     #    flank FASTA (single record per flank, keyed as "<row>.L"/"<row>.R").
     intron_fa = os.path.join(tmp_dir, "introns.fa")
-    flank_fa = os.path.join(tmp_dir, "flanks.fa")
-    flank_lens = {}   # (row, side) -> len
-    with open(intron_fa, "w") as ifh, open(flank_fa, "w") as ffh:
+    intron_seq = {}          # row -> spliced-orientation intron sequence
+    flank_seq = {}           # (row, side) -> strand-corrected flank sequence
+    with open(intron_fa, "w") as ifh:
         for r in introns_df.itertuples(index=False):
             contig = seqs.get(r.seqid, "")
             if not contig:
@@ -391,35 +501,29 @@ def compute_intron_motif_metrics_ultra(introns_df, seqs, contig_lens, tmp_dir,
             e0 = int(r.end)
             if e0 > len(contig):
                 continue
+            row = int(r.row)
             raw = contig[s0:e0]
             seq = raw if r.strand != "-" else revcomp(raw)
-            ifh.write(f">i{int(r.row)}\n{seq}\n")
-            # Flanks are strand-corrected too so the same consensus rules apply.
-            L_start = max(0, s0 - flank_bp)
-            L_end = s0
-            R_start = e0
-            R_end = min(len(contig), e0 + flank_bp)
-            L_seq = contig[L_start:L_end]
-            R_seq = contig[R_start:R_end]
+            intron_seq[row] = seq
+            ifh.write(f">i{row}\n{seq}\n")
+            L_seq = contig[max(0, s0 - flank_bp):s0]
+            R_seq = contig[e0:min(len(contig), e0 + flank_bp)]
             if r.strand == "-":
-                # flip: upstream of a -strand intron sits at higher contig coord
+                # On the minus strand the transcript's upstream flank sits at
+                # the HIGHER contig coordinate, so swap as well as revcomp.
                 L_seq, R_seq = revcomp(R_seq), revcomp(L_seq)
             if L_seq:
-                ffh.write(f">f{int(r.row)}.L\n{L_seq}\n")
-                flank_lens[(int(r.row), "L")] = len(L_seq)
+                flank_seq[(row, "L")] = L_seq
             if R_seq:
-                ffh.write(f">f{int(r.row)}.R\n{R_seq}\n")
-                flank_lens[(int(r.row), "R")] = len(R_seq)
+                flank_seq[(row, "R")] = R_seq
 
-    # 2. Run ULTRA on both FASTAs. Empty inputs → empty by_seq.
+    # 2. Run ULTRA on the introns (curation columns only — the telomere
+    #    columns are measured directly from `intron_seq`/`flank_seq` below, so
+    #    the flanks no longer need an ULTRA pass at all).
     by_intron = {}
-    by_flank = {}
     if os.path.getsize(intron_fa) > 0:
         by_intron = _run_ultra_on_fasta(intron_fa, os.path.join(tmp_dir, "ultra_i.tsv"),
                                         ultra_bin, threads, opts)
-    if os.path.getsize(flank_fa) > 0:
-        by_flank = _run_ultra_on_fasta(flank_fa, os.path.join(tmp_dir, "ultra_f.tsv"),
-                                       ultra_bin, threads, opts)
 
     # 3. Per-intron aggregation.
     ilen_by_row = dict(zip(introns_df.row.astype(int), introns_df.intron_len.astype(int)))
@@ -427,112 +531,84 @@ def compute_intron_motif_metrics_ultra(introns_df, seqs, contig_lens, tmp_dir,
     strand_rows = []
     ultra_rows = []
     for row, ilen in ilen_by_row.items():
+        seq = intron_seq.get(row, "")
+
+        # --- TELOMERE columns: measured on the BASES, independent of ULTRA ---
+        # Score every config motif and keep the one covering the most bp (an
+        # intron can legitimately carry both TTAGGG and TTTAGGG — the
+        # within-locus motif-mixing result).
+        best = ("", 0, 0, 0)   # (motif, covered, fwd_bp, rev_bp)
+        for m in motifs:
+            cov, fbp, rbp = telomere_coverage(seq, m)
+            # Require a real tandem run, not a chance hit. A single 5-bp TTAGG
+            # occurs by chance every ~1 kb (far more often in 77%-AT genomes),
+            # and without this floor telomere_match fired on 17752/29965
+            # E. tenella introns (59%). MIN_TELO_UNITS=2 matches
+            # telomere_mask.py's min_units convention.
+            if cov < MIN_TELO_UNITS * len(m):
+                continue
+            if cov > best[1]:
+                best = (m, cov, fbp, rbp)
+        telo_name, covered, fwd_bp, rev_bp = best
+        if telo_name:
+            best_rows.append({"row": row, "motif": telo_name,
+                              "telomeric_bases": covered,
+                              "telomeric_frac": min(1.0, covered / ilen) if ilen else 0.0})
+            # Units per arm, not raw k-mer match counts: every position inside
+            # a perfect array matches SOME rotation, so counting matches would
+            # inflate by ~len(motif)x and silently weaken filter_final's
+            # bidir_min_hits=3 gate.
+            L = len(telo_name)
+            strand_rows.append({"row": row,
+                                "fwd_hits": int(fwd_bp // L),
+                                "rev_hits": int(rev_bp // L)})
+        else:
+            best_rows.append({"row": row, "motif": "", "telomeric_bases": 0, "telomeric_frac": 0.0})
+            strand_rows.append({"row": row, "fwd_hits": 0, "rev_hits": 0})
+
+        # --- CURATION columns: ULTRA's dominant repeat, whatever its unit ---
         recs = by_intron.get(f"i{row}") or []
         if not recs:
             ultra_rows.append({"row": row, "dominant_consensus": "", "dominant_canonical": "",
                                "period": 0, "ultra_score": 0.0, "copies": 0.0,
                                "substitutions": 0, "insertions": 0, "deletions": 0,
-                               "cover_frac": 0.0, "telomere_match": False, "telomere_match_name": ""})
-            best_rows.append({"row": row, "motif": "", "telomeric_bases": 0, "telomeric_frac": 0.0})
-            strand_rows.append({"row": row, "fwd_hits": 0, "rev_hits": 0})
+                               "cover_frac": 0.0,
+                               "telomere_match": bool(telo_name),
+                               "telomere_match_name": telo_name})
             continue
-        # `dominant_*` describes the LARGEST repeat in the intron — a curation
-        # signal only. It deliberately does NOT gate the telomere columns:
-        # ULTRA frequently merges adjacent degenerate telomere arrays into one
-        # longer higher-period chimeric consensus (real E. tenella example:
-        # period-19 'AGGGCAGGGCTTAGGGTTT') which matches no config motif. If
-        # that chimera wins the "dominant" contest while the SAME intron also
-        # carries clean 'AAACCCT' / 'AGGGTTT' records, gating on the dominant
-        # would discard a textbook bidirectional telotron. Measured on
-        # E. tenella: gating on dominant lost 475 bidirectional loci (37%).
         dom = max(recs, key=lambda x: (x["end"] - x["start"], x["score"]))
-        dom_canon = _canonical_unit(dom["consensus"])
-        cover_frac = (dom["end"] - dom["start"]) / ilen if ilen else 0.0
-
-        # Telomere columns come from EVERY telomere-matching record in the
-        # intron (the seqkit path counted motif hits anywhere in the intron;
-        # this preserves that semantics).
-        telo_recs = []
-        for r in recs:
-            nm = canon_to_name.get(_canonical_unit(r["consensus"]), "")
-            if nm:
-                telo_recs.append((nm, r))
-        # Pick the motif contributing the most merged bp (an intron can carry
-        # both TTAGGG and TTTAGGG — see the within-locus motif-mixing result).
-        telo_name = ""
-        if telo_recs:
-            by_name = {}
-            for nm, r in telo_recs:
-                by_name.setdefault(nm, []).append(r)
-            telo_name = max(by_name,
-                            key=lambda k: _merged_bp([(r["start"], r["end"]) for r in by_name[k]]))
-
         ultra_rows.append({
             "row": row,
             "dominant_consensus": dom["consensus"],
-            "dominant_canonical": dom_canon,
+            "dominant_canonical": _canonical_unit(dom["consensus"]),
             "period": dom["period"],
             "ultra_score": round(dom["score"], 3),
             "copies": round(dom["copies"], 3),
             "substitutions": dom["subs"],
             "insertions": dom["ins"],
             "deletions": dom["dels"],
-            "cover_frac": round(cover_frac, 4),
+            "cover_frac": round((dom["end"] - dom["start"]) / ilen, 4) if ilen else 0.0,
+            # telomere_match reflects the SEQUENCE scan above, not the
+            # consensus — a chimeric consensus over a real telomeric array
+            # must still be reported as telomeric.
             "telomere_match": bool(telo_name),
             "telomere_match_name": telo_name,
         })
 
-        if telo_name:
-            keep = [r for nm, r in telo_recs if nm == telo_name]
-            # MERGED coverage, not a raw sum: ULTRA can emit overlapping
-            # records for the same intron, and summing them would push
-            # telomeric_frac above 1.0 and past filter_final's 0.85 gate.
-            total_bp = _merged_bp([(r["start"], r["end"]) for r in keep])
-            best_rows.append({"row": row, "motif": telo_name,
-                              "telomeric_bases": total_bp,
-                              "telomeric_frac": min(1.0, total_bp / ilen) if ilen else 0.0})
-            fwd = rev = 0.0
-            for tr in keep:
-                cons = tr["consensus"]
-                if cons in fwd_rot:
-                    fwd += tr["copies"]
-                elif cons in rev_rot:
-                    rev += tr["copies"]
-                else:
-                    # Degenerate consensus: nearest exact rotation wins. Compare
-                    # only against rotations of the SAME length — zip() would
-                    # silently truncate to the shorter string and score a
-                    # length mismatch as a good hit.
-                    fd = _min_hamming(cons, fwd_rot)
-                    rd = _min_hamming(cons, rev_rot)
-                    if fd <= rd:
-                        fwd += tr["copies"]
-                    else:
-                        rev += tr["copies"]
-            strand_rows.append({"row": row, "fwd_hits": int(round(fwd)),
-                                "rev_hits": int(round(rev))})
-        else:
-            best_rows.append({"row": row, "motif": "", "telomeric_bases": 0, "telomeric_frac": 0.0})
-            strand_rows.append({"row": row, "fwd_hits": 0, "rev_hits": 0})
-
-    # 4. Flank telomere coverage — merged over telomere-matching ULTRA records.
-    flank_iv = {}    # row -> list of (start, end) in a per-row concatenated space
-    flank_tot = {}
-    for (row, side), flen in flank_lens.items():
-        base = flank_tot.get(row, 0)
-        flank_tot[row] = base + flen
-        recs = by_flank.get(f"f{row}.{side}") or []
-        for r in recs:
-            if canon_to_name.get(_canonical_unit(r["consensus"])):
-                # Offset by `base` so the two flanks occupy disjoint intervals
-                # and merging can't collapse a left-flank hit into a right one.
-                flank_iv.setdefault(row, []).append((base + r["start"], base + r["end"]))
+    # 4. Flank telomere coverage — also measured on the bases (misannotation
+    #    trap: a flank that is itself telomeric means the "intron" is a
+    #    predictor-split piece of one long array).
     flank_records = []
     for row in ilen_by_row:
-        total = flank_tot.get(row, 0)
-        cov = _merged_bp(flank_iv.get(row, []))
+        tot = cov = 0
+        for side in ("L", "R"):
+            fseq = flank_seq.get((row, side), "")
+            if not fseq:
+                continue
+            tot += len(fseq)
+            cov += max((telomere_coverage(fseq, m)[0] for m in motifs), default=0)
         flank_records.append({"row": row,
-                              "flank_telomeric_frac": min(1.0, cov / total) if total else 0.0})
+                              "flank_telomeric_frac": min(1.0, cov / tot) if tot else 0.0})
 
     best_motif = pd.DataFrame(best_rows)
     strand = pd.DataFrame(strand_rows)
@@ -797,11 +873,18 @@ def scan_one(args):
             gt_rc, n_mrna_in, gt_stderr_tail, exon_source = run_gt_introns(gff, gff_with_introns)
             introns = load_introns(gff_with_introns)
 
+            # Genome-wide motif hits. After the 2026-07-16 ULTRA rewrite this
+            # BED feeds ONLY terminal_motif() / contig_both_ends_capped — the
+            # per-intron metrics are measured directly from the bases.
             write_pattern_file(patterns, opts["motifs"])
             run_seqkit_locate(fa, patterns, hits_bed)
             if os.path.getsize(hits_bed):
                 hits = pd.read_csv(hits_bed, sep="\t", header=None,
                                    names=["seqid", "start", "end", "name", "score", "strand"])
+                # Collapse 'TTAGGG__rot3' -> 'TTAGGG' so terminal_motif groups
+                # every rotation under its base motif (it merges overlapping
+                # intervals per group, so rotations cannot double-count).
+                hits["name"] = hits["name"].map(base_motif_from_pattern)
             else:
                 hits = pd.DataFrame(columns=["seqid", "start", "end", "name", "score", "strand"])
 
