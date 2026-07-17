@@ -259,10 +259,10 @@ for ax, lin, motif_len in [(axes[0], 'PSW_MAG', 6), (axes[1], 'Eimeria', 7)]:
                 label=f'1-arm (n={len(one)}) med={int(np.median(one))}bp')
     if len(two):
         ax.hist(two, bins=bins, alpha=0.5, color='#e31a1c', density=True,
-                label=f'2-arm /2 (n={2*len(two)//1}) med={int(np.median(two))}bp')
+                label=f'2-arm /2 (n={len(two)}) med={int(np.median(two))}bp')
     if len(link):
         ax.hist(link, bins=bins, alpha=0.4, color='#33a02c', density=True,
-                label=f'linker /2 (n={2*len(link)//1}) med={int(np.median(link))}bp')
+                label=f'linker /2 (n={len(link)}) med={int(np.median(link))}bp')
     ax.set_xlabel(f'per-arm telomeric_bases (bp; ticks every {motif_len}bp = 1 repeat)')
     ax.set_ylabel('density')
     ax.set_title(f'{lin} (motif_len={motif_len})')

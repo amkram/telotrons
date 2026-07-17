@@ -18,7 +18,9 @@ import tempfile
 
 import pandas as pd
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _common import find_genome_fasta, maybe_decompress, ensure_tool_on_path
+from telomere_mask import mask_telomere_fragments, DEFAULT_MOTIFS
 
 # Make required binaries reachable for bare `python scripts/...` runs outside
 # `snakemake --use-conda` (no-op when they're already on PATH).
@@ -27,6 +29,23 @@ ensure_tool_on_path("bedtools", "samtools")
 
 COMP = bytes.maketrans(b"ACGTNacgtn", b"TGCANtgcan")
 STOPS = frozenset((b"TAA", b"TAG", b"TGA"))
+
+# An "ORF" whose sequence is more than this fraction telomeric repeat is not a
+# protein-coding ORF — it is a telomeric ARRAY masquerading as one, and masking
+# it deletes exactly what the interstitial scan exists to find.
+#
+# (TTAGGG)n contains NO stop codon in 2 of its 3 frames on the G-rich strand
+# (and 2 of 3 on the C-rich strand), so a long array preceded by any in-frame
+# upstream ATG reads as one uninterrupted ORF. Verified: 'ATG' + (TTAGGG)*80 +
+# 'TAA' emits a single 486 bp ORF covering the whole array; find_interstitial_
+# arrays then drops any array overlapping the mask AT ALL. Because the ORF must
+# clear --min-orf-nt, the probability of being swallowed RISES WITH ARRAY
+# LENGTH — long arrays are preferentially deleted while short ones survive, so
+# the interstitial length distribution is biased short by construction.
+# Telotrons are never ORF-masked, so every telotron-vs-interstitial length
+# comparison inherits that bias. TARA_PSW_86_MAG_00284 is 100% TTAGGG —
+# precisely the motif with two stop-free frames.
+MAX_ORF_TELOMERIC_FRAC = 0.5
 
 
 def rc_bytes(b):
@@ -69,23 +88,39 @@ def find_orfs_one_frame(seq, frame, min_nt):
     return out
 
 
-def orf_bed_for_contig(chrom, seq, min_nt):
+def _is_telomeric_orf(seq, s, e, motifs):
+    """True if the ORF at [s,e) is mostly telomeric repeat (see MAX_ORF_TELOMERIC_FRAC)."""
+    sub = seq[s:e]
+    if isinstance(sub, (bytes, bytearray)):
+        sub = sub.decode("ascii", "ignore")
+    sub = sub.upper()
+    if not sub:
+        return False
+    masked = mask_telomere_fragments(sub, motifs=motifs)
+    return (masked.count("N") - sub.count("N")) / len(sub) > MAX_ORF_TELOMERIC_FRAC
+
+
+def orf_bed_for_contig(chrom, seq, min_nt, motifs=DEFAULT_MOTIFS):
     L = len(seq)
     rows = []
     for frame in range(3):
         for s, e in find_orfs_one_frame(seq, frame, min_nt):
+            if _is_telomeric_orf(seq, s, e, motifs):
+                continue        # telomeric array, not a coding ORF — do not mask
             rows.append(f"{chrom}\t{s}\t{e}\t.\t.\t+")
     rseq = rc_bytes(seq)
     for frame in range(3):
         for s, e in find_orfs_one_frame(rseq, frame, min_nt):
+            if _is_telomeric_orf(rseq, s, e, motifs):
+                continue
             rows.append(f"{chrom}\t{L - e}\t{L - s}\t.\t.\t-")
     return rows
 
 
-def orf_bed(fa_path, min_nt):
+def orf_bed(fa_path, min_nt, motifs=DEFAULT_MOTIFS):
     rows = []
     for sid, seq in iter_fasta_bytes(fa_path):
-        rows.extend(orf_bed_for_contig(sid, seq, min_nt))
+        rows.extend(orf_bed_for_contig(sid, seq, min_nt, motifs))
     return "\n".join(rows) + ("\n" if rows else "")
 
 
@@ -99,7 +134,7 @@ def sort_and_merge(bed_text, fai_path):
     return merged.stdout
 
 
-def process_genome(gid, fa_path, min_orf, outdir):
+def process_genome(gid, fa_path, min_orf, outdir, motifs=DEFAULT_MOTIFS):
     out_path = os.path.join(outdir, f"{gid}.bed")
     # Cache key must include min_orf. Keying on mere file existence meant
     # --min-orf-nt was NOT part of the key: masks persist across runs (the
@@ -122,7 +157,7 @@ def process_genome(gid, fa_path, min_orf, outdir):
         sp.run(["samtools", "faidx", fa_plain], check=True,
                stdout=sp.DEVNULL, stderr=sp.DEVNULL)
         fai = fa_plain + ".fai"
-        of_bed = orf_bed(fa_plain, min_orf)
+        of_bed = orf_bed(fa_plain, min_orf, motifs)
         merged = sort_and_merge(of_bed, fai)
         # Write the mask fully before stamping, so an interrupted run leaves no
         # stamp and is rebuilt rather than cached in a truncated state.
@@ -142,7 +177,14 @@ def main():
     ap.add_argument("--tara-dir", required=True)
     ap.add_argument("--outdir", required=True)
     ap.add_argument("--min-orf-nt", type=int, default=450)
+    ap.add_argument("--telomere-motifs", default=",".join(DEFAULT_MOTIFS),
+                    help="comma-separated telomere motifs. An ORF that is >50%% these "
+                         "repeats is a telomeric array, not a coding ORF, and is NOT "
+                         "masked. Pass the full config list: telomere_mask defaults to "
+                         "only 4 motifs, so e.g. a C. elegans TTAGGC array would be "
+                         "masked away and deleted from the interstitial set.")
     args = ap.parse_args()
+    _motifs = tuple(m.strip().upper() for m in args.telomere_motifs.split(',') if m.strip())
 
     os.makedirs(args.outdir, exist_ok=True)
     manifest = pd.read_csv(args.manifest, sep="\t")
@@ -154,7 +196,7 @@ def main():
             open(os.path.join(args.outdir, f"{gid}.bed"), "w").close()
             continue
         try:
-            process_genome(gid, fa, args.min_orf_nt, args.outdir)
+            process_genome(gid, fa, args.min_orf_nt, args.outdir, _motifs)
         except sp.CalledProcessError as e:
             print(f"  {gid}: tool failed ({e.cmd[0]} exit {e.returncode})", flush=True)
 

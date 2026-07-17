@@ -537,10 +537,16 @@ rule find_interstitial_arrays:
         # interstitial-array set. Was a separate `make_unannotated_masks` rule
         # until 2026-07-14; folded inline (one rule, one deliverable).
         mkdir -p {params.mask_dir}
+        # --telomere-motifs: pass the FULL config list, not telomere_mask's
+        # 4-motif default. An ORF that is mostly telomeric repeat is an array,
+        # not a coding ORF; masking it would delete it from the very set this
+        # rule builds. (TTAGGG)n is stop-free in 2 of 3 frames, so long arrays
+        # were preferentially swallowed — biasing interstitial lengths short.
         python scripts/make_unannotated_mask.py \
             --manifest {input.manifest} \
             --refseq-dir data/raw/refseq --tara-dir data/raw/tara \
             --outdir {params.mask_dir} \
+            --telomere-motifs {TELOMERE_MOTIFS} \
             --min-orf-nt {params.min_orf}
         python scripts/find_interstitial_arrays.py \
             --manifest {input.manifest} \

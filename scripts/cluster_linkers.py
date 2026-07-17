@@ -213,63 +213,94 @@ def _dinuc_shuffle(seq: str, rng: random.Random) -> str:
         rng.shuffle(chars)
         return "".join(chars)
     last = seq[-1]
-    # Altschul-Erickson: pick a random spanning arborescence rooted at `last`
-    # (one outgoing "last-edge" per non-`last` node that reaches `last`),
-    # remove those edges, shuffle the remainder freely, then re-append the
-    # last-edge as each node's final outgoing edge. Guarantees an Eulerian
-    # walk from seq[0] using every original transition once. Retry up to 32
-    # times against edge-shuffle randomness; if still no valid walk, raise
-    # rather than silently falling back to a mono-nt shuffle (which would
-    # make the dinuc-null claim false).
+
+    # Altschul & Erickson (1985), done properly.
+    #
+    # The theorem: for each vertex u != last, designate one outgoing edge as
+    # u's LAST-traversed edge. If those designated edges form a spanning
+    # arborescence rooted at `last` (i.e. following them from ANY u eventually
+    # reaches `last`, with no cycle among non-last vertices), then ANY ordering
+    # of each vertex's remaining edges yields a valid Eulerian trail from
+    # seq[0]. The arborescence condition is what makes it work, so it must be
+    # CHECKED, not assumed.
+    #
+    # Two earlier revisions of this function were wrong:
+    #  1. The original silently fell back to a MONONUCLEOTIDE shuffle on any
+    #     dead-end, so the advertised dinucleotide null was really a
+    #     base-composition null — inflating the observed linker recurrence.
+    #  2. The replacement picked an arbitrary first edge without ever verifying
+    #     reachability to `last`, so it offered no Eulerian guarantee and
+    #     degenerated into rejection sampling. Worse, it appended the last-edge
+    #     and then popped from the TAIL, so the designated edge was traversed
+    #     FIRST — a total no-op. Acceptance collapsed on AT-rich input (~1.2%
+    #     per call on an Eimeria-like corpus); at 200 replicates x 2 passes x
+    #     n_linkers ~= 240k calls the script was certain to abort.
+    # With the arborescence verified up front, the walk cannot dead-end, so the
+    # retry loop exists only to resample a bad arborescence draw.
     orig_edges: dict[str, list[str]] = defaultdict(list)
     for a, b in zip(seq, seq[1:]):
         orig_edges[a].append(b)
-    nodes = list(orig_edges.keys())
-    for _attempt in range(32):
-        # Build a random last-edge tree from each non-last node toward `last`.
+
+    # Rejecting a bad arborescence draw preserves uniformity over the valid
+    # ones, so retries are free correctness-wise and only cost time. The graph
+    # has <=4 vertices so each attempt is O(1); the budget is large because
+    # acceptance can legitimately be ~1/40 on pathological input (an AT-rich
+    # linker terminating in a lone G: every vertex must route to G through the
+    # single A->G edge). At 1/40, 200 tries still failed ~2% of the time, and
+    # main() makes ~240k calls.
+    for _attempt in range(5000):
+        # Draw one candidate last-edge per non-`last` vertex.
         last_edge: dict[str, str] = {}
-        ok = True
-        for u in nodes:
+        for u, outs in orig_edges.items():
             if u == last:
                 continue
-            cands = list(orig_edges[u])
-            rng.shuffle(cands)
-            picked = None
-            for v in cands:
-                # Any transition works so long as removing it doesn't strand `u`.
-                picked = v
+            last_edge[u] = outs[rng.randrange(len(outs))]
+
+        # VERIFY the arborescence: from every u, following last_edge must reach
+        # `last` without revisiting a vertex.
+        good = True
+        for u in last_edge:
+            seen = set()
+            cur = u
+            while cur != last:
+                if cur in seen or cur not in last_edge:
+                    good = False
+                    break
+                seen.add(cur)
+                cur = last_edge[cur]
+            if not good:
                 break
-            if picked is None:
-                ok = False
-                break
-            last_edge[u] = picked
-        if not ok:
+        if not good:
             continue
-        # Build shuffled edge lists: remove one instance of last_edge[u] from u,
-        # shuffle the rest, then append the last-edge so it's popped LAST.
+
+        # Order each vertex's edges: designated last-edge FIRST in the list,
+        # because the walk pops from the TAIL — so it is traversed LAST.
         edges: dict[str, list[str]] = {}
         for u, outs in orig_edges.items():
             rest = list(outs)
             if u in last_edge:
                 rest.remove(last_edge[u])
-            rng.shuffle(rest)
-            if u in last_edge:
-                rest.append(last_edge[u])
-            edges[u] = rest
-        # Walk starting at seq[0], popping from the tail.
+                rng.shuffle(rest)
+                edges[u] = [last_edge[u]] + rest
+            else:
+                rng.shuffle(rest)
+                edges[u] = rest
+
         out = [seq[0]]
         cursor = seq[0]
-        walk_ok = True
         for _ in range(n - 1):
             bucket = edges.get(cursor)
             if not bucket:
-                walk_ok = False
                 break
             out.append(bucket.pop())
             cursor = out[-1]
-        if walk_ok:
+        if len(out) == n:
             return "".join(out)
-    raise RuntimeError(f"dinuc shuffle failed after 32 attempts (seq len {n})")
+
+    raise RuntimeError(
+        f"dinuc shuffle failed to find a valid arborescence in 5000 attempts "
+        f"(seq len {n}): {seq!r}"
+    )
 
 
 def null_recurrence(

@@ -130,7 +130,11 @@ for sp,(cov,gff,gid,lab) in SP.items():
     ie=np.array([x[0] for x in i]); iy=np.array([1 if x[1] else 0 for x in i]); qs=np.quantile(ie,[0,.2,.4,.6,.8,1.0])
     print("  per-intron telotron rate by host-gene expression quintile (/10k):", end=" ")
     for k in range(5):
-        m=(ie>=qs[k])&(ie<=qs[k+1]); print(f"{1e4*iy[m].sum()/m.sum():.1f}",end=" ")
+        # half-open [qs[k], qs[k+1]) except the last bin, which is closed.
+        # Using <= on BOTH edges counted boundary values in two bins;
+        # with zero-inflated expression many introns sit exactly on a
+        # quantile edge, so the duplicates skewed the per-bin rate.
+        m=(ie>=qs[k])&((ie<qs[k+1]) if k<4 else (ie<=qs[k+1])); print(f"{1e4*iy[m].sum()/m.sum():.1f}",end=" ")
     print()
 # pooled (normalise expr to within-species median) — species tag preserved for
 # the fixed-effect design so the necatrix pool (n=174) doesn't dominate the
@@ -165,12 +169,26 @@ if pg:
         ols_coef=m.params[1]; ols_p=m.pvalues[1]
         print(f"  OLS host coef {ols_coef:+.3f} p={ols_p:.2e} (size + species-fixed-effect controlled, pooled HEADLINE)")
     except Exception: pass
-    if ols_coef is not None and ols_p is not None and ols_p<0.05 and ols_coef<0:
-        HEADLINE="telotrons sit in LOWER-expression genes even after size control (pooled OLS p=%.1e)"%ols_p
-    elif ols_coef is not None and ols_p is not None:
-        HEADLINE="host-expression gap NOT significant after size control (pooled OLS coef %+.3f p=%.2g) — gene-architecture confound"%(ols_coef,ols_p)
+    # Branch on SIGN and SIGNIFICANCE separately. The old `elif` caught
+    # everything the first branch missed — including a SIGNIFICANT POSITIVE
+    # coefficient — and unconditionally asserted non-significance, so
+    # ols_coef=+0.412 / ols_p=1.3e-08 printed "host-expression gap NOT
+    # significant ... gene-architecture confound" onto the suptitle of the
+    # figure this module designates as the HEADLINE result: a real effect
+    # dismissed as a confound at p=1e-8. Not hypothetical — the missing bedcov
+    # MAPQ filter biased this coefficient positive.
+    if ols_coef is None or ols_p is None:
+        HEADLINE = "size-controlled OLS unavailable — raw gap is gene-architecture-confounded"
+    elif ols_p >= 0.05:
+        HEADLINE = ("host-expression gap NOT significant after size control "
+                    "(pooled OLS coef %+.3f p=%.2g) — gene-architecture confound"
+                    % (ols_coef, ols_p))
+    elif ols_coef < 0:
+        HEADLINE = ("telotrons sit in LOWER-expression genes even after size control "
+                    "(pooled OLS coef %+.3f p=%.1e)" % (ols_coef, ols_p))
     else:
-        HEADLINE="size-controlled OLS unavailable — raw gap is gene-architecture-confounded"
+        HEADLINE = ("telotrons sit in HIGHER-expression genes even after size control "
+                    "(pooled OLS coef %+.3f p=%.1e)" % (ols_coef, ols_p))
     # ---- figure ----
     # Species labels come from SP[sp][3] (config's `label`, or the key itself).
     # Panel A shows the largest-N species; suptitle names all species dynamically.
@@ -190,7 +208,9 @@ if pg:
     ax[1].set_ylabel("log10 normalised expression"); [ax[1].spines[s].set_visible(False) for s in ("top","right")]
     # C pooled per-intron rate vs expr quintile
     ie=np.array([x[0] for x in pi]); iy=np.array([1 if x[1] else 0 for x in pi]); qs=np.quantile(ie,[0,.2,.4,.6,.8,1.0])
-    rate=[1e4*iy[(ie>=qs[k])&(ie<=qs[k+1])].sum()/((ie>=qs[k])&(ie<=qs[k+1])).sum() for k in range(5)]
+    # half-open bins (see above): last bin closed so the max value lands.
+    _bin=lambda k: (ie>=qs[k])&((ie<qs[k+1]) if k<4 else (ie<=qs[k+1]))
+    rate=[1e4*iy[_bin(k)].sum()/_bin(k).sum() for k in range(5)]
     ax[2].plot(rate,"o-",color="#b2182b"); ax[2].set_xticks(range(5)); ax[2].set_xticklabels(["Q1\nlow","Q2","Q3","Q4","Q5\nhigh"],fontsize=8)
     ax[2].set_xlabel("host-gene expression quintile"); ax[2].set_ylabel("telotron rate /10k introns")
     ax[2].set_title(f"C  pooled per-intron rate vs expression\n({all_labels}; {len(pi)} introns)",fontsize=9.5,weight="bold")

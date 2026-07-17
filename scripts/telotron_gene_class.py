@@ -99,7 +99,9 @@ for gid, path in GFF.items():
         if f[2] == "gene":
             m = re.search(r"ID=([^;]+)", f[8])
             if m:
-                glen[m.group(1)] = int(f[4]) - int(f[3])
+                # 1-based INCLUSIVE GFF coords: length is end-start+1.
+                # Omitting the +1 reported every gene 1 bp short.
+                glen[m.group(1)] = int(f[4]) - int(f[3]) + 1
         elif f[2] == "mRNA":
             mi = re.search(r"ID=([^;]+)", f[8])
             pa = re.search(r"Parent=([^;]+)", f[8])
