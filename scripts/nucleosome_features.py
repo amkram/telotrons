@@ -33,10 +33,21 @@ def bh_fdr(pvals):
     ranked=np.minimum.accumulate(ranked[::-1])[::-1].clip(max=1.0)
     qi=np.empty(m); qi[order]=ranked; q[idx]=qi
     return q
+# NOTE ON DENOMINATORS: these run on sequence that mask_telomere_fragments()
+# has already rewritten to 'N'. Every denominator must therefore count REAL
+# bases, not len(s) — Ns are absent data, not observations. Counting them
+# deflates the denominator in exact proportion to how much telomere was
+# masked, which happens ONLY on the telotron arm (controls are near-clean), so
+# the bug fabricates a telotron-vs-control difference out of the masking
+# itself. Measured on a 75 bp flank with 35 Ns: CpG O/E reported 4.036 vs a
+# true 2.127, against an unaffected control at 2.921 — a 1.9x inflation that
+# SIGN-FLIPPED the result from depletion to enrichment.
+def _n_real(s):
+    return sum(s.count(b) for b in "ACGT")
 def f_gc(s):
-    n=sum(s.count(b) for b in "ACGT") or 1; return (s.count("G")+s.count("C"))/n
+    n=_n_real(s) or 1; return (s.count("G")+s.count("C"))/n
 def f_cpg(s):
-    n=len(s); c=s.count("C"); g=s.count("G")
+    n=_n_real(s); c=s.count("C"); g=s.count("G")
     return (s.count("CG"))/((c*g)/n) if c and g and n>1 else 0.0
 G4=re.compile(r"(?:G{3,}\w{1,7}){3,}G{3,}"); C4=re.compile(r"(?:C{3,}\w{1,7}){3,}C{3,}")
 def f_g4(s):
@@ -45,7 +56,7 @@ def f_g4(s):
     for pat in (G4,C4):
         for m in pat.finditer(s):
             for i in range(m.start(),m.end()): cov[i]=1
-    return sum(cov)/len(s)
+    return sum(cov)/(_n_real(s) or 1)
 def f_ww10(s):
     if len(s)<60: return np.nan
     w=np.array([1.0 if (s[i] in "AT" and s[i+1] in "AT") else 0.0 for i in range(len(s)-1)]); w=w-w.mean()
@@ -58,7 +69,11 @@ def f_entropy(s):
     di=Counter(s[i:i+2] for i in range(len(s)-1) if set(s[i:i+2])<=set("ACGT")); tot=sum(di.values()) or 1
     return (-sum((v/tot)*math.log2(v/tot) for v in di.values()))/4.0
 def f_tpa(s):
-    n=len(s)-1; return s.count("TA")/n if n>0 else 0.0
+    # Count only dinucleotide positions where BOTH bases are real (see the
+    # denominator note above): masking a TTTAGGG array destroys its TA
+    # dinucleotides while len(s)-1 stays put, deflating telotron TpA ~2x.
+    n=sum(1 for i in range(len(s)-1) if s[i] in "ACGT" and s[i+1] in "ACGT")
+    return s.count("TA")/n if n>0 else 0.0
 def lcs(a,b):
     best=0
     for i in range(len(a)):
@@ -68,14 +83,39 @@ def lcs(a,b):
             best=max(best,l)
     return best
 # feature: name, fn, half-window, mask_telomere?, verdict(MAG,Eim)
-# mask=True for any COMPOSITION metric (GC/CpG/G4/entropy/TpA): residual telomeric units at the array
-# boundary leak into these and inflated the MAG-GC ~2x (the rotation trap that caused 4 prior
-# retractions). WW periodicity is composition-free and is computed on UNMASKED sequence: masking would
-# destroy the very AT-periodicity it measures, and it is GC/telomere-content-independent by construction.
+#
+# mask=True for EVERY sequence metric, WW periodicity included. Residual
+# telomeric units at the array boundary leak into these and inflated MAG-GC
+# ~2x — the rotation trap behind four prior retractions (G4, exonic GC, RLFS,
+# donor consensus).
+#
+# WW periodicity used to run UNMASKED, justified as "composition-free ...
+# GC/telomere-content-independent by construction". That was empirically FALSE
+# and made this arm's headline signal an artifact. f_ww10 = ac(10) - mean(ac at
+# 6,7,8,13,14). A TTTAGGG array has period 7, so ac(7) and ac(14) are HARMONIC
+# PEAKS sitting inside the subtracted baseline while ac(10) sits in a trough.
+# Measured on a 100 bp window: clean host +0.007; 28 bp of telomere leaked in
+# -0.027; 56 bp -0.144; pure array -0.346. Controls score ~0, so a telotron
+# whose misannotated flank retains 56 bp of array reported a delta 20x the
+# clean-host magnitude and the pooled T-vs-C test called it "real". Worse, the
+# direction is motif-dependent — TTAGGG (period 6) gives -0.136 but TTAGG
+# (period 5) gives +0.321, a SIGN FLIP — so the MAG-vs-Eimeria contrast was
+# reading each lineage's repeat rather than its chromatin. Masking the same
+# window restores +0.016. (nucleosome_withingene.py has always masked before
+# f_ww; the two scripts disagreed on the same named feature.)
+#
+# The old worry that masking "destroys the very AT-periodicity it measures" is
+# backwards: masked positions become N, contribute 0 to the W vector, and are
+# thus excluded rather than counted as non-WW — which is what we want, since
+# telomere is not host chromatin.
+#
+# VERDICTS BELOW ARE STALE: they were assigned under the unmasked-WW and
+# N-in-denominator bugs and must be re-derived from a fresh run before being
+# cited.
 FEATS=[("GC content",f_gc,WI,True,("real","ns")),
        ("CpG O/E",f_cpg,WI,True,("real*","real")),
        ("G4 propensity (200bp)",f_g4,200,True,("ns·bdry","ns·bdry")),
-       ("10-bp WW periodicity",f_ww10,WP,False,("real","real")),
+       ("10-bp WW periodicity",f_ww10,WP,True,("real","real")),
        ("dinucleotide entropy",f_entropy,WI,True,("GC-conf","real")),
        ("TpA fraction",f_tpa,WI,True,("GC-conf","real")),
        ("junction microhomology",None,None,False,("ns","artifact"))]

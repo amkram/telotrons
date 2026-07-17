@@ -33,7 +33,14 @@ def resolve(g,rs="data/raw/refseq",ta="data/raw/tara"):
 def f_gc(s):
     n=sum(s.count(b) for b in "ACGT") or 1; return (s.count("G")+s.count("C"))/n
 def f_cpg(s):
-    n=len(s); c=s.count("C"); g=s.count("G"); return (s.count("CG"))/((c*g)/n) if c and g and n>1 else np.nan
+    # Denominator must count REAL bases: flankfeat() masks telomere to 'N'
+    # before calling this, and only the telotron arm carries Ns (siblings and
+    # random introns are near-clean). Using len(s) deflated expected-CpG in
+    # proportion to the masked fraction, so the T-vs-SIBLING Wilcoxon reported
+    # "local targeting" purely from the masking asymmetry. Measured on a
+    # 35-N flank: 4.036 reported vs 2.127 true, control unaffected at 2.921.
+    n=sum(s.count(b) for b in "ACGT"); c=s.count("C"); g=s.count("G")
+    return (s.count("CG"))/((c*g)/n) if c and g and n>1 else np.nan
 def f_ww(s):
     if len(s)<60: return np.nan
     w=np.array([1.0 if (s[i] in "AT" and s[i+1] in "AT") else 0.0 for i in range(len(s)-1)]); w=w-w.mean()

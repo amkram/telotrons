@@ -16,15 +16,16 @@ Downstream analyses (gene-class, expression, nucleosome, ortholog panels) key
 off this file so new bearer species flow through automatically."""
 import argparse
 import csv
+import os
+import sys
 from collections import Counter
 
-# Bidirectional architectures = both arms of the telomeric repeat are present
-# (a distinctive telomerase-mediated signature; unlikely by chance). Includes
-# `Multi-junction` (>=2 F/R junctions per intron, emitted by
-# classify_telotron_architecture) — otherwise species whose telotrons are
-# dominated by multi-junction loci under-count as bidirectional and can
-# silently fail confident-bearer admission.
-BIDIR_ARCHS = {"GT-F-R-AG", "GT-R-linker-F-AG", "GT-F-linker-R-AG", "Multi-junction"}
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Imported, NOT hand-copied: these strings must match
+# classify_telotron_architecture.classify()'s return values exactly, and a
+# typo'd label silently counts zero rather than raising. See _common for why
+# both dyad polarities (GT-F-R-AG convergent, GT-R-F-AG divergent) count.
+from _common import ARCH_ORDER, BIDIR_ARCHS  # noqa: E402
 
 
 def main():
@@ -44,12 +45,28 @@ def main():
     n = Counter()
     n_bidir = Counter()
     organism = {}
+    seen_archs = set()
     for r in csv.DictReader(open(args.arch), delimiter="\t"):
         gid = r["genome_id"]
         n[gid] += 1
-        if r.get("architecture", "") in BIDIR_ARCHS:
+        arch = r.get("architecture", "")
+        seen_archs.add(arch)
+        if arch in BIDIR_ARCHS:
             n_bidir[gid] += 1
         organism.setdefault(gid, r.get("organism", ""))
+
+    # Fail loudly on an architecture label this script does not know about.
+    # Silence here is dangerous in one direction only: an unrecognised label is
+    # treated as non-bidirectional, so a renamed/new class would quietly shrink
+    # the bearer set and every downstream analysis with it, with no error.
+    unknown = {a for a in seen_archs if a and a not in set(ARCH_ORDER)}
+    if unknown:
+        raise SystemExit(
+            f"{args.arch}: unknown architecture label(s) {sorted(unknown)} not in "
+            f"_common.ARCH_ORDER {ARCH_ORDER}. classify_telotron_architecture.py and "
+            "_common.py have drifted apart — an unlisted label counts as "
+            "NON-bidirectional and would silently shrink the confident set."
+        )
 
     with open(args.out, "w", newline="") as fh:
         w = csv.writer(fh, delimiter="\t")

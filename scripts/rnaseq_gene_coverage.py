@@ -64,6 +64,12 @@ def main():
     ap.add_argument("--out", required=True, help="output gene-coverage TSV")
     ap.add_argument("--workdir", default=None, help="scratch dir for FASTQ/BAM (default: dir of --out)")
     ap.add_argument("--threads", type=int, default=12)
+    ap.add_argument("--min-mapq", type=int, default=1,
+                    help="samtools bedcov -Q: minimum MAPQ. MUST stay >=1 — "
+                         "bedcov defaults to 0, which counts MAPQ-0 multimapped "
+                         "telomeric reads onto intronic telotron arrays and "
+                         "reopens the documented telomere cross-map trap. Raise "
+                         "(e.g. 10) for a stricter unique-mapping requirement.")
     ap.add_argument("--max-size", default="30g", help="prefetch --max-size")
     ap.add_argument("--keep-intermediates", action="store_true")
     ap.add_argument("--force", action="store_true", help="rebuild even if --out exists")
@@ -106,8 +112,12 @@ def main():
         # alignments (essential for intron-rich telotron-host genes).
         # `-ub` = unstranded (both-strand splice-site discovery); correct for
         # the standard-Illumina PE dUTP-free libraries in config['rnaseq'].
-        # Use `-uf` only for stranded libraries (dUTP/directional). `--secondary=no`
-        # keeps bedcov from double-counting multimappers.
+        # Use `-uf` only for stranded libraries (dUTP/directional).
+        # `--secondary=no` suppresses SECONDARY records only. It does NOT solve
+        # multimapping — bedcov already skips SECONDARY by default — and a read
+        # mapping equally well to two loci still gets one arbitrarily-placed
+        # PRIMARY alignment at MAPQ 0. The MAPQ gate at the bedcov call below is
+        # what actually handles that.
         run(f"minimap2 -ax splice -ub --secondary=no -t {a.threads} {a.genome} {' '.join(reads)} "
             f"2>{scratch}/{srr}.mm2.log | samtools sort -@ 4 -m 2G -o {bam} -")
         run(["samtools", "index", bam])
@@ -133,7 +143,19 @@ def main():
     n = genes_bed_from_gff(a.gff, bed)
     log(f"genes: {n}")
     run(f"sort -k1,1 -k2,2n {bed} > {bed_sorted}")
-    run(f"samtools bedcov {bed_sorted} {merged} > {a.out}")
+    # -Q is REQUIRED, not a tuning knob. `samtools bedcov` defaults to -Q 0, so
+    # without it every MAPQ-0 multimapped read is counted. TERRA / pre-mRNA
+    # reads from the REAL telomere are (TTTAGGG)n and map ambiguously between
+    # the chromosome end and an intronic telotron array; minimap2 places a share
+    # of them arbitrarily onto the telotron at MAPQ 0, and because the gene BED
+    # interval spans the whole gene (introns included) that pile-up is reported
+    # as the telotron-host gene's expression. This is the documented telomere
+    # cross-map trap (memory: telotron_invivo_splicing_proven_2026-06-06) where
+    # naive mapping gave splicing efficiency 0.43 and strict mapping 0.95 — the
+    # 0.43 figure is flagged do-not-cite. Verified on a synthetic BAM: default
+    # reports 550, -Q 1 reports 500, i.e. the MAPQ-0 read's 50 bases were being
+    # counted.
+    run(f"samtools bedcov -Q {a.min_mapq} {bed_sorted} {merged} > {a.out}")
     with open(a.out) as fh:
         rows = sum(1 for _ in fh)
     log(f"bedcov done: {rows} genes -> {a.out}")

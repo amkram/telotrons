@@ -265,18 +265,36 @@ ORIENT_COLORS = {
 }
 
 # Splice-architecture categories emitted by classify_telotron_architecture.py.
+# SINGLE SOURCE OF TRUTH — this list must stay in sync with that script's
+# classify() return values. Consumers importing ARCH_ORDER/BIDIR_ARCHS get the
+# labels for free; a hand-copied list silently drops whole classes (this list
+# omitted "Multi-junction" until 2026-07-16, so every per-architecture plot
+# dropped that class without warning).
 ARCH_ORDER = [
-    "GT-F-AG", "GT-R-AG", "GT-F-R-AG",
-    "GT-F-linker-R-AG", "GT-R-linker-F-AG", "Other",
+    "GT-F-AG", "GT-R-AG", "GT-F-R-AG", "GT-R-F-AG",
+    "GT-F-linker-R-AG", "GT-R-linker-F-AG", "Multi-junction", "Other",
 ]
 ARCH_COLORS = {
     "GT-F-AG":          TEAL,
     "GT-R-AG":          RUST,
     "GT-F-R-AG":        "#6A8D5A",
+    "GT-R-F-AG":        "#4E7A6B",
     "GT-F-linker-R-AG": GOLD,
     "GT-R-linker-F-AG": "#8B5A99",
+    "Multi-junction":   "#7A7A4A",
     "Other":            "#BBBBBB",
 }
+
+# Architectures in which BOTH arms of the telomeric repeat are present — the
+# distinctive telomerase-mediated signature that gates confident_species'
+# second admission path. GT-F-R-AG (convergent) and GT-R-F-AG (divergent) are
+# kept as SEPARATE labels because dyad orientation is itself a result (~99% of
+# Mixed loci are G-rich-5'), but both count as bidirectional.
+BIDIR_ARCHS = frozenset({
+    "GT-F-R-AG", "GT-R-F-AG",
+    "GT-F-linker-R-AG", "GT-R-linker-F-AG",
+    "Multi-junction",
+})
 
 
 # --------------------------------------------------------------------------- #

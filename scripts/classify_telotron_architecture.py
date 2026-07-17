@@ -221,9 +221,20 @@ def classify(seq, motif, bv=None):
             return "GT-R-linker-F-AG", gap_seq, gl, gs, ge
         return "Multi-junction", gap_seq, gl, gs, ge
 
-    # No real linker passed; collapse to convergent or Other.
+    # No real linker passed; collapse to a linker-less dyad or Other.
+    # BOTH dyad polarities get an explicit label. GT-F-R-AG is the convergent
+    # (G-rich 5' -> C-rich 3') dyad; GT-R-F-AG is its divergent mirror image.
+    # The mirror case used to fall through to "Other", which hid it from
+    # confident_species' BIDIR_ARCHS even though both arms of the telomeric
+    # repeat are present — the definition of bidirectional. A genome whose only
+    # two telotrons were R-first scored n_bidir=0 and was excluded entirely.
+    # The two labels stay DISTINCT rather than merged because dyad orientation
+    # is itself a result (~99% of Mixed loci are G-rich-5', memory:
+    # mag_tara284_denovo_vs_fusion_2026-06-05); merging them would destroy it.
     if all_transitions and first_kind == "F" and last_kind == "R":
         return "GT-F-R-AG", "", 0, -1, -1
+    if all_transitions and first_kind == "R" and last_kind == "F":
+        return "GT-R-F-AG", "", 0, -1, -1
     return "Other", "", 0, -1, -1
 
 
