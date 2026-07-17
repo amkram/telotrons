@@ -686,10 +686,18 @@ def main():
         print(f"  RBH: {sum(rbh_ok.values())}/{len(rbh_ok)} ortholog ORF proteins reciprocal",
               file=sys.stderr)
 
-    # cache of per-(pid,oid) flank-mismatch results so telotrons sharing a host protein
-    # don't realign the same focal/ortholog protein pair repeatedly. The residue used is the
-    # telotron's intron position (=res), a property of the host gene, so identical telotrons
-    # on the same protein reuse the same alignment.
+    # Cache of flank-mismatch results so telotrons sharing a host protein don't
+    # realign the same focal/ortholog protein pair repeatedly.
+    #
+    # The key MUST include `res`. It used to be just (pid, oid), on the premise
+    # that res is "a property of the host gene" — it is not: res is the residue
+    # position of WHICHEVER INTRON is telotronic, and one transcript can carry
+    # several telotrons. A gene with telotrons in intron 2 (res=40) and intron 7
+    # (res=520) had the second one silently reuse the first's gate result,
+    # measured 480 residues away. If residue 520 sits in a poorly-conserved
+    # region whose true counts are (14, 11), it still inherited (1, 0) ->
+    # flank_ok=True -> a FILL or ABSENT call the strict gate exists to reject
+    # as POOR_FLANK.
     _flank_cache = {}
 
     msa_jobs = []   # (out_path, seqs, is_protein) -- aligned concurrently in a pool below
@@ -738,14 +746,15 @@ def main():
                 # STRICT PER-FLANK aa-MISMATCH GATE (primary FILL/ABSENT admission test).
                 # Global-align focal vs ortholog ORF protein and count mismatches in the
                 # 5' and 3' flank windows SEPARATELY; require BOTH <= max_flank_mismatch.
-                if (t["prot"], oid) not in _flank_cache:
+                _fk = (t["prot"], oid, t["res"])   # res is part of the value; see cache note
+                if _fk not in _flank_cache:
                     op, _a = ortho_protein(oid, t["prot"])
                     if op:
-                        _flank_cache[(t["prot"], oid)] = flank_mismatches(
+                        _flank_cache[_fk] = flank_mismatches(
                             prot_rec[t["prot"]]["seq"], op, t["res"], args.flank_aa)
                     else:
-                        _flank_cache[(t["prot"], oid)] = (args.flank_aa, args.flank_aa, 0, 0)
-                flank5_mm, flank3_mm, _f5n, _f3n = _flank_cache[(t["prot"], oid)]
+                        _flank_cache[_fk] = (args.flank_aa, args.flank_aa, 0, 0)
+                flank5_mm, flank3_mm, _f5n, _f3n = _flank_cache[_fk]
                 flank_ok = (flank5_mm <= args.max_flank_mismatch and
                             flank3_mm <= args.max_flank_mismatch)
                 # RBH + paralog-ambiguity (alt-loci) exclusion.

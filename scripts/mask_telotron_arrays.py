@@ -83,41 +83,70 @@ def mask_intron(seq: str) -> tuple[str, str, list]:
     return "".join(mask), "|".join(parts), arrays
 
 
-def canonicalize(mask: str) -> tuple[str, bool]:
-    """Orient A-rich arm 5' → G-rich arm 3'. Flip (reverse + swap A/G; arms are
-    mutual revcomps) when G mass is more 5' than A mass. Returns (mask, flipped).
+def canonicalize(mask: str) -> tuple[str, str]:
+    """Return (mask unchanged, orientation) where orientation is 'A_first',
+    'G_first', or 'single'.
 
-    NB: caller must treat single-polarity loci (only A or only G arrays) as
-    non-anchorable; this function still returns a deterministic value but the
-    flip decision is meaningless for those cases."""
+    THIS NO LONGER FLIPS, because flipping cannot work — arm order is
+    revcomp-INVARIANT. The old version reverse-complemented (reverse + swap
+    A/G, since the arms are mutual revcomps) whenever G mass sat 5' of A mass,
+    intending to normalise every locus to A-rich-5'/G-rich-3'. That is
+    algebraically impossible: revcomp([G-arm][linker][A-arm]) is
+    [revcomp(A-arm)][revcomp(linker)][revcomp(G-arm)] = [G-arm][linker][A-arm]
+    again, because revcomp of an A-arm IS a G-arm. Formally, the flip sends
+    mean(gi) -> n-1-mean(ai) and mean(ai) -> n-1-mean(gi), so the predicate
+    mean(gi) < mean(ai) that triggered the flip still holds afterwards.
+    Verified: a 'GGGGGGGGGGGGGGLLAAAAAAAAAAAAAA' cartoon came back
+    byte-identical while reporting flipped=True.
+
+    The consequence was severe: structural_junction() only looked for an A->G
+    transition, so every G-first bidirectional locus (GT-F-R-AG is ~44% of
+    loci) returned None and was mislabeled non_anchorable=single_polarity —
+    while its own polarities field reported both arms present. Those loci were
+    dropped from the junction-anchored MSA and inflated the reported
+    single-polarity count.
+
+    Orientation is now REPORTED rather than normalised away, which is also the
+    scientifically right call: dyad polarity is a result in its own right
+    (~99% of Mixed loci are G-rich-5'), not a strand-convention artifact to be
+    canonicalised out.
+    """
     gi = [i for i, c in enumerate(mask) if c in GSET]
     ai = [i for i, c in enumerate(mask) if c in ASET]
-    if gi and ai and (sum(gi) / len(gi) < sum(ai) / len(ai)):
-        return "".join(SWAP[c] for c in reversed(mask)), True
-    return mask, False
+    if not (gi and ai):
+        return mask, "single"
+    return mask, ("G_first" if sum(gi) / len(gi) < sum(ai) / len(ai) else "A_first")
 
 
-def structural_junction(canon_mask: str) -> int | None:
-    """Junction coordinate in the canonicalised cartoon = the first inter-array
-    A-arm → G-arm transition (or the symmetric G→A on the unflipped run).
-    Walks the cartoon, recording the first index where an A-arm character is
-    followed (possibly across linker bases) by a G-arm character. Returns None
-    if the locus has only one polarity (single-polarity = non-anchorable)."""
-    has_a = any(c in ASET for c in canon_mask)
-    has_g = any(c in GSET for c in canon_mask)
+def structural_junction(mask: str) -> int | None:
+    """Coordinate of the first inter-array polarity transition, in EITHER
+    direction (A-arm -> G-arm or G-arm -> A-arm).
+
+    Orientation-agnostic by necessity: canonicalize() cannot reorient a
+    G-first locus (see above), so a junction finder that only recognises A->G
+    silently discards the entire G-first class. Returns None only for
+    genuinely single-polarity loci.
+    """
+    has_a = any(c in ASET for c in mask)
+    has_g = any(c in GSET for c in mask)
     if not (has_a and has_g):
         return None
     last_arm = None  # 'A' or 'G'
-    for i, c in enumerate(canon_mask):
+    for i, c in enumerate(mask):
         if c in ASET:
+            if last_arm == "G":
+                return i           # first G->A transition
             last_arm = "A"
         elif c in GSET:
             if last_arm == "A":
-                return i               # first A->G transition coordinate
+                return i           # first A->G transition
             last_arm = "G"
-    # Only G after first A (or vice versa) but never a transition: should not
-    # happen when both polarities are present, but be defensive.
-    return None
+    # Both polarities present but no transition found is unreachable: the first
+    # arm character sets last_arm, and the first character of the other
+    # polarity necessarily triggers a return above.
+    raise AssertionError(
+        f"both polarities present but no transition found in cartoon: {mask!r}"
+    )
 
 
 def collect():
@@ -131,8 +160,8 @@ def collect():
             if not intron:
                 continue
             masked, arch, arrays = mask_intron(intron)
-            canon, flipped = canonicalize(masked)
-            jx = structural_junction(canon)        # None for single-polarity loci
+            canon, orientation = canonicalize(masked)   # canon == masked; no flip is possible
+            jx = structural_junction(canon)             # None ONLY for single-polarity loci
             orients = {a["orient"] for a in arrays}
             gcf = parse_focal_gcf(p)
             recs.append({
@@ -140,11 +169,11 @@ def collect():
                 "species": GCF_TO_SPECIES.get(gcf, gcf or "unknown"),
                 "len": len(intron),
                 "masked": masked,      # gene-sense
-                "canon": canon,        # A->G oriented
+                "canon": canon,        # gene-sense (orientation reported, not normalised)
                 "arch": arch,
-                "flipped": flipped,
-                "anchorable": jx is not None,   # False = single-polarity locus
-                "junction": jx,                 # A->G transition coord in canon
+                "orientation": orientation,     # 'A_first' | 'G_first' | 'single'
+                "anchorable": jx is not None,   # False = genuinely single-polarity
+                "junction": jx,                 # first polarity transition, either direction
                 "n_arrays": len(arrays),
                 "polarities": "".join(sorted(orients)) or "none",
             })
@@ -180,8 +209,8 @@ def write_fasta(recs, path, key, note):
         for r in recs:
             anchor_tag = " non_anchorable=single_polarity" if not r["anchorable"] else ""
             fh.write(f">{r['id']} species={r['species']} len={r['len']} "
-                     f"arch={r['arch']} polarities={r['polarities']}"
-                     f"{' flipped' if r['flipped'] else ''}{anchor_tag}{note}\n")
+                     f"arch={r['arch']} polarities={r['polarities']} "
+                     f"orientation={r['orientation']}{anchor_tag}{note}\n")
             fh.write(r[key] + "\n")
 
 
@@ -292,7 +321,10 @@ def main():
     print("top architectures:")
     for a, c in Counter(r["arch"] for r in recs).most_common(12):
         print(f"   {c:4d}  {a}")
-    print("flipped to canonical orientation:", sum(r["flipped"] for r in recs))
+    # Dyad orientation is reported, not normalised: no revcomp can change arm
+    # order (see canonicalize). The old "flipped to canonical orientation: N"
+    # counter was meaningless — the flip returned the input unchanged.
+    print("dyad orientation:", dict(Counter(r["orientation"] for r in recs)))
     for f in ("telotron_masked.fasta", "telotron_masked.msa.fasta",
               "telotron_masked_msa.txt", "telotron_masked_msa.html"):
         print("wrote", OUT_DIR / f)

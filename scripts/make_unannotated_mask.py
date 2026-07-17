@@ -101,8 +101,21 @@ def sort_and_merge(bed_text, fai_path):
 
 def process_genome(gid, fa_path, min_orf, outdir):
     out_path = os.path.join(outdir, f"{gid}.bed")
-    if os.path.exists(out_path) and os.path.getsize(out_path) > 0:
-        print(f"  {gid}: mask already present, skipping", flush=True)
+    # Cache key must include min_orf. Keying on mere file existence meant
+    # --min-orf-nt was NOT part of the key: masks persist across runs (the
+    # Snakefile declares only interstitial_arrays.tsv as the rule's output, not
+    # this dir), so re-running at a different threshold to probe the noise floor
+    # silently reused every old mask and produced a byte-identical
+    # interstitial_arrays.tsv — the sweep reports "threshold has no effect"
+    # when in truth it was never applied. The stamp also invalidates a mask
+    # truncated by an interrupted run, which was otherwise non-empty and
+    # therefore cached forever, permanently under-masking that genome.
+    stamp_path = out_path + ".minorf"
+    stamp = str(int(min_orf))
+    if (os.path.exists(out_path) and os.path.getsize(out_path) > 0
+            and os.path.exists(stamp_path)
+            and open(stamp_path).read().strip() == stamp):
+        print(f"  {gid}: mask already present (min_orf={stamp}), skipping", flush=True)
         return
     with tempfile.TemporaryDirectory(prefix=f"mask_{gid}_") as tmpdir:
         fa_plain = maybe_decompress(fa_path, tmpdir)
@@ -111,8 +124,12 @@ def process_genome(gid, fa_path, min_orf, outdir):
         fai = fa_plain + ".fai"
         of_bed = orf_bed(fa_plain, min_orf)
         merged = sort_and_merge(of_bed, fai)
+        # Write the mask fully before stamping, so an interrupted run leaves no
+        # stamp and is rebuilt rather than cached in a truncated state.
         with open(out_path, "w") as fh:
             fh.write(merged)
+        with open(stamp_path, "w") as fh:
+            fh.write(stamp)
         n_orfs = of_bed.count("\n")
         n_merged = merged.count("\n")
         print(f"  {gid}: {n_orfs} ORFs → {n_merged} merged intervals", flush=True)

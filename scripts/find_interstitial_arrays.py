@@ -156,7 +156,19 @@ def extend_array(seq, start, end, motif_list):
     """
     L_total = len(seq)
     best = (start, end, None)
-    best_len = end - start
+    # Seed to -1, NOT to the input span. Seeding to (end - start) and comparing
+    # with a strict `>` meant an array that could not be EXTENDED never
+    # recorded its motif: the seed interval comes from merged EXACT seqkit
+    # hits, so the adjacent unit is by construction never a 0-mismatch match
+    # and extension only fires when a neighbouring unit carries exactly 1
+    # mismatch (p~1e-3 in random flank). Verified: a perfect (TTTAGGG)x10 at
+    # [50,120) returned motif=None, while the same array plus one degenerate
+    # unit returned 'TTTAGGG'. Downstream that nulls motif, cat5_3,
+    # upstream_flank10, first_unit, last_unit and downstream_flank10 for
+    # exactly the sharpest-boundaried arrays, so any per-motif tally or
+    # boundary logo was computed on the biased minority that happened to have
+    # a degenerate flanking unit.
+    best_len = -1
 
     candidates = set()
     for m in motif_list:
@@ -164,7 +176,10 @@ def extend_array(seq, start, end, motif_list):
         candidates.add(mu)
         candidates.add(rc(mu))
 
-    for m in candidates:
+    # sorted(): iteration order over a set of strings is not stable across
+    # processes (PYTHONHASHSEED), which made the winning motif on equal-length
+    # ties differ between runs.
+    for m in sorted(candidates):
         L = len(m)
         if L == 0 or end - start < L:
             continue
@@ -273,10 +288,22 @@ def process_genome(gid, organism, group, fa_path, gff_path, motifs_csv,
             return []
         # Per-genome MAX_GAP: at least the default (12 bp) but never less than
         # 2 units of THIS genome's canonical motif when known.
+        #
+        # The unknown-motif fallback must be the SHORTEST plausible motif, not
+        # the longest. Taking max() over the whole 18-motif config list yields
+        # Allium's 12 bp CTCGGTTATGGG and hence a 24 bp merge gap applied to
+        # genomes whose real motif is 5-6 bp — which lets two exact 6 bp units
+        # separated by 24 bp of arbitrary non-telomeric sequence merge into a
+        # 36 bp "array" that clears min_array_len=30 at a repeat fraction of
+        # 12/36 = 0.33 from just 2 units. This path is reachable for any genome
+        # missing from canonical_motifs.tsv AND for the genomes config.yaml
+        # deliberately blanks (Drosophila, S. cerevisiae: "leave blank -> scan").
+        # A short fallback can only fragment a long-motif array (conservative);
+        # a long one fabricates arrays (not conservative).
         if canonical_motif:
             motif_len = len(canonical_motif)
         else:
-            motif_len = max((len(m) for m in (base_motifs or ["TTAGGG"])), default=6)
+            motif_len = min((len(m) for m in (base_motifs or ["TTAGGG"])), default=6)
         per_genome_max_gap = max(MAX_GAP, 2 * motif_len)
         merged = bedtools_merge(bed_text, fai, per_genome_max_gap)
 
@@ -426,7 +453,13 @@ def main():
                          "files named {genome_id}.bed are added to the exclusion set")
     ap.add_argument("--canonical-motifs", default="",
                     help="optional TSV (genome_id,motif) from scan_all — enables per-genome "
-                         "MAX_GAP scaling by the actual curated motif length.")
+                         "MAX_GAP scaling by the actual curated motif length AND (unless "
+                         "--no-restrict-to-canonical) restricts the search to that motif.")
+    ap.add_argument("--no-restrict-to-canonical", action="store_true",
+                    help="search ALL config motifs in every genome instead of only that "
+                         "genome's curated telomere motif. Off by default: the telotron arm "
+                         "this set is contrasted against enforces require_terminal_motif_match, "
+                         "so searching all motifs here makes the contrast unfair (see below).")
     args = ap.parse_args()
 
     motif_list = [m.strip() for m in args.motifs.split(",") if m.strip()]
@@ -454,10 +487,30 @@ def main():
             cand = os.path.join(args.mask_dir, f"{gid}.bed")
             if os.path.exists(cand):
                 extra_mask = cand
+        # Restrict the search to THIS genome's curated telomere motif.
+        #
+        # Searching all 284 expanded patterns (from all 18 config motifs) in
+        # every genome makes the interstitial contrast unfair by construction:
+        # the telotron arm it is compared against enforces
+        # require_terminal_motif_match, which CLAUDE.md notes "is doing real
+        # work — it forces the intronic motif to equal the motif dominating
+        # that genome's contig ends, killing cross-motif noise". With no such
+        # gate here, the 5-bp TTAGG/TTGGG/TCAGG rotations and revcomps fire
+        # roughly every 66 bp by chance in 77%-AT E. tenella and per-genome
+        # MAX_GAP chains them into >=30 bp "arrays". So the telotron numerator
+        # was motif-matched while the interstitial denominator was not.
+        # Genomes with no curated motif keep the full set (nothing better to
+        # restrict to).
+        g_motifs_csv = motifs_csv
+        g_base = motif_list
+        if not args.no_restrict_to_canonical and canonical.get(gid):
+            cm = canonical[gid]
+            g_motifs_csv = ",".join(expand_motifs([cm]))
+            g_base = [cm]
         try:
-            rows = process_genome(gid, organism, group, fa, gff, motifs_csv,
+            rows = process_genome(gid, organism, group, fa, gff, g_motifs_csv,
                                   args.threads, args.terminal_bp, args.min_array_len,
-                                  extra_mask_bed=extra_mask, base_motifs=motif_list,
+                                  extra_mask_bed=extra_mask, base_motifs=g_base,
                                   canonical_motif=canonical.get(gid))
         except sp.CalledProcessError as e:
             print(f"  {gid}: tool failed ({e.cmd[0]} exit {e.returncode})", flush=True)
