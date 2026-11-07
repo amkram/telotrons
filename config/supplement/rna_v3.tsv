@@ -1,0 +1,13 @@
+Organism	Assembly	RNA-seq runs (SRA/ENA)	ENA organism	Library	Aligner	Reference	Primary assayed	Primary ≥1 read	Primary ≥3 reads	Additional assayed	Additional ≥1 read	Additional ≥3 reads
+Eimeria tenella	GCF_000499545.2	SRR7153211, SRR7153212	Eimeria tenella	RNA-Seq PAIRED	minimap2 -ax splice:sr	genomic assembly	16	5	5	932	789	736
+Eimeria necatrix	GCF_000499385.1	SRR14557240	Eimeria necatrix	RNA-Seq PAIRED	minimap2 -ax splice:sr	genomic assembly	28	10	9	1,245	841	744
+Eimeria maxima	GCF_000499605.1	SRR26671787, SRR26671792	Eimeria maxima	RNA-Seq PAIRED	minimap2 -ax splice:sr	genomic assembly	14	4	4	972	767	696
+Eimeria acervulina	GCF_000499425.1	SRR14820228	Eimeria acervulina	RNA-Seq PAIRED	minimap2 -ax splice:sr	genomic assembly	27	3	2	1,453	999	842
+Baffinella frigidus	GCA_026770585.1	SRR485952	Baffinella frigidus	EST PAIRED	minimap2 -ax splice:sr	genomic assembly	485	439	434	4,725	4,133	4,039
+Emiliania huxleyi	GCF_000372725.1	ERR15561806, ERR15561839, ERR15561871, ERR15561925, SRR37056093, SRR37056094, SRR37056100, SRR37056178	Emiliania huxleyi	RNA-Seq PAIRED; RNA-Seq SINGLE	minimap2 -ax splice:sr	genomic assembly	9	7	5	84	46	38
+Symbiodinium sp. CCMP2456	GCA_905221635.1	ERR3711290	Symbiodinium sp. CCMP2456	RNA-Seq PAIRED	minimap2 -ax splice:sr	genomic assembly	40	30	30	777	677	673
+Symbiodinium sp. CCMP2592	GCA_905221615.1	ERR4501159	Symbiodinium sp. CCMP2592	RNA-Seq PAIRED	minimap2 -ax splice:sr	genomic assembly	13	11	10	459	396	391
+Symbiodinium sp. KB8	GCA_905221625.1	ERR3711267	Symbiodinium sp. KB8	RNA-Seq PAIRED	minimap2 -ax splice:sr	genomic assembly	14	11	11	651	487	454
+Symbiodinium natans	GCA_905221605.1	SRR32862099	Symbiodinium natans	RNA-Seq PAIRED	minimap2 -ax splice:sr	genomic assembly	156	112	99	4,362	3,454	3,185
+Mesorhabditis spiculigera	GCA_958295435.1	ERR11634707, ERR11634708	Mesorhabditis spiculigera	RNA-Seq PAIRED	minimap2 -ax splice:sr	genomic assembly	83	39	32	1,349	541	412
+Total							885	671	641	17,009	13,130	12,210

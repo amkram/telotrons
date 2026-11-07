@@ -1,0 +1,12 @@
+genome_id	organism	runs	preset
+GCF_000499545.2	Eimeria tenella	SRR7153211;SRR7153212	splice:sr
+GCF_000499385.1	Eimeria necatrix	SRR14557240	splice:sr
+GCF_000499605.1	Eimeria maxima	SRR26671787;SRR26671792	splice:sr
+GCF_000499425.1	Eimeria acervulina	SRR14820228	splice:sr
+GCA_026770585.1	Baffinella frigidus (no clean sister)	SRR485952	splice:sr
+GCF_000372725.1	Emiliania huxleyi	ERR15561806;ERR15561839;ERR15561871;ERR15561925;SRR37056093;SRR37056094;SRR37056100;SRR37056178	splice:sr
+GCA_905221635.1	Symbiodinium sp. CCMP2456	ERR3711290	splice:sr
+GCA_905221615.1	Symbiodinium sp. CCMP2592	ERR4501159	splice:sr
+GCA_905221625.1	Symbiodinium sp. KB8	ERR3711267	splice:sr
+GCA_905221605.1	Symbiodinium natans	SRR32862099	splice:sr
+GCA_958295435.1	Mesorhabditis spiculigera	ERR11634707;ERR11634708	splice:sr

@@ -1,0 +1,654 @@
+{
+  "loci": {
+    "TARA_PSE_93_MAG_00226|TARA_PSE_93_MAG_00226_000000002815:958-1063": {
+      "architecture": "R",
+      "intron_phase": 0,
+      "source_gff": "data/raw/tara/Genes/GFF/TARA_PSE_93_MAG_00226.gmove.gff",
+      "donor_CDS": [
+        [
+          "TARA_PSE_93_MAG_00226_000000002815",
+          "Gmove",
+          "CDS",
+          "1064",
+          "1138",
+          ".",
+          "-",
+          ".",
+          "Parent=mRNA.TARA_PSE_93_MAG_00226_000000002815.1.11"
+        ]
+      ],
+      "acceptor_CDS": [
+        [
+          "TARA_PSE_93_MAG_00226_000000002815",
+          "Gmove",
+          "CDS",
+          "850",
+          "957",
+          ".",
+          "-",
+          ".",
+          "Parent=mRNA.TARA_PSE_93_MAG_00226_000000002815.1.11"
+        ]
+      ],
+      "frame_evidence": [
+        {
+          "parent": "mRNA.TARA_PSE_93_MAG_00226_000000002815.1.11",
+          "method": "cumulative CDS from annotated complete coding start/end",
+          "intron_phase": 0,
+          "CDS_chain": [
+            [
+              "TARA_PSE_93_MAG_00226_000000002815",
+              "Gmove",
+              "CDS",
+              "2464",
+              "2466",
+              ".",
+              "-",
+              ".",
+              "Parent=mRNA.TARA_PSE_93_MAG_00226_000000002815.1.11"
+            ],
+            [
+              "TARA_PSE_93_MAG_00226_000000002815",
+              "Gmove",
+              "CDS",
+              "1655",
+              "2401",
+              ".",
+              "-",
+              ".",
+              "Parent=mRNA.TARA_PSE_93_MAG_00226_000000002815.1.11"
+            ],
+            [
+              "TARA_PSE_93_MAG_00226_000000002815",
+              "Gmove",
+              "CDS",
+              "1429",
+              "1536",
+              ".",
+              "-",
+              ".",
+              "Parent=mRNA.TARA_PSE_93_MAG_00226_000000002815.1.11"
+            ],
+            [
+              "TARA_PSE_93_MAG_00226_000000002815",
+              "Gmove",
+              "CDS",
+              "1064",
+              "1138",
+              ".",
+              "-",
+              ".",
+              "Parent=mRNA.TARA_PSE_93_MAG_00226_000000002815.1.11"
+            ],
+            [
+              "TARA_PSE_93_MAG_00226_000000002815",
+              "Gmove",
+              "CDS",
+              "850",
+              "957",
+              ".",
+              "-",
+              ".",
+              "Parent=mRNA.TARA_PSE_93_MAG_00226_000000002815.1.11"
+            ],
+            [
+              "TARA_PSE_93_MAG_00226_000000002815",
+              "Gmove",
+              "CDS",
+              "424",
+              "603",
+              ".",
+              "-",
+              ".",
+              "Parent=mRNA.TARA_PSE_93_MAG_00226_000000002815.1.11"
+            ]
+          ],
+          "CDS_bp_before": 933,
+          "CDS_bp_after": 288
+        }
+      ]
+    },
+    "GCA_905221605.1|CAJNDS010002818.1:162684-162772": {
+      "architecture": "F",
+      "intron_phase": 0,
+      "source_gff": "data/raw/genbank/GCA_905221605.1/GCA_905221605.1_Snat_CCMP2548_genomic.gff.gz",
+      "donor_CDS": [
+        [
+          "CAJNDS010002818.1",
+          "EMBL",
+          "CDS",
+          "162773",
+          "163279",
+          ".",
+          "-",
+          "0",
+          "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+        ]
+      ],
+      "acceptor_CDS": [
+        [
+          "CAJNDS010002818.1",
+          "EMBL",
+          "CDS",
+          "162610",
+          "162683",
+          ".",
+          "-",
+          "0",
+          "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+        ]
+      ],
+      "frame_evidence": [
+        {
+          "parent": "rna-SNAT2548_LOCUS34594",
+          "method": "adjacent CDS phases",
+          "intron_phase": 0,
+          "CDS_chain": [
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "162773",
+              "163279",
+              ".",
+              "-",
+              "0",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "162610",
+              "162683",
+              ".",
+              "-",
+              "0",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "162366",
+              "162444",
+              ".",
+              "-",
+              "1",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "162045",
+              "162092",
+              ".",
+              "-",
+              "0",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "161641",
+              "161829",
+              ".",
+              "-",
+              "0",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "161334",
+              "161417",
+              ".",
+              "-",
+              "0",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "161052",
+              "161094",
+              ".",
+              "-",
+              "0",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "160531",
+              "160638",
+              ".",
+              "-",
+              "2",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "160293",
+              "160392",
+              ".",
+              "-",
+              "2",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "159754",
+              "159922",
+              ".",
+              "-",
+              "1",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "159205",
+              "159636",
+              ".",
+              "-",
+              "0",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "159044",
+              "159086",
+              ".",
+              "-",
+              "0",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "158829",
+              "158884",
+              ".",
+              "-",
+              "2",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "158577",
+              "158682",
+              ".",
+              "-",
+              "0",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ],
+            [
+              "CAJNDS010002818.1",
+              "EMBL",
+              "CDS",
+              "158398",
+              "158465",
+              ".",
+              "-",
+              "2",
+              "ID=cds-CAE7608515.1;Parent=rna-SNAT2548_LOCUS34594;Dbxref=NCBI_GP:CAE7608515.1;Name=CAE7608515.1;Note=ID:Snat_CCMP2548.gene27446.mRNA1.cds1%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds10%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds11%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds12%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds13%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds14%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds15%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds2%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds3%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds4%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds5%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds6%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds7%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds8%3B~ID:Snat_CCMP2548.gene27446.mRNA1.cds9%3B~source:EVM;gbkey=CDS;locus_tag=SNAT2548_LOCUS34594;product=CAE7608515.1;protein_id=CAE7608515.1"
+            ]
+          ],
+          "CDS_bp_before": 507,
+          "CDS_bp_after": 1599
+        }
+      ]
+    },
+    "TARA_PSW_86_MAG_00284|TARA_PSW_86_MAG_00284_000000011116:1324-1429": {
+      "architecture": "F-R",
+      "intron_phase": 0,
+      "source_gff": "data/raw/tara/Genes/GFF/TARA_PSW_86_MAG_00284.gmove.gff",
+      "donor_CDS": [
+        [
+          "TARA_PSW_86_MAG_00284_000000011116",
+          "Gmove",
+          "CDS",
+          "1195",
+          "1323",
+          ".",
+          "+",
+          ".",
+          "Parent=mRNA.TARA_PSW_86_MAG_00284_000000011116.1.1"
+        ]
+      ],
+      "acceptor_CDS": [
+        [
+          "TARA_PSW_86_MAG_00284_000000011116",
+          "Gmove",
+          "CDS",
+          "1430",
+          "1657",
+          ".",
+          "+",
+          ".",
+          "Parent=mRNA.TARA_PSW_86_MAG_00284_000000011116.1.1"
+        ]
+      ],
+      "frame_evidence": [
+        {
+          "parent": "mRNA.TARA_PSW_86_MAG_00284_000000011116.1.1",
+          "method": "inferred unique stop-free frame across partial annotated CDS",
+          "intron_phase": 0,
+          "CDS_chain": [
+            [
+              "TARA_PSW_86_MAG_00284_000000011116",
+              "Gmove",
+              "CDS",
+              "91",
+              "936",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000011116.1.1"
+            ],
+            [
+              "TARA_PSW_86_MAG_00284_000000011116",
+              "Gmove",
+              "CDS",
+              "1195",
+              "1323",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000011116.1.1"
+            ],
+            [
+              "TARA_PSW_86_MAG_00284_000000011116",
+              "Gmove",
+              "CDS",
+              "1430",
+              "1657",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000011116.1.1"
+            ],
+            [
+              "TARA_PSW_86_MAG_00284_000000011116",
+              "Gmove",
+              "CDS",
+              "1771",
+              "2111",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000011116.1.1"
+            ],
+            [
+              "TARA_PSW_86_MAG_00284_000000011116",
+              "Gmove",
+              "CDS",
+              "2291",
+              "2711",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000011116.1.1"
+            ],
+            [
+              "TARA_PSW_86_MAG_00284_000000011116",
+              "Gmove",
+              "CDS",
+              "2836",
+              "3480",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000011116.1.1"
+            ]
+          ],
+          "CDS_bp_before": 975,
+          "CDS_bp_after": 1635
+        }
+      ]
+    },
+    "GCF_000499545.2|NW_013544817.1:886-983": {
+      "architecture": "R-L-F",
+      "intron_phase": 0,
+      "source_gff": "data/raw/refseq/GCF_000499545.2/GCF_000499545.2_ETH001_genomic.gff.gz",
+      "donor_CDS": [
+        [
+          "NW_013544817.1",
+          "RefSeq",
+          "CDS",
+          "984",
+          "1047",
+          ".",
+          "-",
+          "1",
+          "ID=cds-XP_013235204.1;Parent=rna-XM_013379750.1;Dbxref=GeneID:25257774,GenBank:XP_013235204.1;Name=XP_013235204.1;gbkey=CDS;locus_tag=ETH_00043675;partial=true;product=uncharacterized protein;protein_id=XP_013235204.1"
+        ]
+      ],
+      "acceptor_CDS": [
+        [
+          "NW_013544817.1",
+          "RefSeq",
+          "CDS",
+          "496",
+          "885",
+          ".",
+          "-",
+          "0",
+          "ID=cds-XP_013235204.1;Parent=rna-XM_013379750.1;Dbxref=GeneID:25257774,GenBank:XP_013235204.1;Name=XP_013235204.1;gbkey=CDS;locus_tag=ETH_00043675;partial=true;product=uncharacterized protein;protein_id=XP_013235204.1"
+        ]
+      ],
+      "frame_evidence": [
+        {
+          "parent": "rna-XM_013379750.1",
+          "method": "adjacent CDS phases",
+          "intron_phase": 0,
+          "CDS_chain": [
+            [
+              "NW_013544817.1",
+              "RefSeq",
+              "CDS",
+              "2306",
+              "2514",
+              ".",
+              "-",
+              "2",
+              "ID=cds-XP_013235204.1;Parent=rna-XM_013379750.1;Dbxref=GeneID:25257774,GenBank:XP_013235204.1;Name=XP_013235204.1;end_range=2514,.;gbkey=CDS;locus_tag=ETH_00043675;partial=true;product=uncharacterized protein;protein_id=XP_013235204.1"
+            ],
+            [
+              "NW_013544817.1",
+              "RefSeq",
+              "CDS",
+              "1977",
+              "2101",
+              ".",
+              "-",
+              "0",
+              "ID=cds-XP_013235204.1;Parent=rna-XM_013379750.1;Dbxref=GeneID:25257774,GenBank:XP_013235204.1;Name=XP_013235204.1;gbkey=CDS;locus_tag=ETH_00043675;partial=true;product=uncharacterized protein;protein_id=XP_013235204.1"
+            ],
+            [
+              "NW_013544817.1",
+              "RefSeq",
+              "CDS",
+              "1630",
+              "1799",
+              ".",
+              "-",
+              "1",
+              "ID=cds-XP_013235204.1;Parent=rna-XM_013379750.1;Dbxref=GeneID:25257774,GenBank:XP_013235204.1;Name=XP_013235204.1;gbkey=CDS;locus_tag=ETH_00043675;partial=true;product=uncharacterized protein;protein_id=XP_013235204.1"
+            ],
+            [
+              "NW_013544817.1",
+              "RefSeq",
+              "CDS",
+              "1242",
+              "1320",
+              ".",
+              "-",
+              "2",
+              "ID=cds-XP_013235204.1;Parent=rna-XM_013379750.1;Dbxref=GeneID:25257774,GenBank:XP_013235204.1;Name=XP_013235204.1;gbkey=CDS;locus_tag=ETH_00043675;partial=true;product=uncharacterized protein;protein_id=XP_013235204.1"
+            ],
+            [
+              "NW_013544817.1",
+              "RefSeq",
+              "CDS",
+              "984",
+              "1047",
+              ".",
+              "-",
+              "1",
+              "ID=cds-XP_013235204.1;Parent=rna-XM_013379750.1;Dbxref=GeneID:25257774,GenBank:XP_013235204.1;Name=XP_013235204.1;gbkey=CDS;locus_tag=ETH_00043675;partial=true;product=uncharacterized protein;protein_id=XP_013235204.1"
+            ],
+            [
+              "NW_013544817.1",
+              "RefSeq",
+              "CDS",
+              "496",
+              "885",
+              ".",
+              "-",
+              "0",
+              "ID=cds-XP_013235204.1;Parent=rna-XM_013379750.1;Dbxref=GeneID:25257774,GenBank:XP_013235204.1;Name=XP_013235204.1;gbkey=CDS;locus_tag=ETH_00043675;partial=true;product=uncharacterized protein;protein_id=XP_013235204.1"
+            ],
+            [
+              "NW_013544817.1",
+              "RefSeq",
+              "CDS",
+              "179",
+              "307",
+              ".",
+              "-",
+              "0",
+              "ID=cds-XP_013235204.1;Parent=rna-XM_013379750.1;Dbxref=GeneID:25257774,GenBank:XP_013235204.1;Name=XP_013235204.1;gbkey=CDS;locus_tag=ETH_00043675;partial=true;product=uncharacterized protein;protein_id=XP_013235204.1"
+            ],
+            [
+              "NW_013544817.1",
+              "RefSeq",
+              "CDS",
+              "51",
+              "122",
+              ".",
+              "-",
+              "0",
+              "ID=cds-XP_013235204.1;Parent=rna-XM_013379750.1;Dbxref=GeneID:25257774,GenBank:XP_013235204.1;Name=XP_013235204.1;gbkey=CDS;locus_tag=ETH_00043675;partial=true;product=uncharacterized protein;protein_id=XP_013235204.1"
+            ]
+          ],
+          "CDS_bp_before": 647,
+          "CDS_bp_after": 591
+        }
+      ]
+    },
+    "TARA_PSW_86_MAG_00284|TARA_PSW_86_MAG_00284_000000005442:670-773": {
+      "architecture": "F-L-R",
+      "intron_phase": 0,
+      "source_gff": "data/raw/tara/Genes/GFF/TARA_PSW_86_MAG_00284.gmove.gff",
+      "donor_CDS": [
+        [
+          "TARA_PSW_86_MAG_00284_000000005442",
+          "Gmove",
+          "CDS",
+          "615",
+          "669",
+          ".",
+          "+",
+          ".",
+          "Parent=mRNA.TARA_PSW_86_MAG_00284_000000005442.1.1"
+        ]
+      ],
+      "acceptor_CDS": [
+        [
+          "TARA_PSW_86_MAG_00284_000000005442",
+          "Gmove",
+          "CDS",
+          "774",
+          "1118",
+          ".",
+          "+",
+          ".",
+          "Parent=mRNA.TARA_PSW_86_MAG_00284_000000005442.1.1"
+        ]
+      ],
+      "frame_evidence": [
+        {
+          "parent": "mRNA.TARA_PSW_86_MAG_00284_000000005442.1.1",
+          "method": "cumulative CDS from annotated complete coding start/end",
+          "intron_phase": 0,
+          "CDS_chain": [
+            [
+              "TARA_PSW_86_MAG_00284_000000005442",
+              "Gmove",
+              "CDS",
+              "1",
+              "467",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000005442.1.1"
+            ],
+            [
+              "TARA_PSW_86_MAG_00284_000000005442",
+              "Gmove",
+              "CDS",
+              "615",
+              "669",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000005442.1.1"
+            ],
+            [
+              "TARA_PSW_86_MAG_00284_000000005442",
+              "Gmove",
+              "CDS",
+              "774",
+              "1118",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000005442.1.1"
+            ],
+            [
+              "TARA_PSW_86_MAG_00284_000000005442",
+              "Gmove",
+              "CDS",
+              "1212",
+              "1273",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000005442.1.1"
+            ],
+            [
+              "TARA_PSW_86_MAG_00284_000000005442",
+              "Gmove",
+              "CDS",
+              "1400",
+              "1814",
+              ".",
+              "+",
+              ".",
+              "Parent=mRNA.TARA_PSW_86_MAG_00284_000000005442.1.1"
+            ]
+          ],
+          "CDS_bp_before": 522,
+          "CDS_bp_after": 822
+        }
+      ]
+    }
+  }
+}

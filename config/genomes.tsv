@@ -1,0 +1,51 @@
+genome_id	label	role	lineage	motif	assembly_class	assembly_source	annotation_provider	BUSCO_percent	pair_bearer_id	pair_control_id
+GCA_958295435.1	Mesorhabditis spiculigera	bearer	nematode	TTAGGC	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/958/295/435/GCA_958295435.1_M.spiculigera_Hybrid_genome/	NCBI supplied annotation		GCA_958295435.1	GCA_000180635.4
+GCA_000180635.4	Pristionchus pacificus	control	nematode	TTAGGC	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/180/635/GCA_000180635.4_El_Paco_v._4/	NCBI supplied annotation		GCA_958295435.1	GCA_000180635.4
+GCA_026770585.1	Baffinella frigidus (no clean sister)	bearer	cryptophyte	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/026/770/585/GCA_026770585.1_Crypto2293_1/	NCBI supplied annotation		GCA_026770585.1	TARA_ION_45_MAG_00187
+TARA_ION_45_MAG_00187	Cryptophyta MAG 00187	control	cryptophyte	TTTAGGG	MAG	Published Tara SMAG metadata	Tara Gmove	40.8	GCA_026770585.1	TARA_ION_45_MAG_00187
+GCF_000372725.1	Emiliania huxleyi	bearer	haptophyte	TTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/372/725/GCF_000372725.1_Emiliana_huxleyi_CCMP1516_main_genome_assembly_v1.0/	NCBI supplied annotation		GCF_000372725.1	TARA_MED_95_MAG_00393
+TARA_ARC_108_MAG_00323	Haptolina MAG (non-bearer)	bearer	haptophyte	TTAGGG	MAG	genoscope	Tara SMAGs-v1 Gmove		TARA_ARC_108_MAG_00323	TARA_PSW_86_MAG_00317
+TARA_AOS_82_MAG_00154	Phaeocystis MAG TARA_AOS_82_MAG_00154	bearer	haptophyte	TTAGGG	MAG	genoscope	Tara SMAGs-v1 Gmove		TARA_AOS_82_MAG_00154	TARA_MED_95_MAG_00458
+TARA_AOS_82_MAG_00183	Phaeocystis MAG TARA_AOS_82_MAG_00183	bearer	haptophyte	TTAGGG	MAG	genoscope	Tara SMAGs-v1 Gmove		TARA_AOS_82_MAG_00183	TARA_PSW_86_MAG_00283
+TARA_ARC_108_MAG_00319	Phaeocystis MAG TARA_ARC_108_MAG_00319	bearer	haptophyte	TTAGGG	MAG	genoscope	Tara SMAGs-v1 Gmove		TARA_ARC_108_MAG_00319	TARA_AON_82_MAG_00315
+TARA_PON_109_MAG_00250	Phaeocystis MAG TARA_PON_109_MAG_00250	bearer	haptophyte	TTAGGG	MAG	genoscope	Tara SMAGs-v1 Gmove		TARA_PON_109_MAG_00250	TARA_PSW_86_MAG_00287
+TARA_PSE_93_MAG_00226	Phaeocystis MAG TARA_PSE_93_MAG_00226	bearer	haptophyte	TTAGGG	MAG	genoscope	Tara SMAGs-v1 Gmove		TARA_PSE_93_MAG_00226	TARA_AOS_82_MAG_00184
+TARA_PSW_86_MAG_00284	Phaeocystis MAG TARA_PSW_86_MAG_00284	bearer	haptophyte	TTAGGG	MAG	genoscope	Tara SMAGs-v1 Gmove		TARA_PSW_86_MAG_00284	TARA_MED_95_MAG_00439
+TARA_AOS_82_MAG_00184	Chrysochromulinaceae MAG 00184	control	haptophyte	TTAGGG	MAG	Published Tara SMAG metadata	Tara Gmove	61.5	TARA_PSE_93_MAG_00226	TARA_AOS_82_MAG_00184
+TARA_PSW_86_MAG_00283	Chrysochromulinaceae MAG 00283	control	haptophyte	TTAGGG	MAG	Published Tara SMAG metadata	Tara Gmove	54.1	TARA_AOS_82_MAG_00183	TARA_PSW_86_MAG_00283
+TARA_AON_82_MAG_00315	Chrysochromulinaceae MAG 00315	control	haptophyte	TTAGGG	MAG	Published Tara SMAG metadata	Tara Gmove	45.5	TARA_ARC_108_MAG_00319	TARA_AON_82_MAG_00315
+TARA_PSW_86_MAG_00317	Chrysochromulinaceae MAG 00317	control	haptophyte	TTAGGG	MAG	Published Tara SMAG metadata	Tara Gmove	75.4	TARA_ARC_108_MAG_00323	TARA_PSW_86_MAG_00317
+TARA_MED_95_MAG_00458	Chrysochromulinaceae MAG 00458	control	haptophyte	TTAGGG	MAG	Published Tara SMAG metadata	Tara Gmove	70.2	TARA_AOS_82_MAG_00154	TARA_MED_95_MAG_00458
+TARA_MED_95_MAG_00393	Haptophyte MAG 00393	control	haptophyte	TTAGGG	MAG	Published Tara SMAG metadata	Tara Gmove	65.1	GCF_000372725.1	TARA_MED_95_MAG_00393
+TARA_PSW_86_MAG_00287	Sister_Phaeocystis MAG (non-bearer)	control	haptophyte	TTAGGG	MAG	genoscope	Tara SMAGs-v1 Gmove	55.7	TARA_PON_109_MAG_00250	TARA_PSW_86_MAG_00287
+TARA_MED_95_MAG_00439	Sister_Phaeocystis MAG 00439	control	haptophyte	TTAGGG	MAG	Published Tara SMAG metadata	Tara Gmove	48.3	TARA_PSW_86_MAG_00284	TARA_MED_95_MAG_00439
+TARA_MED_95_MAG_00464	Stramenopile MAG	bearer	stramenopile	TTAGGG	MAG	genoscope	Tara SMAGs-v1 Gmove		TARA_MED_95_MAG_00464	GCF_000186865.1
+GCF_000186865.1	Aureococcus anophagefferens (pelagophyte)	control	stramenopile	TTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/186/865/GCF_000186865.1_v_1.0/	NCBI supplied annotation		TARA_MED_95_MAG_00464	GCF_000186865.1
+GCA_001750085.1	Fragilariopsis cylindrus (diatom)	control	stramenopile	TTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/750/085/GCA_001750085.1_Fracy1/	NCBI supplied annotation		TARA_ARC_108_MAG_00234	GCA_001750085.1
+TARA_ARC_108_MAG_00234	Chrysophyceae MAG (no clean sister)	bearer	chrysophyte	TTAGGG	MAG	genoscope	Tara SMAGs-v1 Gmove		TARA_ARC_108_MAG_00234	GCA_001750085.1
+GCA_905221605.1	Symbiodinium natans	bearer	dinoflagellate	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/905/221/605/GCA_905221605.1_Snat_CCMP2548/	NCBI supplied annotation		GCA_905221605.1	GCA_963970005.1
+GCA_905231915.1	Symbiodinium necroappetens	bearer	dinoflagellate	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/905/231/915/GCA_905231915.1_Snec_CCMP2469/	NCBI supplied annotation		GCA_905231915.1	GCA_905237095.1
+GCA_905221635.1	Symbiodinium sp. CCMP2456	bearer	dinoflagellate	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/905/221/635/GCA_905221635.1_Slin_CCMP2456/	NCBI supplied annotation		GCA_905221635.1	GCA_947184155.2
+GCA_905221615.1	Symbiodinium sp. CCMP2592	bearer	dinoflagellate	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/905/221/615/GCA_905221615.1_Stri_CCMP2592/	NCBI supplied annotation		GCA_905221615.1	GCA_963969995.1
+GCA_905221625.1	Symbiodinium sp. KB8	bearer	dinoflagellate	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/905/221/625/GCA_905221625.1_Smic_CassKB8/	NCBI supplied annotation		GCA_905221625.1	GCA_905237085.1
+GCA_947184155.2	Cladocopium goreaui	control	dinoflagellate	TTTAGGG	isolate	NCBI Datasets public report	NCBI supplied annotation		GCA_905221635.1	GCA_947184155.2
+GCA_963969995.1	Durusdinium trenchii GCA_963969995.1	control	dinoflagellate	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/963/969/995/GCA_963969995.1_Durusdinium_trenchii_SCF082/	NCBI supplied annotation		GCA_905221615.1	GCA_963969995.1
+GCA_963970005.1	Durusdinium trenchii GCA_963970005.1	control	dinoflagellate	TTTAGGG	isolate	NCBI Datasets public report	NCBI supplied annotation		GCA_905221605.1	GCA_963970005.1
+GCA_905237085.1	Polarella glacialis GCA_905237085.1	control	dinoflagellate	TTTAGGG	isolate	NCBI Datasets public report	NCBI supplied annotation		GCA_905221625.1	GCA_905237085.1
+GCA_905237095.1	Polarella glacialis GCA_905237095.1	control	dinoflagellate	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/905/237/095/GCA_905237095.1_Pgla_CCMP2088/	NCBI supplied annotation		GCA_905231915.1	GCA_905237095.1
+GCF_000499425.1	Eimeria acervulina	bearer	apicomplexa	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/499/425/GCF_000499425.1_EAH001/	NCBI supplied annotation		GCF_000499425.1	GCF_002600585.1
+GCA_051911535.1	Eimeria intestinalis	bearer	apicomplexa	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/051/911/535/GCA_051911535.1_ASM5191153v1/	NCBI supplied annotation		GCA_051911535.1	GCA_000149715.2
+GCA_051911575.1	Eimeria magna	bearer	apicomplexa	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/051/911/575/GCA_051911575.1_ASM5191157v1/	NCBI supplied annotation		GCA_051911575.1	GCA_000150015.2
+GCF_000499605.1	Eimeria maxima	bearer	apicomplexa	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/499/605/GCF_000499605.1_EMW001/	NCBI supplied annotation		GCF_000499605.1	GCF_000258005.1
+GCA_051911595.1	Eimeria media	bearer	apicomplexa	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/051/911/595/GCA_051911595.1_ASM5191159v1/	NCBI supplied annotation		GCA_051911595.1	GCA_964212155.1
+GCF_000499745.2	Eimeria mitis	bearer	apicomplexa	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/499/745/GCF_000499745.2_EMH001/	NCBI supplied annotation		GCF_000499745.2	GCF_000006565.2
+GCF_000499385.1	Eimeria necatrix	bearer	apicomplexa	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/499/385/GCF_000499385.1_ENH001/	NCBI supplied annotation		GCF_000499385.1	GCF_002999335.1
+GCF_000499545.2	Eimeria tenella	bearer	apicomplexa	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/499/545/GCF_000499545.2_ETH001/	NCBI supplied annotation		GCF_000499545.2	GCF_000208865.1
+GCF_002999335.1	Cyclospora cayetanensis	control	apicomplexa	TTTAGGG	isolate	NCBI Datasets public report	NCBI supplied annotation		GCF_000499385.1	GCF_002999335.1
+GCF_002600585.1	Cystoisospora suis	control	apicomplexa	TTTAGGG	isolate	NCBI Datasets public report	NCBI supplied annotation		GCF_000499425.1	GCF_002600585.1
+GCF_000258005.1	Hammondia hammondi	control	apicomplexa	TTTAGGG	isolate	NCBI Datasets public report	NCBI supplied annotation		GCF_000499605.1	GCF_000258005.1
+GCF_000208865.1	Neospora caninum	control	apicomplexa	TTTAGGG	isolate	NCBI Datasets public report	NCBI supplied annotation		GCF_000499545.2	GCF_000208865.1
+GCA_964212155.1	Sarcocystis calchasi	control	apicomplexa	TTTAGGG	isolate	NCBI Datasets public report	NCBI supplied annotation		GCA_051911595.1	GCA_964212155.1
+GCA_000149715.2	Toxoplasma gondii GT1	control	apicomplexa	TTTAGGG	isolate	NCBI Datasets public report	NCBI supplied annotation		GCA_051911535.1	GCA_000149715.2
+GCF_000006565.2	Toxoplasma gondii ME49	control	apicomplexa	TTTAGGG	isolate	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/006/565/GCF_000006565.2_TGA4/	NCBI supplied annotation		GCF_000499745.2	GCF_000006565.2
+GCA_000150015.2	Toxoplasma gondii VEG	control	apicomplexa	TTTAGGG	isolate	NCBI Datasets public report	NCBI supplied annotation		GCA_051911575.1	GCA_000150015.2

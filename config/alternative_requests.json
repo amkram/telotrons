@@ -1,0 +1,52 @@
+[
+ {
+  "key": "GCA_905221635.1|CAJNDV010024358.1:1560-1719|GCA_905221615.1",
+  "locus_id": "GCA_905221635.1|CAJNDV010024358.1:1560-1719",
+  "genome_id": "GCA_905221615.1",
+  "seqid": "CAJNDT010001469.1",
+  "strand": "-",
+  "start": 32046,
+  "end": 32234,
+  "motif": "TTTAGGG"
+ },
+ {
+  "key": "TARA_PON_109_MAG_00250|TARA_PON_109_MAG_00250_000000000558:1659-1800|TARA_PSW_86_MAG_00284",
+  "locus_id": "TARA_PON_109_MAG_00250|TARA_PON_109_MAG_00250_000000000558:1659-1800",
+  "genome_id": "TARA_PSW_86_MAG_00284",
+  "seqid": "TARA_PSW_86_MAG_00284_000000012192",
+  "strand": "-",
+  "start": 1150,
+  "end": 1291,
+  "motif": "TTAGGG"
+ },
+ {
+  "key": "GCF_000499545.2|NW_013544880.1:347-416|GCF_000499385.1",
+  "locus_id": "GCF_000499545.2|NW_013544880.1:347-416",
+  "genome_id": "GCF_000499385.1",
+  "seqid": "NW_013654481.1",
+  "strand": "-",
+  "start": 11764,
+  "end": 11826,
+  "motif": "TTTAGGG"
+ },
+ {
+  "key": "TARA_PON_109_MAG_00250|TARA_PON_109_MAG_00250_000000002402:2777-2875|TARA_PSW_86_MAG_00284",
+  "locus_id": "TARA_PON_109_MAG_00250|TARA_PON_109_MAG_00250_000000002402:2777-2875",
+  "genome_id": "TARA_PSW_86_MAG_00284",
+  "seqid": "TARA_PSW_86_MAG_00284_000000007943",
+  "strand": "-",
+  "start": 2262,
+  "end": 2360,
+  "motif": "TTAGGG"
+ },
+ {
+  "key": "TARA_PON_109_MAG_00250|TARA_PON_109_MAG_00250_000000004771:2213-2318|TARA_PSW_86_MAG_00284",
+  "locus_id": "TARA_PON_109_MAG_00250|TARA_PON_109_MAG_00250_000000004771:2213-2318",
+  "genome_id": "TARA_PSW_86_MAG_00284",
+  "seqid": "TARA_PSW_86_MAG_00284_000000005221",
+  "strand": "+",
+  "start": 1771,
+  "end": 1876,
+  "motif": "TTAGGG"
+ }
+]

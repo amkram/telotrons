@@ -1,0 +1,10 @@
+work/
+data/
+__pycache__/
+*.pyc
+*.so
+*.dylib
+*.mpi
+*.bam
+*.bam.bai
+.snakemake/

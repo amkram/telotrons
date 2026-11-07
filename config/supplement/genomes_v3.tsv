@@ -1,0 +1,51 @@
+Lineage	Organism	Assembly or MAG	Class	Source	Initial survey	Annotation	Intron source	Role	Telomere motif	>85% loci	>50% loci	Notes
+Haptophytes	Emiliania huxleyi	GCF_000372725.1	isolate	NCBI RefSeq	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTAGGG	9	93	
+Haptophytes	Haptolina MAG 00323	TARA_ARC_108_MAG_00323	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Telotron bearer	TTAGGG	25	423	
+Haptophytes	Phaeocystis MAG 00154	TARA_AOS_82_MAG_00154	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Telotron bearer	TTAGGG	652	3098	
+Haptophytes	Phaeocystis MAG 00183	TARA_AOS_82_MAG_00183	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Telotron bearer	TTAGGG	244	2274	
+Haptophytes	Phaeocystis MAG 00226	TARA_PSE_93_MAG_00226	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Telotron bearer	TTAGGG	887	3209	
+Haptophytes	Phaeocystis MAG 00250	TARA_PON_109_MAG_00250	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Telotron bearer	TTAGGG	1187	4629	
+Haptophytes	Phaeocystis MAG 00284	TARA_PSW_86_MAG_00284	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Telotron bearer	TTAGGG	2430	10099	
+Haptophytes	Phaeocystis MAG 00319	TARA_ARC_108_MAG_00319	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Telotron bearer	TTAGGG	361	4353	
+Haptophytes	Chrysochromulinaceae MAG 00184	TARA_AOS_82_MAG_00184	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Control	TTAGGG	0	0	BUSCO 61.5%; 32,617 annotated introns
+Haptophytes	Chrysochromulinaceae MAG 00283	TARA_PSW_86_MAG_00283	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Control	TTAGGG	0	0	BUSCO 54.1%; 2,116 annotated introns
+Haptophytes	Chrysochromulinaceae MAG 00315	TARA_AON_82_MAG_00315	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Control	TTAGGG	0	0	BUSCO 45.5%; 21,436 annotated introns
+Haptophytes	Chrysochromulinaceae MAG 00317	TARA_PSW_86_MAG_00317	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Control	TTAGGG	0	0	BUSCO 75.4%; 8,945 annotated introns
+Haptophytes	Chrysochromulinaceae MAG 00458	TARA_MED_95_MAG_00458	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Control	TTAGGG	0	0	BUSCO 70.2%; 7,874 annotated introns
+Haptophytes	Haptophyte MAG 00393 (genus unassigned)	TARA_MED_95_MAG_00393	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Control	TTAGGG	0	0	BUSCO 65.1%; 1,526 annotated introns
+Haptophytes	Phaeocystis-related MAG 00287	TARA_PSW_86_MAG_00287	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Control	TTAGGG	0	0	BUSCO 55.7%; 5,994 annotated introns
+Haptophytes	Phaeocystis-related MAG 00439	TARA_MED_95_MAG_00439	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Control	TTAGGG	0	0	BUSCO 48.3%; 4,961 annotated introns
+Symbiodinium	Symbiodinium natans	GCA_905221605.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	156	4518	
+Symbiodinium	Symbiodinium necroappetens	GCA_905231915.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	12	386	
+Symbiodinium	Symbiodinium sp. CCMP2456	GCA_905221635.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	40	817	
+Symbiodinium	Symbiodinium sp. CCMP2592	GCA_905221615.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	13	472	
+Symbiodinium	Symbiodinium sp. KB8	GCA_905221625.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	15	670	
+Symbiodinium	Cladocopium goreaui	GCA_947184155.2	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Control	TTTAGGG	0	0	742,505 annotated introns
+Symbiodinium	Durusdinium trenchii	GCA_963969995.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Control	TTTAGGG	0	0	724,663 annotated introns
+Symbiodinium	Durusdinium trenchii	GCA_963970005.1	isolate	NCBI GenBank	not in initial survey	NCBI (RefSeq/GenBank) annotation	host annotation	Control	TTTAGGG	0	0	892,292 annotated introns
+Symbiodinium	Polarella glacialis	GCA_905237085.1	isolate	NCBI GenBank	not in initial survey	NCBI (RefSeq/GenBank) annotation	host annotation	Control	TTTAGGG	0	0	619,391 annotated introns
+Symbiodinium	Polarella glacialis	GCA_905237095.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Control	TTTAGGG	0	0	508,840 annotated introns
+Baffinella	Baffinella frigidus	GCA_026770585.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	485	5212	
+Baffinella	Cryptophyta MAG 00187	TARA_ION_45_MAG_00187	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Control	TTTAGGG	0	0	BUSCO 40.8%; 31,432 annotated introns
+Chrysophyte	Chrysophyceae MAG 00234	TARA_ARC_108_MAG_00234	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Telotron bearer	TTAGGG	87	270	
+Chrysophyte	Fragilariopsis cylindrus (diatom)	GCA_001750085.1	isolate	NCBI GenBank	truncated extraction (rescreened)	NCBI (RefSeq/GenBank) annotation	annotated exons and CDS blocks	Control	TTAGGG	0	0	
+Other stramenopile	Stramenopile MAG 00464	TARA_MED_95_MAG_00464	MAG	Tara Oceans SMAGs-v1	complete	Gmove (Tara SMAGs-v1)	CDS blocks	Telotron bearer	TTAGGG	155	2387	
+Other stramenopile	Aureococcus anophagefferens (pelagophyte)	GCF_000186865.1	isolate	NCBI RefSeq	extraction error (rescreened)	NCBI (RefSeq/GenBank) annotation	host annotation	Control	TTAGGG	0	0	
+Eimeria	Eimeria acervulina	GCF_000499425.1	isolate	NCBI RefSeq	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	27	1480	
+Eimeria	Eimeria intestinalis	GCA_051911535.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	21	376	
+Eimeria	Eimeria magna	GCA_051911575.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	14	514	
+Eimeria	Eimeria maxima	GCF_000499605.1	isolate	NCBI RefSeq	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	14	986	
+Eimeria	Eimeria media	GCA_051911595.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	10	600	
+Eimeria	Eimeria mitis	GCF_000499745.2	isolate	NCBI RefSeq	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	37	912	
+Eimeria	Eimeria necatrix	GCF_000499385.1	isolate	NCBI RefSeq	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	28	1273	
+Eimeria	Eimeria tenella	GCF_000499545.2	isolate	NCBI RefSeq	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTTAGGG	16	948	
+Eimeria	Cyclospora cayetanensis	GCF_002999335.1	isolate	NCBI RefSeq	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Control	TTTAGGG	0	0	34,809 annotated introns
+Eimeria	Cystoisospora suis	GCF_002600585.1	isolate	NCBI RefSeq	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Control	TTTAGGG	0	0	36,127 annotated introns
+Eimeria	Hammondia hammondi	GCF_000258005.1	isolate	NCBI RefSeq	not in initial survey	NCBI (RefSeq/GenBank) annotation	host annotation	Control	TTTAGGG	0	0	38,919 annotated introns
+Eimeria	Neospora caninum	GCF_000208865.1	isolate	NCBI RefSeq	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Control	TTTAGGG	0	0	35,349 annotated introns
+Eimeria	Sarcocystis calchasi	GCA_964212155.1	isolate	NCBI GenBank	not in initial survey	NCBI (RefSeq/GenBank) annotation	host annotation	Control	TTTAGGG	0	0	44,737 annotated introns
+Eimeria	Toxoplasma gondii GT1	GCA_000149715.2	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Control	TTTAGGG	0	0	39,055 annotated introns
+Eimeria	Toxoplasma gondii ME49	GCF_000006565.2	isolate	NCBI RefSeq	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Control	TTTAGGG	0	0	40,104 annotated introns
+Eimeria	Toxoplasma gondii VEG	GCA_000150015.2	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Control	TTTAGGG	0	0	38,941 annotated introns
+Mesorhabditis	Mesorhabditis spiculigera	GCA_958295435.1	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Telotron bearer	TTAGGC	83	1432	
+Mesorhabditis	Pristionchus pacificus	GCA_000180635.4	isolate	NCBI GenBank	complete	NCBI (RefSeq/GenBank) annotation	annotated exons	Control	TTAGGC	0	0	

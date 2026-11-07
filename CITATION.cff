@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: If you use this code, please cite the manuscript.
+title: "Telotrons: analysis code"
+authors:
+  - family-names: Kramer
+    given-names: Alexander M.
+    affiliation: University of California, Santa Cruz
+  - family-names: Corbett-Detig
+    given-names: Russell
+    affiliation: University of California, Santa Cruz
+preferred-citation:
+  type: article
+  title: "Telotrons: spliceosomal introns derived from telomeric repeats"
+  authors:
+    - family-names: Kramer
+      given-names: Alexander M.
+    - family-names: Corbett-Detig
+      given-names: Russell
+  year: 2026
+  journal: Molecular Biology and Evolution
+  notes: in preparation
